@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-public class CuestionarioController {
+@CrossOrigin(origins = {"*"}, methods = {RequestMethod.GET ,RequestMethod.POST })
+        public class CuestionarioController {
 
     @Autowired
     CuestionarioService cuestionarioService;
@@ -26,7 +27,6 @@ public class CuestionarioController {
                 .stream()
                 .map(cuest -> CuestionarioConversorDTO.toCuestionarioSimpleDTO(cuest)).collect(Collectors.toList());
 
-        System.out.println("xxxx");
 
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
@@ -41,7 +41,7 @@ public class CuestionarioController {
     }
 
     @PostMapping("/cuestionario")
-    public ResponseEntity<Cuestionario> crearCuestionario(@RequestBody Cuestionario cuestionario) {
+    public ResponseEntity<Cuestionario> crearCuestionario(@RequestBody CuestionarioConTemasDTO cuestionario) {
         Cuestionario cuestionarioCreado = cuestionarioService.crearCuestionario(cuestionario);
 
         return new ResponseEntity<>(cuestionarioCreado, HttpStatus.CREATED);

@@ -16,12 +16,32 @@ public class CuestionarioConversorDTO {
         return new CuestionarioSimpleDTO(cuestionario.getId(), cuestionario.getNombreCuestionario());
     }
 
+
     public static CuestionarioConTemasDTO toCuestionarioConTemas(Cuestionario cuestionario) {
 
         List<Tema> listaDeTemas = cuestionario.getListaDeTemas();
         List<TemaSinPreguntasDTO> listaDeTemasDTOSinPreguntas = listaDeTemas.stream()
                 .map(tema -> TemaConversorDTO.toSimpleDTO(tema)).toList();
         return new CuestionarioConTemasDTO(toCuestionarioSimpleDTO(cuestionario), listaDeTemasDTOSinPreguntas);
+    }
+
+
+    public static  Cuestionario simplefromJSON(CuestionarioSimpleDTO cuestionarioSimpleDTO){
+
+        return new Cuestionario(cuestionarioSimpleDTO.name);
+
+    }
+
+    public static Cuestionario fromJsonQueIncluyeTemas(CuestionarioConTemasDTO cuestionario){
+        Cuestionario cuestionario1 = simplefromJSON(cuestionario.getQuestionnaire());
+        List<Tema> listaDeTemas = cuestionario.getIssueList().stream().map(issueDto -> {
+            return TemaConversorDTO.fromJson(issueDto);
+        }).toList();
+
+
+        listaDeTemas.forEach(tema->cuestionario1.agregarTema(tema) );
+
+        return cuestionario1;
     }
 
 

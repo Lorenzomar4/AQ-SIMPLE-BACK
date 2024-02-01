@@ -1,6 +1,9 @@
 package com.lorenzomar3.AQ.Service;
 
 import com.lorenzomar3.AQ.Repository.CuestionarioRepository;
+import com.lorenzomar3.AQ.dto.conversor.CuestionarioConversorDTO;
+import com.lorenzomar3.AQ.dto.dto.CuestionarioConTemasDTO;
+import com.lorenzomar3.AQ.dto.dto.CuestionarioSimpleDTO;
 import com.lorenzomar3.AQ.exception.ErrorDeNegocio;
 import com.lorenzomar3.AQ.model.Cuestionario;
 import jakarta.persistence.Access;
@@ -31,12 +34,12 @@ public class CuestionarioService {
     }
 
     @Transactional
-    public Cuestionario crearCuestionario(Cuestionario cuestionario) {
-        Cuestionario cuestionarioBD = cuestionario;
+    public Cuestionario crearCuestionario(CuestionarioConTemasDTO cuestionario) {
+        Cuestionario cuestionarioBD = CuestionarioConversorDTO.fromJsonQueIncluyeTemas(cuestionario);
 
         cuestionarioRepository.save(cuestionarioBD);
         cuestionarioBD = cuestionarioRepository.
-                findById(cuestionario.getId())
+                findById(cuestionarioBD.getId())
                 .orElseThrow(() -> new ErrorDeNegocio("El cuestionario no fue guardado correctamente"));
         return cuestionarioBD;
     }

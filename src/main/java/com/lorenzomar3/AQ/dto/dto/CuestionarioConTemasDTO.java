@@ -4,13 +4,21 @@ import java.util.List;
 
 public class CuestionarioConTemasDTO {
 
-    public CuestionarioSimpleDTO cuestionario;
+    public CuestionarioSimpleDTO questionnaire;
 
-    public List<TemaSinPreguntasDTO> temas;
+    public List<TemaSinPreguntasDTO> issueList;
 
 
-    public CuestionarioConTemasDTO(CuestionarioSimpleDTO cuestionario, List<TemaSinPreguntasDTO> temas) {
-        this.cuestionario = cuestionario;
-        this.temas = temas;
+    public CuestionarioConTemasDTO(CuestionarioSimpleDTO questionnaire, List<TemaSinPreguntasDTO> issue) {
+        this.questionnaire = questionnaire;
+        this.issueList = issue;
+    }
+
+    public CuestionarioSimpleDTO getQuestionnaire() {
+        return questionnaire;
+    }
+
+    public List<TemaSinPreguntasDTO> getIssueList() {
+        return issueList;
     }
 }

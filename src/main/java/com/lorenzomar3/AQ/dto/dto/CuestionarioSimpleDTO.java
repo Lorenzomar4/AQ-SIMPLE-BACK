@@ -4,10 +4,10 @@ public class CuestionarioSimpleDTO {
 
     public Long id;
 
-    public String nombre;
+    public String name;
 
-    public CuestionarioSimpleDTO(Long id, String nombre) {
+    public CuestionarioSimpleDTO(Long id, String name) {
         this.id = id;
-        this.nombre = nombre;
+        this.name = name;
     }
 }

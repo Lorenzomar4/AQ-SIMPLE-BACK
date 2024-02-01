@@ -1,9 +1,9 @@
 package com.lorenzomar3.AQ.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Pregunta {
@@ -20,5 +20,10 @@ public class Pregunta {
     Boolean prioridadDeRepaso;
 
     Integer descuentoDeRepregunta = 0;
+
+    @OneToMany
+    @JoinColumn(name="pregunta")
+    List<Palabras> listaDePreguntas =  new ArrayList<>();
+
 
 }

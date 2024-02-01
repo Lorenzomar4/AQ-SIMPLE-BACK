@@ -29,8 +29,6 @@ public class Tema {
 
     @OneToMany(orphanRemoval = true , fetch = FetchType.LAZY , cascade =  CascadeType.PERSIST)
     @JoinColumn(name = "tema")
-
-
     public List<Pregunta> listaDePreguntas ;
 
 
