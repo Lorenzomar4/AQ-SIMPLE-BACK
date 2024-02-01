@@ -49,8 +49,8 @@ public class Setup implements ApplicationRunner {
     public void guardarCuestionario() {
 
 
-        cuestionarioService.crearCuestionario(CuestionarioConversorDTO.toCuestionarioConTemas(matematicaDiscreta));
-        cuestionarioService.crearCuestionario(CuestionarioConversorDTO.toCuestionarioConTemas(eym));
+        cuestionarioService.crearCuestionario(CuestionarioConversorDTO.toCuestionarioPostDTO(eym));
+        cuestionarioService.crearCuestionario(CuestionarioConversorDTO.toCuestionarioPostDTO(matematicaDiscreta));
 
 
 

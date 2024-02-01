@@ -11,4 +11,8 @@ public class PreguntaConversorDTO {
         return new Pregunta(preguntaPostDTO.getQuestion(),preguntaPostDTO.getAnswer(),preguntaPostDTO.getStringList());
 
     }
+
+    public static PreguntaPostDTO toDTO(Pregunta pregunta){
+        return new PreguntaPostDTO(pregunta.getPregunta() , pregunta.getRespuestaTexto(), pregunta.getListaDePreguntas());
+    }
 }

@@ -1,11 +1,13 @@
 package com.lorenzomar3.AQ.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
 public class Pregunta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

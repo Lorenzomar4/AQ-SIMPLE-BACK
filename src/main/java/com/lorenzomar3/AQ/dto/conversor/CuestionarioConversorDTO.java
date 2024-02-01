@@ -1,13 +1,10 @@
 package com.lorenzomar3.AQ.dto.conversor;
 
-import com.lorenzomar3.AQ.dto.dto.CuestionarioConTemasDTO;
-import com.lorenzomar3.AQ.dto.dto.CuestionarioSimpleDTO;
-import com.lorenzomar3.AQ.dto.dto.TemaSinPreguntasDTO;
+import com.lorenzomar3.AQ.dto.dto.*;
 import com.lorenzomar3.AQ.model.Cuestionario;
 import com.lorenzomar3.AQ.model.Tema;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CuestionarioConversorDTO {
 
@@ -26,25 +23,32 @@ public class CuestionarioConversorDTO {
     }
 
 
-    public static  Cuestionario simplefromJSON(CuestionarioSimpleDTO cuestionarioSimpleDTO){
+    public static Cuestionario simplefromJSON(CuestionarioSimpleDTO cuestionarioSimpleDTO) {
 
         return new Cuestionario(cuestionarioSimpleDTO.name);
 
     }
 
-    public static Cuestionario fromJsonQueIncluyeTemas(CuestionarioConTemasDTO cuestionario){
+    public static Cuestionario fromJsonPOST(CuestionarioPostDTO cuestionario) {
         Cuestionario cuestionario1 = simplefromJSON(cuestionario.getQuestionnaire());
-        List<Tema> listaDeTemas = cuestionario.getIssueList().stream().map(issueDto -> {
-            return TemaConversorDTO.fromJson(issueDto);
+        List<Tema> listaDeTemas = cuestionario.temaPostDTOList.stream().map(issueDto -> {
+            return TemaConversorDTO.fromJSONPost(issueDto);
         }).toList();
 
 
-        listaDeTemas.forEach(tema->cuestionario1.agregarTema(tema) );
+        listaDeTemas.forEach(tema -> cuestionario1.agregarTema(tema));
 
         return cuestionario1;
     }
 
+    public static CuestionarioPostDTO toCuestionarioPostDTO(Cuestionario cuestionario) {
 
+        List<TemaPostDTO> temaPostDTOList = cuestionario.getListaDeTemas().stream().map(tema -> {
+
+            return TemaConversorDTO.toDTOPost(tema);
+        }).toList();
+        return new CuestionarioPostDTO(toCuestionarioSimpleDTO(cuestionario), temaPostDTOList);
+    }
 
 
 }

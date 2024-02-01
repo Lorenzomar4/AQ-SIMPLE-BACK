@@ -3,6 +3,7 @@ package com.lorenzomar3.AQ.Controller;
 import com.lorenzomar3.AQ.Service.CuestionarioService;
 import com.lorenzomar3.AQ.dto.conversor.CuestionarioConversorDTO;
 import com.lorenzomar3.AQ.dto.dto.CuestionarioConTemasDTO;
+import com.lorenzomar3.AQ.dto.dto.CuestionarioPostDTO;
 import com.lorenzomar3.AQ.dto.dto.CuestionarioSimpleDTO;
 import com.lorenzomar3.AQ.model.Cuestionario;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class CuestionarioController {
     }
 
     @PostMapping("/cuestionario")
-    public ResponseEntity<Cuestionario> crearCuestionario(@RequestBody CuestionarioConTemasDTO cuestionario) {
+    public ResponseEntity<Cuestionario> crearCuestionario(@RequestBody CuestionarioPostDTO cuestionario) {
         Cuestionario cuestionarioCreado = cuestionarioService.crearCuestionario(cuestionario);
 
         return new ResponseEntity<>(cuestionarioCreado, HttpStatus.CREATED);

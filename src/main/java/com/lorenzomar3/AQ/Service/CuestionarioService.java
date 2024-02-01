@@ -2,11 +2,9 @@ package com.lorenzomar3.AQ.Service;
 
 import com.lorenzomar3.AQ.Repository.CuestionarioRepository;
 import com.lorenzomar3.AQ.dto.conversor.CuestionarioConversorDTO;
-import com.lorenzomar3.AQ.dto.dto.CuestionarioConTemasDTO;
-import com.lorenzomar3.AQ.dto.dto.CuestionarioSimpleDTO;
+import com.lorenzomar3.AQ.dto.dto.CuestionarioPostDTO;
 import com.lorenzomar3.AQ.exception.ErrorDeNegocio;
 import com.lorenzomar3.AQ.model.Cuestionario;
-import jakarta.persistence.Access;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,8 +32,8 @@ public class CuestionarioService {
     }
 
     @Transactional
-    public Cuestionario crearCuestionario(CuestionarioConTemasDTO cuestionario) {
-        Cuestionario cuestionarioBD = CuestionarioConversorDTO.fromJsonQueIncluyeTemas(cuestionario);
+    public Cuestionario crearCuestionario(CuestionarioPostDTO cuestionario) {
+        Cuestionario cuestionarioBD = CuestionarioConversorDTO.fromJsonPOST(cuestionario);
 
         cuestionarioRepository.save(cuestionarioBD);
         cuestionarioBD = cuestionarioRepository.
