@@ -32,16 +32,13 @@ public class CuestionarioConversorDTO {
 
     public static Cuestionario fromJsonPOST(CuestionarioPostDTO cuestionario) {
         Cuestionario cuestionario1 = simplefromJSON(cuestionario.getQuestionnaire());
-        List<Tema> listaDeTemas;
 
-
-        if(cuestionario.temaPostDTOList != null){
-           listaDeTemas = cuestionario.temaPostDTOList.stream().map(issueDto -> {
+            List<Tema>  listaDeTemas = cuestionario.getIssueList().stream().map(issueDto -> {
                 return TemaConversorDTO.fromJSONPost(issueDto);
             }).toList();
 
             listaDeTemas.forEach(tema -> cuestionario1.agregarTema(tema));
-        }
+
 
         return cuestionario1;
     }

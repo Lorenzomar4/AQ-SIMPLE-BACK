@@ -12,9 +12,9 @@ public class CuestionarioPostDTO {
 
     public CuestionarioSimpleDTO questionnaire;
 
-    public List<TemaPostDTO> temaPostDTOList = Collections.emptyList();
+    public List<TemaPostDTO> issueList = Collections.emptyList();
     public CuestionarioPostDTO(CuestionarioSimpleDTO questionnaire, List<TemaPostDTO> temaPostDTOList) {
         this.questionnaire = questionnaire;
-        this.temaPostDTOList = temaPostDTOList;
+        this.issueList = temaPostDTOList;
     }
 }

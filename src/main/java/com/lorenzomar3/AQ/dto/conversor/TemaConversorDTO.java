@@ -7,6 +7,7 @@ import com.lorenzomar3.AQ.model.Cuestionario;
 import com.lorenzomar3.AQ.model.Pregunta;
 import com.lorenzomar3.AQ.model.Tema;
 
+import java.util.Collections;
 import java.util.List;
 
 public class TemaConversorDTO {
@@ -17,12 +18,16 @@ public class TemaConversorDTO {
 
     public static Tema fromJSONPost(TemaPostDTO temaPostDTO) {
         List<Pregunta> preguntaList = temaPostDTO
-                .getPreguntaPostDTOList()
-                .stream()
-                .map(preg ->
-                {
-                    return PreguntaConversorDTO.fromJSON(preg);
-                }).toList();
+                    .getQuestionList()
+                    .stream()
+                    .map(preg ->
+                    {
+                        return PreguntaConversorDTO.fromJSON(preg);
+                    }).toList();
+
+
+
+
         return new Tema(temaPostDTO.getName(), preguntaList);
 
     }

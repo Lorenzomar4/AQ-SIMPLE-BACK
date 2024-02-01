@@ -15,10 +15,10 @@ public class TemaPostDTO {
 
     public TemaPostDTO(String name, List<PreguntaPostDTO> preguntaPostDTOList) {
         this.name = name;
-        this.preguntaPostDTOList = preguntaPostDTOList;
+        this.questionList = preguntaPostDTOList;
     }
 
-    public List<PreguntaPostDTO> preguntaPostDTOList = new ArrayList<>();;
+    public List<PreguntaPostDTO> questionList = new ArrayList<>();;
 
 
 

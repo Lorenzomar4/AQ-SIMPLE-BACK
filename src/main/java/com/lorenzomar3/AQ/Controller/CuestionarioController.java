@@ -43,7 +43,12 @@ public class CuestionarioController {
 
     @PostMapping("/cuestionario")
     public ResponseEntity<Cuestionario> crearCuestionario(@RequestBody CuestionarioPostDTO cuestionario) {
+
+
+        System.out.println("vegeta");
+
         Cuestionario cuestionarioCreado = cuestionarioService.crearCuestionario(cuestionario);
+
 
         return new ResponseEntity<>(cuestionarioCreado, HttpStatus.CREATED);
     }
