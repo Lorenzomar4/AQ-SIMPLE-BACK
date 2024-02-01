@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin(origins = {"*"}, methods = {RequestMethod.GET ,RequestMethod.POST })
-        public class CuestionarioController {
+@CrossOrigin(origins = {"*"}, methods = {RequestMethod.GET, RequestMethod.POST})
+public class CuestionarioController {
 
     @Autowired
     CuestionarioService cuestionarioService;

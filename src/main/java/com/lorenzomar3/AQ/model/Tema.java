@@ -29,7 +29,12 @@ public class Tema {
 
     @OneToMany(orphanRemoval = true , fetch = FetchType.LAZY , cascade =  CascadeType.PERSIST)
     @JoinColumn(name = "tema")
-    public List<Pregunta> listaDePreguntas ;
+    public List<Pregunta> listaDePreguntas =new ArrayList<>() ;
+
+
+    public void agregarPregunta(Pregunta pregunta){
+        listaDePreguntas.add(pregunta);
+    }
 
 
     public Tema() {}

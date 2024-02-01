@@ -17,7 +17,9 @@ public class Pregunta {
 
     String imagen;
 
-    Boolean prioridadDeRepaso;
+
+
+    Boolean prioridadDeRepaso = false;
 
     Integer descuentoDeRepregunta = 0;
 
@@ -26,4 +28,12 @@ public class Pregunta {
     List<Palabras> listaDePreguntas =  new ArrayList<>();
 
 
+    public Pregunta(String pregunta, String respuestaTexto) {
+        this.pregunta = pregunta;
+        this.respuestaTexto = respuestaTexto;
+    }
+
+    public Pregunta() {
+
+    }
 }

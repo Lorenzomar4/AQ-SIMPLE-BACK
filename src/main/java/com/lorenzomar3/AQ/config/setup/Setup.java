@@ -4,6 +4,7 @@ import com.lorenzomar3.AQ.Repository.CuestionarioRepository;
 import com.lorenzomar3.AQ.Service.CuestionarioService;
 import com.lorenzomar3.AQ.dto.conversor.CuestionarioConversorDTO;
 import com.lorenzomar3.AQ.model.Cuestionario;
+import com.lorenzomar3.AQ.model.Pregunta;
 import com.lorenzomar3.AQ.model.Tema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -23,6 +24,7 @@ public class Setup implements ApplicationRunner {
     public Cuestionario matematicaDiscreta;
     public Tema fuerzaElectrica;
     public Tema capacitores;
+    public Pregunta pregunta;
 
 
     @Autowired
@@ -34,6 +36,10 @@ public class Setup implements ApplicationRunner {
         matematicaDiscreta = new Cuestionario("Matematica discreta");
         fuerzaElectrica = new Tema("Campo electrico");
         capacitores = new Tema("Capacitores");
+        pregunta = new Pregunta("¿Como estas hoy?","Horriblemente mal");
+        System.out.println("LLego");
+        fuerzaElectrica.agregarPregunta(pregunta);
+        System.out.println("LLego2");
 
         eym.agregarTema(fuerzaElectrica);
         eym.agregarTema(capacitores);
@@ -41,8 +47,13 @@ public class Setup implements ApplicationRunner {
     }
 
     public void guardarCuestionario() {
+
+
         cuestionarioService.crearCuestionario(CuestionarioConversorDTO.toCuestionarioConTemas(matematicaDiscreta));
         cuestionarioService.crearCuestionario(CuestionarioConversorDTO.toCuestionarioConTemas(eym));
+
+
+
 
     }
 
