@@ -24,6 +24,11 @@ public class Tema {
         this.nombreDeTema = nombreDeTema;
     }
 
+    public Tema(String nombreDeTema, List<Pregunta> listaDePreguntas) {
+        this.nombreDeTema = nombreDeTema;
+        this.listaDePreguntas = listaDePreguntas;
+    }
+
     public String nombreDeTema;
 
 

@@ -1,7 +1,10 @@
 package com.lorenzomar3.AQ.dto.dto;
 
+import lombok.Getter;
+
 import java.util.List;
 
+@Getter
 public class CuestionarioConTemasDTO {
 
     public CuestionarioSimpleDTO questionnaire;
@@ -14,11 +17,4 @@ public class CuestionarioConTemasDTO {
         this.issueList = issue;
     }
 
-    public CuestionarioSimpleDTO getQuestionnaire() {
-        return questionnaire;
-    }
-
-    public List<TemaSinPreguntasDTO> getIssueList() {
-        return issueList;
-    }
 }

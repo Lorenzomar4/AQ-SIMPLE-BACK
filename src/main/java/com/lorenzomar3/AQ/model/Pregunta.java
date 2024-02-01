@@ -23,14 +23,19 @@ public class Pregunta {
 
     Integer descuentoDeRepregunta = 0;
 
-    @OneToMany
-    @JoinColumn(name="pregunta")
-    List<Palabras> listaDePreguntas =  new ArrayList<>();
+    @ElementCollection
+    List<String> listaDePreguntas =  new ArrayList<>();
 
 
     public Pregunta(String pregunta, String respuestaTexto) {
         this.pregunta = pregunta;
         this.respuestaTexto = respuestaTexto;
+    }
+
+    public Pregunta(String pregunta, String respuestaTexto, List<String> listaDePreguntas) {
+        this.pregunta = pregunta;
+        this.respuestaTexto = respuestaTexto;
+        this.listaDePreguntas = listaDePreguntas;
     }
 
     public Pregunta() {
