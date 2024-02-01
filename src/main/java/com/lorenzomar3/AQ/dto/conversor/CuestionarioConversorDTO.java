@@ -4,6 +4,7 @@ import com.lorenzomar3.AQ.dto.dto.*;
 import com.lorenzomar3.AQ.model.Cuestionario;
 import com.lorenzomar3.AQ.model.Tema;
 
+import java.util.Collections;
 import java.util.List;
 
 public class CuestionarioConversorDTO {
@@ -31,12 +32,16 @@ public class CuestionarioConversorDTO {
 
     public static Cuestionario fromJsonPOST(CuestionarioPostDTO cuestionario) {
         Cuestionario cuestionario1 = simplefromJSON(cuestionario.getQuestionnaire());
-        List<Tema> listaDeTemas = cuestionario.temaPostDTOList.stream().map(issueDto -> {
-            return TemaConversorDTO.fromJSONPost(issueDto);
-        }).toList();
+        List<Tema> listaDeTemas;
 
 
-        listaDeTemas.forEach(tema -> cuestionario1.agregarTema(tema));
+        if(cuestionario.temaPostDTOList != null){
+           listaDeTemas = cuestionario.temaPostDTOList.stream().map(issueDto -> {
+                return TemaConversorDTO.fromJSONPost(issueDto);
+            }).toList();
+
+            listaDeTemas.forEach(tema -> cuestionario1.agregarTema(tema));
+        }
 
         return cuestionario1;
     }
