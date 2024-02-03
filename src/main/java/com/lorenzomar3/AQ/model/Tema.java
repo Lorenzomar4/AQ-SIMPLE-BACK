@@ -41,6 +41,10 @@ public class Tema {
         listaDePreguntas.add(pregunta);
     }
 
+    public void setId(Long id ){
+        this.id = id;
+    }
+
 
     public Tema() {}
 }

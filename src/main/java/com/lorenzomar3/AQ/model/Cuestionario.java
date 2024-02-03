@@ -30,6 +30,12 @@ public class Cuestionario {
     }
 
 
+
+    public void setId(Long id ){
+        this.id = id;
+
+    }
+
     public void agregarTema(Tema tema){
         listaDeTemas.add(tema);
     }

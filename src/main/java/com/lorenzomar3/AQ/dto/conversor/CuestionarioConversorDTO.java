@@ -6,6 +6,7 @@ import com.lorenzomar3.AQ.model.Tema;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class CuestionarioConversorDTO {
 
@@ -25,8 +26,15 @@ public class CuestionarioConversorDTO {
 
 
     public static Cuestionario simplefromJSON(CuestionarioSimpleDTO cuestionarioSimpleDTO) {
+        Long id = cuestionarioSimpleDTO.getId();
 
-        return new Cuestionario(cuestionarioSimpleDTO.name);
+        Cuestionario cuestionario = new Cuestionario(cuestionarioSimpleDTO.name);
+
+        if (!Objects.isNull(id)) {
+            cuestionario.setId(id);
+        }
+
+        return cuestionario;
 
     }
 

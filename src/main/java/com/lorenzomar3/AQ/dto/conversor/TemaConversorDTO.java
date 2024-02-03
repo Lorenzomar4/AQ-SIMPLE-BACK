@@ -9,6 +9,7 @@ import com.lorenzomar3.AQ.model.Tema;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class TemaConversorDTO {
 
@@ -17,15 +18,22 @@ public class TemaConversorDTO {
     }
 
     public static Tema fromJSONPost(TemaPostDTO temaPostDTO) {
+
+        Long id = temaPostDTO.getId();
+
         List<Pregunta> preguntaList = temaPostDTO
-                    .getQuestionList()
-                    .stream()
-                    .map(preg ->
-                    {
-                        return PreguntaConversorDTO.fromJSON(preg);
-                    }).toList();
+                .getQuestionList()
+                .stream()
+                .map(preg ->
+                {
+                    return PreguntaConversorDTO.fromJSON(preg);
+                }).toList();
 
+        Tema tema = new Tema(temaPostDTO.getName(), preguntaList);
 
+        if(!Objects.isNull(id)){
+            tema.setId(id);
+        }
 
 
         return new Tema(temaPostDTO.getName(), preguntaList);

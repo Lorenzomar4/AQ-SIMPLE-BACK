@@ -50,5 +50,23 @@ public class CuestionarioService {
 
     }
 
+    @Transactional
+    public Cuestionario actualizarCuestionario(CuestionarioPostDTO cuestionarioPostDTO){
+        Long idDelCuestionario = cuestionarioPostDTO.getQuestionnaire().getId();
+        Cuestionario cuestionarioBD = cuestionarioRepository.findById(idDelCuestionario).orElseThrow( () ->
+                new ErrorDeNegocio("no se puede actualizar un recurso que no existe"));
+
+        Cuestionario cuestionario = CuestionarioConversorDTO.fromJsonPOST(cuestionarioPostDTO);
+
+        System.out.println("el id es"+cuestionario.getId());
+
+
+        cuestionarioRepository.save(cuestionario);
+
+        return cuestionario;
+
+
+    }
+
 
 }

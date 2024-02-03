@@ -40,6 +40,11 @@ public class Pregunta {
         this.listaDePreguntas = listaDePreguntas;
     }
 
+    public void  setId(Long id){
+        this.id = id;
+
+    }
+
     public Pregunta() {
 
     }

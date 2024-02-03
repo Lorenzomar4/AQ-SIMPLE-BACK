@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin(origins = {"*"}, methods = {RequestMethod.GET, RequestMethod.POST , RequestMethod.DELETE})
+@CrossOrigin(origins = {"*"}, methods = {RequestMethod.GET, RequestMethod.POST , RequestMethod.DELETE , RequestMethod.PUT})
 public class CuestionarioController {
 
     @Autowired
@@ -45,7 +45,6 @@ public class CuestionarioController {
     public ResponseEntity<Cuestionario> crearCuestionario(@RequestBody CuestionarioPostDTO cuestionario) {
 
 
-        System.out.println("vegeta");
 
         Cuestionario cuestionarioCreado = cuestionarioService.crearCuestionario(cuestionario);
 
@@ -55,9 +54,14 @@ public class CuestionarioController {
 
     @DeleteMapping("/cuestionario/{id}")
     public ResponseEntity<String> eliminarCuestionario(@PathVariable Long id) {
-        System.out.println("laputa");
         cuestionarioService.eliminarCuestionario(id);
         return new ResponseEntity<>("Se ha eliminado el cuestionario", HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/cuestionario")
+    public ResponseEntity<Cuestionario> actualizarCuestionario(@RequestBody CuestionarioPostDTO cuestionario) {
+        Cuestionario cuestionarioActualizado = cuestionarioService.actualizarCuestionario(cuestionario);
+        return new ResponseEntity<>(cuestionarioActualizado, HttpStatus.OK);
     }
 
 }

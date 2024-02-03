@@ -1,5 +1,8 @@
 package com.lorenzomar3.AQ.dto.dto;
 
+import lombok.Getter;
+
+@Getter
 public class CuestionarioSimpleDTO {
 
     public Long id;
