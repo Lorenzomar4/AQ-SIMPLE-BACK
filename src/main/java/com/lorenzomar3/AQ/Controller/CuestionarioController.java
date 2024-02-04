@@ -1,11 +1,15 @@
 package com.lorenzomar3.AQ.Controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lorenzomar3.AQ.JsonVisualizador;
+import com.lorenzomar3.AQ.Repository.TemaRepository;
 import com.lorenzomar3.AQ.Service.CuestionarioService;
 import com.lorenzomar3.AQ.dto.conversor.CuestionarioConversorDTO;
 import com.lorenzomar3.AQ.dto.dto.CuestionarioConTemasDTO;
 import com.lorenzomar3.AQ.dto.dto.CuestionarioPostDTO;
 import com.lorenzomar3.AQ.dto.dto.CuestionarioSimpleDTO;
 import com.lorenzomar3.AQ.model.Cuestionario;
+import com.lorenzomar3.AQ.model.Tema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +24,8 @@ public class CuestionarioController {
 
     @Autowired
     CuestionarioService cuestionarioService;
+
+
 
     @GetMapping("/cuestionarios")
     public ResponseEntity<List<CuestionarioSimpleDTO>> todosLosCuestionarios() {
@@ -44,10 +50,7 @@ public class CuestionarioController {
     @PostMapping("/cuestionario")
     public ResponseEntity<Cuestionario> crearCuestionario(@RequestBody CuestionarioPostDTO cuestionario) {
 
-
-
         Cuestionario cuestionarioCreado = cuestionarioService.crearCuestionario(cuestionario);
-
 
         return new ResponseEntity<>(cuestionarioCreado, HttpStatus.CREATED);
     }
@@ -59,13 +62,21 @@ public class CuestionarioController {
     }
 
     @PutMapping("/cuestionario")
-    public ResponseEntity<Cuestionario> actualizarCuestionario(@RequestBody CuestionarioPostDTO cuestionario) {
-        Cuestionario cuestionarioActualizado = cuestionarioService.actualizarCuestionario(cuestionario);
-        return new ResponseEntity<>(cuestionarioActualizado, HttpStatus.OK);
+    public ResponseEntity actualizarCuestionario(@RequestBody CuestionarioPostDTO cuestionario) {
+
+        JsonVisualizador.verJson(cuestionario);
+
+        cuestionarioService.actualizarCuestionario(cuestionario);
+
+
+        return new ResponseEntity<>( HttpStatus.OK);
     }
 
     @GetMapping("/cuestionariofull/{id}")
     public ResponseEntity<CuestionarioPostDTO> obtenerTodo(@PathVariable Long id){
+
+        System.out.println("Quizo guardar");
+
         Cuestionario cuestionario = cuestionarioService.obtenerTodo(id);
         CuestionarioPostDTO cuestionarioPostDTO = CuestionarioConversorDTO.toCuestionarioPostDTO(cuestionario);
 

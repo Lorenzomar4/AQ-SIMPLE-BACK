@@ -3,6 +3,7 @@ package com.lorenzomar3.AQ.config.setup;
 import com.lorenzomar3.AQ.Repository.CuestionarioRepository;
 import com.lorenzomar3.AQ.Service.CuestionarioService;
 import com.lorenzomar3.AQ.dto.conversor.CuestionarioConversorDTO;
+import com.lorenzomar3.AQ.dto.dto.CuestionarioPostDTO;
 import com.lorenzomar3.AQ.model.Cuestionario;
 import com.lorenzomar3.AQ.model.Pregunta;
 import com.lorenzomar3.AQ.model.Tema;
@@ -48,12 +49,9 @@ public class Setup implements ApplicationRunner {
 
     public void guardarCuestionario() {
 
-
-        cuestionarioService.crearCuestionario(CuestionarioConversorDTO.toCuestionarioPostDTO(eym));
+        CuestionarioPostDTO c =  CuestionarioConversorDTO.toCuestionarioPostDTO(eym);
+        cuestionarioService.crearCuestionario(c);
         cuestionarioService.crearCuestionario(CuestionarioConversorDTO.toCuestionarioPostDTO(matematicaDiscreta));
-
-
-
 
     }
 

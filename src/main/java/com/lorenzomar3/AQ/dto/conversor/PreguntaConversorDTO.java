@@ -19,7 +19,7 @@ public class PreguntaConversorDTO {
         }
 
 
-        return new Pregunta(preguntaPostDTO.getQuestion(), preguntaPostDTO.getAnswer(), preguntaPostDTO.getStringList());
+        return pregunta;
 
     }
 

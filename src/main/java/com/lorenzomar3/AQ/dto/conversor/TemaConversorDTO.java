@@ -29,9 +29,12 @@ public class TemaConversorDTO {
                     return PreguntaConversorDTO.fromJSON(preg);
                 }).toList();
 
+        Tema  tema = new Tema(temaPostDTO.getName(), preguntaList);
+        tema.setId(id); //borrar si causa errores
 
 
-        return new Tema(temaPostDTO.getName(), preguntaList);
+
+        return tema;
 
     }
 

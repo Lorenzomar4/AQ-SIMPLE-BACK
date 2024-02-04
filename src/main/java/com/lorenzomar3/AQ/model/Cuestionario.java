@@ -4,12 +4,14 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 public class Cuestionario {
 
@@ -19,7 +21,7 @@ public class Cuestionario {
     String nombreCuestionario;
 
 
-    @OneToMany(fetch = FetchType.LAZY ,cascade =  CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.LAZY ,cascade =  CascadeType.ALL)
     @JoinColumn(name = "cuestionario_perteneciente")
     List<Tema>  listaDeTemas;
 

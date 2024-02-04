@@ -32,7 +32,7 @@ public class Tema {
     public String nombreDeTema;
 
 
-    @OneToMany(orphanRemoval = true , fetch = FetchType.LAZY , cascade =  CascadeType.PERSIST)
+    @OneToMany(orphanRemoval = true , fetch = FetchType.LAZY , cascade =  CascadeType.ALL)
     @JoinColumn(name = "tema")
     public List<Pregunta> listaDePreguntas =new ArrayList<>() ;
 
