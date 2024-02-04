@@ -17,8 +17,8 @@ public class PreguntaPostDTO {
 
     public List<String> stringList = new ArrayList<>();;
 
-
-    public PreguntaPostDTO(String question, String answer, List<String> stringList) {
+    public PreguntaPostDTO(Long id, String question, String answer, List<String> stringList) {
+        this.id = id;
         this.question = question;
         this.answer = answer;
         this.stringList = stringList;

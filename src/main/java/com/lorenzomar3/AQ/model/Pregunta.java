@@ -25,8 +25,8 @@ public class Pregunta {
 
     Integer descuentoDeRepregunta = 0;
 
-    @ElementCollection
-    List<String> listaDePreguntas =  new ArrayList<>();
+    @ElementCollection(fetch = FetchType.EAGER)
+    List<String> listaDePalabras =  new ArrayList<>();
 
 
     public Pregunta(String pregunta, String respuestaTexto) {
@@ -34,10 +34,10 @@ public class Pregunta {
         this.respuestaTexto = respuestaTexto;
     }
 
-    public Pregunta(String pregunta, String respuestaTexto, List<String> listaDePreguntas) {
+    public Pregunta(String pregunta, String respuestaTexto, List<String> listaDePalabras) {
         this.pregunta = pregunta;
         this.respuestaTexto = respuestaTexto;
-        this.listaDePreguntas = listaDePreguntas;
+        this.listaDePalabras = listaDePalabras;
     }
 
     public void  setId(Long id){

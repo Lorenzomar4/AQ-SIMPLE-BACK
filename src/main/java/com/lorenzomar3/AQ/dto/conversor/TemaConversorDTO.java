@@ -29,11 +29,6 @@ public class TemaConversorDTO {
                     return PreguntaConversorDTO.fromJSON(preg);
                 }).toList();
 
-        Tema tema = new Tema(temaPostDTO.getName(), preguntaList);
-
-        if(!Objects.isNull(id)){
-            tema.setId(id);
-        }
 
 
         return new Tema(temaPostDTO.getName(), preguntaList);
@@ -47,7 +42,7 @@ public class TemaConversorDTO {
                     return PreguntaConversorDTO.toDTO(preg);
                 }).toList();
 
-        return new TemaPostDTO(tema.getNombreDeTema(), preguntaPostDTOList);
+        return new TemaPostDTO(tema.getId() ,tema.getNombreDeTema(), preguntaPostDTOList);
 
     }
 }

@@ -1,6 +1,7 @@
 package com.lorenzomar3.AQ.Service;
 
 import com.lorenzomar3.AQ.Repository.CuestionarioRepository;
+import com.lorenzomar3.AQ.Repository.CuestionarioRepositoryFull;
 import com.lorenzomar3.AQ.dto.conversor.CuestionarioConversorDTO;
 import com.lorenzomar3.AQ.dto.dto.CuestionarioPostDTO;
 import com.lorenzomar3.AQ.exception.ErrorDeNegocio;
@@ -16,6 +17,9 @@ public class CuestionarioService {
 
     @Autowired
     CuestionarioRepository cuestionarioRepository;
+
+    @Autowired
+    CuestionarioRepositoryFull cuestionarioRepositoryFull;
 
     @Transactional(readOnly = true)
     public List<Cuestionario> getAllCuestionario() {
@@ -64,6 +68,14 @@ public class CuestionarioService {
         cuestionarioRepository.save(cuestionario);
 
         return cuestionario;
+
+
+    }
+
+    @Transactional(readOnly = true)
+    public Cuestionario obtenerTodo(Long id){
+
+        return cuestionarioRepositoryFull.findById(id).orElseThrow(() -> new ErrorDeNegocio("No existe ese cuestionario"));
 
 
     }

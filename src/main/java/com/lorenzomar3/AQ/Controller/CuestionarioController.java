@@ -64,4 +64,13 @@ public class CuestionarioController {
         return new ResponseEntity<>(cuestionarioActualizado, HttpStatus.OK);
     }
 
+    @GetMapping("/cuestionariofull/{id}")
+    public ResponseEntity<CuestionarioPostDTO> obtenerTodo(@PathVariable Long id){
+        Cuestionario cuestionario = cuestionarioService.obtenerTodo(id);
+        CuestionarioPostDTO cuestionarioPostDTO = CuestionarioConversorDTO.toCuestionarioPostDTO(cuestionario);
+
+        return new ResponseEntity<>(cuestionarioPostDTO, HttpStatus.OK);
+
+    }
+
 }

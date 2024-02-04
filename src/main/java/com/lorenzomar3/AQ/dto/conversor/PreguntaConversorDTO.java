@@ -24,6 +24,7 @@ public class PreguntaConversorDTO {
     }
 
     public static PreguntaPostDTO toDTO(Pregunta pregunta) {
-        return new PreguntaPostDTO(pregunta.getPregunta(), pregunta.getRespuestaTexto(), pregunta.getListaDePreguntas());
+        System.out.println("previo error");
+        return new PreguntaPostDTO( pregunta.getId(),pregunta.getPregunta(), pregunta.getRespuestaTexto(), pregunta.getListaDePalabras());
     }
 }

@@ -53,7 +53,10 @@ public class CuestionarioConversorDTO {
 
     public static CuestionarioPostDTO toCuestionarioPostDTO(Cuestionario cuestionario) {
 
+
+
         List<TemaPostDTO> temaPostDTOList = cuestionario.getListaDeTemas().stream().map(tema -> {
+            System.out.println("my id" +tema.getId());
 
             return TemaConversorDTO.toDTOPost(tema);
         }).toList();
