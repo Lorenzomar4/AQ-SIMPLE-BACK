@@ -13,6 +13,8 @@ public class TemaPostDTO {
 
     String name;
 
+    Long cuestionarioId;
+
     public List<PreguntaPostDTO> questionList = new ArrayList<>();;
 
 
