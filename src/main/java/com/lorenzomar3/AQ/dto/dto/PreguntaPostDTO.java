@@ -15,12 +15,15 @@ public class PreguntaPostDTO {
 
     public String answer;
 
+    public Boolean critico;
+
     public List<String> stringList = new ArrayList<>();;
 
-    public PreguntaPostDTO(Long id, String question, String answer, List<String> stringList) {
+    public PreguntaPostDTO(Long id, String question, String answer, List<String> stringList, Boolean critico) {
         this.id = id;
         this.question = question;
         this.answer = answer;
         this.stringList = stringList;
+        this.critico =critico;
     }
 }

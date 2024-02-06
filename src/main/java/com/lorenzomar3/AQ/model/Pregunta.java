@@ -19,10 +19,6 @@ public class Pregunta {
 
     String imagen;
 
-
-
-    Boolean prioridadDeRepaso = false;
-
     Integer descuentoDeRepregunta = 0;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -48,4 +44,16 @@ public class Pregunta {
     public Pregunta() {
 
     }
+
+    public void descontarRepregunta(){
+        if(descuentoDeRepregunta>=1){
+            descuentoDeRepregunta=descuentoDeRepregunta-1;
+        }
+    }
+
+    public void equivocacion(){
+        descuentoDeRepregunta = 3;
+    }
+
+
 }
