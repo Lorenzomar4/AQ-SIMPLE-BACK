@@ -46,6 +46,8 @@ public class Pregunta {
     }
 
     public void descontarRepregunta(){
+
+
         if(descuentoDeRepregunta>=1){
             descuentoDeRepregunta=descuentoDeRepregunta-1;
         }
@@ -53,6 +55,7 @@ public class Pregunta {
 
     public void equivocacion(){
         descuentoDeRepregunta = 3;
+        System.out.println("deberia modificarse");
     }
 
 

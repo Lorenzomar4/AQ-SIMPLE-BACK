@@ -1,5 +1,6 @@
 package com.lorenzomar3.AQ.Service;
 
+import com.lorenzomar3.AQ.JsonVisualizador;
 import com.lorenzomar3.AQ.Repository.PreguntaRepository;
 import com.lorenzomar3.AQ.exception.ErrorDeNegocio;
 import com.lorenzomar3.AQ.model.Pregunta;
@@ -39,6 +40,9 @@ public class PreguntaService {
         pregunta.equivocacion();
 
         preguntaRepository.save(pregunta);
+        //aver como quedo
+
+        JsonVisualizador.verJson(pregunta);
 
     }
 }
