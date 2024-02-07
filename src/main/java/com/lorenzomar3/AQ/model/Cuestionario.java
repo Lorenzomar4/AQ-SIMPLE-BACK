@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -40,5 +42,12 @@ public class Cuestionario {
 
     public void agregarTema(Tema tema){
         listaDeTemas.add(tema);
+    }
+
+    public List<Pregunta> todasLasPreguntasQueTieneElCuestionario(){
+        List<List<Pregunta>> todosLosTemas = listaDeTemas.stream().map(Tema::getListaDePreguntas).toList();
+
+        return todosLosTemas.stream().flatMap(Collection::stream).collect(Collectors.toList());
+
     }
 }

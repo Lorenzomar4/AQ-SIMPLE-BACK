@@ -17,12 +17,16 @@ public class Pregunta {
 
     String respuestaTexto;
 
-    String imagen;
+
 
     Integer descuentoDeRepregunta = 0;
 
     @ElementCollection(fetch = FetchType.EAGER)
     List<String> listaDePalabras =  new ArrayList<>();
+
+    String imagen;
+
+    String imagenRespuesta;
 
 
     public Pregunta(String pregunta, String respuestaTexto) {
@@ -34,6 +38,21 @@ public class Pregunta {
         this.pregunta = pregunta;
         this.respuestaTexto = respuestaTexto;
         this.listaDePalabras = listaDePalabras;
+    }
+
+    public Pregunta(String pregunta, String respuestaTexto, List<String> listaDePalabras, String imagen) {
+        this.pregunta = pregunta;
+        this.respuestaTexto = respuestaTexto;
+        this.listaDePalabras = listaDePalabras;
+        this.imagen = imagen;
+    }
+
+    public Pregunta(String pregunta, String respuestaTexto, List<String> listaDePalabras, String imagen, String imagenRespuesta) {
+        this.pregunta = pregunta;
+        this.respuestaTexto = respuestaTexto;
+        this.listaDePalabras = listaDePalabras;
+        this.imagen = imagen;
+        this.imagenRespuesta = imagenRespuesta;
     }
 
     public void  setId(Long id){
