@@ -58,7 +58,7 @@ public class Setup implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        datos();
-        guardarCuestionario();
+        //datos();
+       // guardarCuestionario();
     }
 }
