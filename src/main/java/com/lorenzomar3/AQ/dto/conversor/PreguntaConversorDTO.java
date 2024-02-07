@@ -12,7 +12,8 @@ public class PreguntaConversorDTO {
 
         Long id = preguntaPostDTO.getId();
 
-        Pregunta pregunta =new Pregunta(preguntaPostDTO.getQuestion(), preguntaPostDTO.getAnswer(), preguntaPostDTO.getStringList());
+        Pregunta pregunta =new Pregunta(preguntaPostDTO.getQuestion(), preguntaPostDTO.getAnswer(), preguntaPostDTO.getStringList()
+                ,preguntaPostDTO.getQuestionimage(),preguntaPostDTO.getAnswerimage());
 
         if(!Objects.isNull(id)){
             pregunta.setId(id);
@@ -27,6 +28,7 @@ public class PreguntaConversorDTO {
 
         Boolean esCritico = pregunta.getDescuentoDeRepregunta() > 0;
 
-        return new PreguntaPostDTO( pregunta.getId(),pregunta.getPregunta(), pregunta.getRespuestaTexto(), pregunta.getListaDePalabras(),esCritico);
+        return new PreguntaPostDTO( pregunta.getId(),pregunta.getPregunta(), pregunta.getRespuestaTexto(),
+                esCritico ,pregunta.getImagen() , pregunta.getImagenRespuesta(), pregunta.getListaDePalabras());
     }
 }

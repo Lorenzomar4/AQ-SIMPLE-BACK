@@ -17,13 +17,23 @@ public class PreguntaPostDTO {
 
     public Boolean critico;
 
+    public String questionimage;
+
+    public String answerimage;
+
     public List<String> stringList = new ArrayList<>();;
 
-    public PreguntaPostDTO(Long id, String question, String answer, List<String> stringList, Boolean critico) {
+    public PreguntaPostDTO(Long id, String question, String answer, Boolean critico, String questionimage, String answerimage, List<String> stringList) {
         this.id = id;
         this.question = question;
         this.answer = answer;
+        this.critico = critico;
+        this.questionimage = questionimage;
+        this.answerimage = answerimage;
         this.stringList = stringList;
-        this.critico =critico;
     }
+
+
+
+
 }
