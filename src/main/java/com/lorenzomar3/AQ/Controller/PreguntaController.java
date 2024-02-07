@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,7 +65,9 @@ public class PreguntaController {
 
             Cuestionario cuestionario = cuestionarioService.obtenerTodo(preguntaSolicitudDTO.getId());
             List<Pregunta> preguntass = cuestionario.todasLasPreguntasQueTieneElCuestionario();
-            List<PreguntaPostDTO> listaDePreguntasDTOb = preguntass.stream().map(preg -> PreguntaConversorDTO.toDTO(preg)).toList();
+            List<PreguntaPostDTO> listaDePreguntasDTOb = preguntass.stream().map(preg -> PreguntaConversorDTO.toDTO(preg)).collect(Collectors.toList());
+
+            Collections.shuffle(listaDePreguntasDTOb);
 
             PreguntaAResponderDTO preguntaAResponderDTOc =
                     PreguntaAResponderDTO.singleQuestion(preguntaSolicitudDTO.getId(), listaDePreguntasDTOb);
