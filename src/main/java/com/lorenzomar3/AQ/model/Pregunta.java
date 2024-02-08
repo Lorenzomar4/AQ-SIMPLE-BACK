@@ -1,6 +1,7 @@
 package com.lorenzomar3.AQ.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -13,8 +14,10 @@ public class Pregunta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Column(length = 1500)
     String pregunta;
 
+    @Column(length = 1500)
     String respuestaTexto;
 
 
@@ -24,8 +27,10 @@ public class Pregunta {
     @ElementCollection(fetch = FetchType.EAGER)
     List<String> listaDePalabras =  new ArrayList<>();
 
+    @Column(length = 1500)
     String imagen;
 
+    @Column(length = 1500)
     String imagenRespuesta;
 
 
