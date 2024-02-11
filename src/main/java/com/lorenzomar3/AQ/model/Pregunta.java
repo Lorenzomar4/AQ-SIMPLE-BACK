@@ -17,7 +17,7 @@ public class Pregunta {
     @Column(length = 1500)
     String pregunta;
 
-    @Column(length = 1500)
+    @Column(length = 10500)
     String respuestaTexto;
 
 
