@@ -2,7 +2,10 @@ package com.lorenzomar3.AQ.Controller;
 
 import com.lorenzomar3.AQ.Service.TemaService;
 import com.lorenzomar3.AQ.dto.conversor.TemaConversorDTO;
+import com.lorenzomar3.AQ.dto.dto.CuestionarioSimpleDTO;
 import com.lorenzomar3.AQ.dto.dto.TemaPostDTO;
+import com.lorenzomar3.AQ.dto.dto.TemaSinPreguntasDTO;
+import com.lorenzomar3.AQ.model.Cuestionario;
 import com.lorenzomar3.AQ.model.Pregunta;
 import com.lorenzomar3.AQ.model.Tema;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,15 @@ public class TemaController {
 
 
         return new ResponseEntity<>(temaDto, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/saveIssue")
+    public ResponseEntity<Void> crearCuestionarioSimple(@RequestBody TemaSinPreguntasDTO temaSinPreguntasDTO) {
+
+        temaService.saveIssue(temaSinPreguntasDTO);
+
+        return new ResponseEntity<>( HttpStatus.CREATED);
     }
 
 

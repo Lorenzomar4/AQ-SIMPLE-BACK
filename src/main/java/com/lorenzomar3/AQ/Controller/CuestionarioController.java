@@ -61,16 +61,8 @@ public class CuestionarioController {
         return new ResponseEntity<>("Se ha eliminado el cuestionario", HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/cuestionario")
-    public ResponseEntity actualizarCuestionario(@RequestBody CuestionarioPostDTO cuestionario) {
-
-        JsonVisualizador.verJson(cuestionario);
-
-        cuestionarioService.actualizarCuestionario(cuestionario);
 
 
-        return new ResponseEntity<>( HttpStatus.OK);
-    }
 
     @GetMapping("/cuestionariofull/{id}")
     public ResponseEntity<CuestionarioPostDTO> obtenerTodo(@PathVariable Long id){
@@ -91,6 +83,15 @@ public class CuestionarioController {
         Cuestionario cuestionarioCreado = cuestionarioService.crearCuestionario(cuestionario);
 
         return new ResponseEntity<>(cuestionarioCreado, HttpStatus.CREATED);
+    }
+
+
+    @PutMapping("/updateQuestionnaire")
+    public ResponseEntity<Void> actualizarCuestionario(@RequestBody CuestionarioSimpleDTO cuestionario) {
+
+         cuestionarioService.actualizarCuestionario(cuestionario);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

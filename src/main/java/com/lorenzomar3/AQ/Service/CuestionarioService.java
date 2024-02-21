@@ -64,9 +64,11 @@ public class CuestionarioService {
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
-    public void actualizarCuestionario(CuestionarioPostDTO cuestionarioPostDTO){
+    public void actualizarCuestionario(CuestionarioSimpleDTO cuestionarioPostDTO){
 
-        Cuestionario cuestionario = CuestionarioConversorDTO.fromJsonPOST(cuestionarioPostDTO);
+        Cuestionario cuestionario = cuestionarioRepository.findById(cuestionarioPostDTO.getId()).orElseThrow(() -> new ErrorDeNegocio("El elemento no existe"));
+
+        cuestionario.setNombreCuestionario(cuestionarioPostDTO.getName());
 
         cuestionarioRepository.save(cuestionario);
 

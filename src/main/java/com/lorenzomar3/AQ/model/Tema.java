@@ -47,4 +47,8 @@ public class Tema {
 
 
     public Tema() {}
+
+    public void setNombreDeTema(String nombreDeTema) {
+        this.nombreDeTema = nombreDeTema;
+    }
 }
