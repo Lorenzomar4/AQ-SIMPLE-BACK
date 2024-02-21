@@ -38,7 +38,7 @@ public class TemaService {
     }
 
     @Transactional
-    public void saveIssue(TemaSinPreguntasDTO temaSinPreguntasDTO){
+    public Cuestionario saveIssue(TemaSinPreguntasDTO temaSinPreguntasDTO){
 
 
 
@@ -53,9 +53,19 @@ public class TemaService {
         tema.setNombreDeTema(temaSinPreguntasDTO.getName());
         cuestionario.agregarTema(tema);
         cuestionarioRepository.save(cuestionario);
-        System.out.println("x2");
 
 
+        return cuestionario;
+
+    }
+
+    @Transactional
+    public void update(TemaSinPreguntasDTO temaSinPreguntasDTO){
+        Tema tema =  getById(temaSinPreguntasDTO.getId());
+
+        tema.setNombreDeTema(temaSinPreguntasDTO.getName());
+
+        temaRepository.save(tema);
 
 
     }

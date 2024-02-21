@@ -92,7 +92,7 @@ public class PreguntaController {
 
 
     @PutMapping("/malRespondido/{id}")
-    public ResponseEntity malRespondido(@PathVariable Long id) {
+    public ResponseEntity <Void>  malRespondido(@PathVariable Long id) {
 
         System.out.println("noxxx");
 
@@ -101,6 +101,8 @@ public class PreguntaController {
         return new ResponseEntity<>(HttpStatus.OK);
 
     }
+
+
 
 
 }

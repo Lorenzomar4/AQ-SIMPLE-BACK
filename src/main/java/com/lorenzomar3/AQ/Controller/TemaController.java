@@ -51,6 +51,15 @@ public class TemaController {
         return new ResponseEntity<>( HttpStatus.CREATED);
     }
 
+    @PutMapping("/updateIssue")
+    public ResponseEntity <Void> actualizar(@RequestBody TemaSinPreguntasDTO temaSinPreguntasDTO){
+
+        temaService.update(temaSinPreguntasDTO);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
     @DeleteMapping("/deleteIssue/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id){
 
