@@ -47,14 +47,6 @@ public class Setup implements ApplicationRunner {
 
     }
 
-    public void guardarCuestionario() {
-
-        CuestionarioPostDTO c =  CuestionarioConversorDTO.toCuestionarioPostDTO(eym);
-        cuestionarioService.crearCuestionario(c);
-        cuestionarioService.crearCuestionario(CuestionarioConversorDTO.toCuestionarioPostDTO(matematicaDiscreta));
-
-    }
-
 
     @Override
     public void run(ApplicationArguments args) throws Exception {

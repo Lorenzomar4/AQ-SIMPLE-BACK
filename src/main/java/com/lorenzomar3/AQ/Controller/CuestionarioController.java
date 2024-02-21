@@ -48,7 +48,7 @@ public class CuestionarioController {
     }
 
     @PostMapping("/cuestionario")
-    public ResponseEntity<Cuestionario> crearCuestionario(@RequestBody CuestionarioPostDTO cuestionario) {
+    public ResponseEntity<Cuestionario> crearCuestionario(@RequestBody CuestionarioSimpleDTO cuestionario) {
 
         Cuestionario cuestionarioCreado = cuestionarioService.crearCuestionario(cuestionario);
 
@@ -82,6 +82,15 @@ public class CuestionarioController {
 
         return new ResponseEntity<>(cuestionarioPostDTO, HttpStatus.OK);
 
+    }
+
+
+    @PostMapping("/simplecuestionario")
+    public ResponseEntity<Cuestionario> crearCuestionarioSimple(@RequestBody CuestionarioSimpleDTO cuestionario) {
+
+        Cuestionario cuestionarioCreado = cuestionarioService.crearCuestionario(cuestionario);
+
+        return new ResponseEntity<>(cuestionarioCreado, HttpStatus.CREATED);
     }
 
 }
