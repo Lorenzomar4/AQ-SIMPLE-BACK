@@ -1,5 +1,6 @@
 package com.lorenzomar3.AQ.Controller;
 
+import com.lorenzomar3.AQ.Repository.TemaRepository;
 import com.lorenzomar3.AQ.Service.TemaService;
 import com.lorenzomar3.AQ.dto.conversor.TemaConversorDTO;
 import com.lorenzomar3.AQ.dto.dto.CuestionarioSimpleDTO;
@@ -22,6 +23,9 @@ public class TemaController {
     @Autowired
 
     TemaService temaService;
+
+    @Autowired
+    TemaRepository temaRepository;
 
     @GetMapping("/temas")
     public ResponseEntity<List<Tema>  > obtenerListaDePreguntas(){
@@ -46,6 +50,16 @@ public class TemaController {
 
         return new ResponseEntity<>( HttpStatus.CREATED);
     }
+
+    @DeleteMapping("/deleteIssue/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id){
+
+        temaRepository.deleteById(id);
+
+        return new ResponseEntity<>( HttpStatus.OK);
+
+    }
+
 
 
 
