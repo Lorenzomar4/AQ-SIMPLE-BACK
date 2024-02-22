@@ -92,7 +92,7 @@ public class PreguntaController {
 
 
     @PutMapping("/malRespondido/{id}")
-    public ResponseEntity <Void>  malRespondido(@PathVariable Long id) {
+    public ResponseEntity<Void> malRespondido(@PathVariable Long id) {
 
         System.out.println("noxxx");
 
@@ -102,7 +102,11 @@ public class PreguntaController {
 
     }
 
-
+    @PostMapping("/saveQuestion")
+    public ResponseEntity<Void> guardarPregunta(@RequestBody PreguntaPostDTO preguntaPostDTO) {
+        preguntaService.guardarPregunta(preguntaPostDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 
 }

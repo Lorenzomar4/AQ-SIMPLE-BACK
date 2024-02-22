@@ -7,9 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+
 public class PreguntaPostDTO {
 
     public Long id;
+
+    public Long idQuestionnaire;
 
     public String question;
 
@@ -33,7 +36,6 @@ public class PreguntaPostDTO {
         this.stringList = stringList;
     }
 
-
-
-
+    public PreguntaPostDTO() {
+    }
 }
