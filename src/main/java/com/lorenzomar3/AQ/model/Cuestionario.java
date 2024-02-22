@@ -1,5 +1,6 @@
 package com.lorenzomar3.AQ.model;
 
+import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -26,6 +27,11 @@ public class Cuestionario {
     @OneToMany(fetch = FetchType.LAZY ,cascade =  CascadeType.ALL)
     @JoinColumn(name = "cuestionario_perteneciente")
     List<Tema>  listaDeTemas;
+
+
+    @OneToMany(fetch = FetchType.LAZY ,cascade =  CascadeType.ALL)
+    @JoinColumn(name = "cuestionario_id")
+    List<AResponder>  listaAResponder;
 
 
     public Cuestionario(String nombreCuestionario) {
