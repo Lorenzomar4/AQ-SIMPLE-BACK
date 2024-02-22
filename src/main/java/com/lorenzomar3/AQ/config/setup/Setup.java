@@ -30,6 +30,8 @@ public class Setup implements ApplicationRunner {
 
     public void datos() {
 
+        eym = new Cuestionario("Electricidad y Magnetismo");
+
         /*
         eym = new Cuestionario("Electricidad y Magnetismo");
 
@@ -49,7 +51,15 @@ public class Setup implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        //datos();
-       // guardarCuestionario();
+        datos();
+        guardarCuestionario();
     }
+
+    public void guardarCuestionario(){
+
+        cuestionarioService.saveCuestionario(eym);
+
+    }
+
+
 }

@@ -4,6 +4,7 @@ import com.lorenzomar3.AQ.Service.CuestionarioService;
 import com.lorenzomar3.AQ.dto.dto.CuestionarioConTemasDTO;
 import com.lorenzomar3.AQ.dto.dto.CuestionarioPostDTO;
 import com.lorenzomar3.AQ.dto.dto.CuestionarioSimpleDTO;
+import com.lorenzomar3.AQ.dto.newDto.CuestionarioDTO;
 import com.lorenzomar3.AQ.model.Cuestionario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,16 @@ public class CuestionarioController {
 
     @Autowired
     CuestionarioService cuestionarioService;
+
+    @GetMapping("/allCuestionario")
+    public ResponseEntity<List<CuestionarioDTO>> todosLosCuestionarios(){
+        List<CuestionarioDTO> cuestionarioDTOList = cuestionarioService.allCuestionario()
+                .stream().map(Cuestionario::toDTO).toList();
+
+        return new ResponseEntity<>(cuestionarioDTOList , HttpStatus.OK);
+    }
+
+
 
 
 }

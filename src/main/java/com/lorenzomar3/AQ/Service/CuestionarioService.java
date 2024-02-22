@@ -27,13 +27,13 @@ public class CuestionarioService {
     TemaRepository temaRepository;
 
     @Transactional(readOnly = true)
-    public List<Cuestionario> getAllCuestionario() {
+    public List<Cuestionario> allCuestionario(){
 
-        List<Cuestionario> listaCuestionario = cuestionarioRepository.findAll();
+        return cuestionarioRepository.findAll();
+
+    };
 
 
-        return listaCuestionario;
-    }
 
     @Transactional(readOnly = true)
     public Cuestionario getById(Long id) {
@@ -78,6 +78,13 @@ public class CuestionarioService {
 
 
     }
+
+    @Transactional
+    public Cuestionario saveCuestionario(Cuestionario cuestionario){
+        return cuestionarioRepository.save(cuestionario);
+    }
+
+
 
 
 }

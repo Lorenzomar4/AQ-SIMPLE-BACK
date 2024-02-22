@@ -1,5 +1,7 @@
 package com.lorenzomar3.AQ.model;
 
+import com.lorenzomar3.AQ.dto.conversor.CuestionarioDTOConversor;
+import com.lorenzomar3.AQ.dto.newDto.CuestionarioDTO;
 import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -16,7 +18,7 @@ import java.util.stream.Collectors;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
+
 public class Cuestionario {
 
     @Id
@@ -38,8 +40,18 @@ public class Cuestionario {
         this.id = id;
     }
 
+    public Cuestionario() {
+    }
 
+    public Cuestionario(String nombreCuestionario) {
+        this.nombreCuestionario = nombreCuestionario;
+        this.fechaDeCreacion = LocalDateTime.now();
 
+    }
+
+    public CuestionarioDTO toDTO() {
+        return CuestionarioDTOConversor.toDTO(this);
+    }
 
 
 
