@@ -2,26 +2,24 @@ package com.lorenzomar3.AQ.model.AResponder;
 
 import com.lorenzomar3.AQ.exception.ErrorDeNegocio;
 import com.lorenzomar3.AQ.model.JerarquiaEnum;
-import com.lorenzomar3.AQ.model.Pregunta;
-import com.lorenzomar3.AQ.model.Tema;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class ATema extends AResponder {
+public class Tema extends AResponder {
 
     @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "tema_al_que_pertenece")
     public List<AResponder> listaDePreguntas = new ArrayList<>();
 
 
-    public ATema(String titulo) {
+    public Tema(String titulo) {
         super(titulo);
     }
 
-    public ATema() {
+    public Tema() {
     }
 
     @Override
@@ -40,7 +38,7 @@ public class ATema extends AResponder {
             throw new ErrorDeNegocio("No se permite que se cree una jerarquia mas de temas!");
         }
 
-        if (aresponder instanceof ATema) {
+        if (aresponder instanceof Tema) {
             aresponder.setTipo(JerarquiaEnum.HIJO);
         }
 

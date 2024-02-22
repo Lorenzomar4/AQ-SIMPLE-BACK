@@ -27,9 +27,6 @@ public abstract class AResponder {
     public LocalDateTime fechaDeCreacion;
 
     @Temporal(TemporalType.TIMESTAMP)
-    public LocalDateTime  ultimaVezAbierto;
-
-    @Temporal(TemporalType.TIMESTAMP)
     public LocalDateTime  ultimaActualizacion;
 
     @Enumerated(EnumType.STRING)

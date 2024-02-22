@@ -2,15 +2,12 @@ package com.lorenzomar3.AQ.config.setup;
 
 import com.lorenzomar3.AQ.Repository.CuestionarioRepository;
 import com.lorenzomar3.AQ.Service.CuestionarioService;
-import com.lorenzomar3.AQ.dto.conversor.CuestionarioConversorDTO;
-import com.lorenzomar3.AQ.dto.dto.CuestionarioPostDTO;
+import com.lorenzomar3.AQ.model.AResponder.Pregunta;
+import com.lorenzomar3.AQ.model.AResponder.Tema;
 import com.lorenzomar3.AQ.model.Cuestionario;
-import com.lorenzomar3.AQ.model.Pregunta;
-import com.lorenzomar3.AQ.model.Tema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -32,6 +29,8 @@ public class Setup implements ApplicationRunner {
     CuestionarioRepository cuestionarioRepository;
 
     public void datos() {
+
+        /*
         eym = new Cuestionario("Electricidad y Magnetismo");
 
         matematicaDiscreta = new Cuestionario("Matematica discreta");
@@ -44,7 +43,7 @@ public class Setup implements ApplicationRunner {
 
         eym.agregarTema(fuerzaElectrica);
         eym.agregarTema(capacitores);
-
+        */
     }
 
 

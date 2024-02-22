@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -24,9 +25,8 @@ public class Cuestionario {
     String nombreCuestionario;
 
 
-    @OneToMany(fetch = FetchType.LAZY ,cascade =  CascadeType.ALL)
-    @JoinColumn(name = "cuestionario_perteneciente")
-    List<Tema>  listaDeTemas;
+    @Temporal(TemporalType.TIMESTAMP)
+    LocalDateTime fechaDeCreacion;
 
 
     @OneToMany(fetch = FetchType.LAZY ,cascade =  CascadeType.ALL)
@@ -34,26 +34,13 @@ public class Cuestionario {
     List<AResponder>  listaAResponder;
 
 
-    public Cuestionario(String nombreCuestionario) {
-        this.nombreCuestionario = nombreCuestionario;
-        this.listaDeTemas = new ArrayList<>();
-    }
-
-
-
     public void setId(Long id ){
         this.id = id;
-
     }
 
-    public void agregarTema(Tema tema){
-        listaDeTemas.add(tema);
-    }
 
-    public List<Pregunta> todasLasPreguntasQueTieneElCuestionario(){
-        List<List<Pregunta>> todosLosTemas = listaDeTemas.stream().map(Tema::getListaDePreguntas).toList();
 
-        return todosLosTemas.stream().flatMap(Collection::stream).collect(Collectors.toList());
 
-    }
+
+
 }

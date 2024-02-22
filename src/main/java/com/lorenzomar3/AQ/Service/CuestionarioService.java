@@ -1,11 +1,8 @@
 package com.lorenzomar3.AQ.Service;
 
-import com.lorenzomar3.AQ.JsonVisualizador;
 import com.lorenzomar3.AQ.Repository.CuestionarioRepository;
 import com.lorenzomar3.AQ.Repository.CuestionarioRepositoryFull;
 import com.lorenzomar3.AQ.Repository.TemaRepository;
-import com.lorenzomar3.AQ.dto.conversor.CuestionarioConversorDTO;
-import com.lorenzomar3.AQ.dto.dto.CuestionarioPostDTO;
 import com.lorenzomar3.AQ.dto.dto.CuestionarioSimpleDTO;
 import com.lorenzomar3.AQ.exception.ErrorDeNegocio;
 import com.lorenzomar3.AQ.model.Cuestionario;

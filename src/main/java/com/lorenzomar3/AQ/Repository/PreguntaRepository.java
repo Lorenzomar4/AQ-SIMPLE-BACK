@@ -1,7 +1,7 @@
 package com.lorenzomar3.AQ.Repository;
 
 
-import com.lorenzomar3.AQ.model.Pregunta;
+import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

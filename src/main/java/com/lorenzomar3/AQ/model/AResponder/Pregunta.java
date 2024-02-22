@@ -1,20 +1,17 @@
 package com.lorenzomar3.AQ.model.AResponder;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 @Entity
 @Getter
 @Setter
-public class APregunta extends  AResponder{
+public class Pregunta extends  AResponder{
 
     @Column(length = 10500)
     String respuestaTexto;
@@ -28,11 +25,11 @@ public class APregunta extends  AResponder{
     String imagenRespuesta;
 
 
-    public APregunta(String titulo) {
+    public Pregunta(String titulo) {
         super(titulo);
     }
 
-    public APregunta() {
+    public Pregunta() {
 
     }
 
