@@ -64,7 +64,6 @@ public class CuestionarioController {
 
         CuestionarioDTO c = cuestionarioService.actualizarCuestionario(cuestionario).toDTO();
         return new ResponseEntity<>(c, HttpStatus.OK);
-
     }
 
 

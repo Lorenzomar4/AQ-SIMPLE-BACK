@@ -13,14 +13,14 @@ public class TemaPostDTO {
 
     String name;
 
-    Long cuestionarioId;
+    public TemaPostDTO() {
+    }
 
-    public List<PreguntaPostDTO> questionList = new ArrayList<>();;
+    Long idquestionnaire;
 
 
-    public TemaPostDTO(Long id, String name, List<PreguntaPostDTO> questionList) {
+    public TemaPostDTO(Long id, String name) {
         this.id = id;
         this.name = name;
-        this.questionList = questionList;
     }
 }

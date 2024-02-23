@@ -38,7 +38,7 @@ public class Tema extends AResponder {
 
     @Override
     public Integer numeroDePreguntas() {
-      return  +listaDePreguntas
+      return  listaDePreguntas
                 .stream()
                 .filter(a->a.getTipo().equals(JerarquiaEnum.PREGUNTA))
                 .toList().size();
