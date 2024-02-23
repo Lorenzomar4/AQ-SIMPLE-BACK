@@ -37,6 +37,14 @@ public class CuestionarioService {
         return cuestionarioRepository.save(cuestionario);
     }
 
+    @Transactional(readOnly = true)
+    public Cuestionario obtenerTodo(Long id){
+
+        Cuestionario c = cuestionarioRepository.findById(id).orElseThrow(() -> new ErrorDeNegocio("No existe ese cuestionario"));
+        return c;
+    }
+
+
 
     @Transactional(readOnly = true)
     public Cuestionario getById(Long id) {
@@ -64,39 +72,17 @@ public class CuestionarioService {
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
-    public void actualizarCuestionario(CuestionarioSimpleDTO cuestionarioPostDTO){
+    public Cuestionario actualizarCuestionario(Cuestionario unCuestionario){
 
-        Cuestionario cuestionario = cuestionarioRepository.findById(cuestionarioPostDTO.getId()).orElseThrow(() -> new ErrorDeNegocio("El elemento no existe"));
+        Cuestionario cuestionario = cuestionarioRepository.findById(unCuestionario.getId()).orElseThrow(() -> new ErrorDeNegocio("El elemento no existe"));
 
-        cuestionario.setNombreCuestionario(cuestionarioPostDTO.getName());
+        cuestionario.setNombreCuestionario(unCuestionario.getNombreCuestionario());
 
-        cuestionarioRepository.save(cuestionario);
-
+        return cuestionarioRepository.save(cuestionario);
     }
 
-    @Transactional(readOnly = true)
-    public Cuestionario obtenerTodo(Long id){
-
-        Cuestionario c = cuestionarioRepository.findById(id).orElseThrow(() -> new ErrorDeNegocio("No existe ese cuestionario"));
-
-        /*
-         c.getListaAResponder().forEach( p -> {
-            JsonVisualizador.verJson(p);
-
-        });
-
-         */
 
 
-
-
-
-
-
-        return c;
-
-
-    }
 
 
 

@@ -51,6 +51,21 @@ public class CuestionarioController {
         return new ResponseEntity<>(cuestionarioWithListDTO, HttpStatus.OK);
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+        cuestionarioService.eliminarCuestionario(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @PutMapping("/editarCuestionario")
+    public ResponseEntity<CuestionarioDTO> editarCuestionario(@RequestBody CuestionarioDTO cuestionarioDTO) {
+        Cuestionario cuestionario = CuestionarioDTOConversor.fromJSON(cuestionarioDTO);
+
+        CuestionarioDTO c = cuestionarioService.actualizarCuestionario(cuestionario).toDTO();
+        return new ResponseEntity<>(c, HttpStatus.OK);
+
+    }
 
 
 }
