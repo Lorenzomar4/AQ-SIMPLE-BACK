@@ -1,7 +1,9 @@
 package com.lorenzomar3.AQ.model;
 
 import com.lorenzomar3.AQ.dto.conversor.CuestionarioDTOConversor;
+import com.lorenzomar3.AQ.dto.conversor.CuestionarioWhitListDTOConversor;
 import com.lorenzomar3.AQ.dto.newDto.CuestionarioDTO;
+import com.lorenzomar3.AQ.dto.newDto.CuestionarioWithListDTO;
 import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -46,6 +48,7 @@ public class Cuestionario {
     public Cuestionario(String nombreCuestionario) {
         this.nombreCuestionario = nombreCuestionario;
         this.fechaDeCreacion = LocalDateTime.now();
+        this.listaAResponder = new ArrayList<>();
 
     }
 
@@ -53,6 +56,13 @@ public class Cuestionario {
         return CuestionarioDTOConversor.toDTO(this);
     }
 
+    public CuestionarioWithListDTO toDTOwhitItemList(){
+        return CuestionarioWhitListDTOConversor.toDTO(this);
+    }
 
+    public void agregarNuevoPreguntaOTema(AResponder aResponder){
+        listaAResponder.add(aResponder);
+
+    }
 
 }

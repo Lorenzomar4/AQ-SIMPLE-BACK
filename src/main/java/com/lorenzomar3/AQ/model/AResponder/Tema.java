@@ -24,26 +24,37 @@ public class Tema extends AResponder {
 
     @Override
     public List<AResponder> contenidoAResponder() {
-        return null;
+        return listaDePreguntas;
     }
 
     @Override
     public boolean contieneCritico() {
-        return false;
+        return listaDePreguntas.stream().anyMatch(aRespond ->  aRespond.contieneCritico());
+    }
+
+
+
+    @Override
+    public Integer numeroDePreguntas() {
+        return listaDePreguntas
+                .stream()
+                .filter(a->a.getTipo().equals(JerarquiaEnum.PREGUNTA))
+                .toList().size();
     }
 
     public void agregarPreguntaOTema(AResponder aresponder) {
 
-        if (!getTipo().equals(JerarquiaEnum.PADRE)) {
+        if (!getTipo().equals(JerarquiaEnum.TEMAPADRE)) {
             throw new ErrorDeNegocio("No se permite que se cree una jerarquia mas de temas!");
         }
 
         if (aresponder instanceof Tema) {
-            aresponder.setTipo(JerarquiaEnum.HIJO);
+            aresponder.setTipo(JerarquiaEnum.TEMAHIJO);
         }
 
         listaDePreguntas.add(aresponder);
     }
+
 
 
 }

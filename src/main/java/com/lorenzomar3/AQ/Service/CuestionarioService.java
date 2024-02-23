@@ -28,11 +28,13 @@ public class CuestionarioService {
 
     @Transactional(readOnly = true)
     public List<Cuestionario> allCuestionario(){
-
         return cuestionarioRepository.findAll();
-
     };
 
+    @Transactional
+    public Cuestionario saveCuestionario(Cuestionario cuestionario){
+        return cuestionarioRepository.save(cuestionario);
+    }
 
 
     @Transactional(readOnly = true)
@@ -74,15 +76,12 @@ public class CuestionarioService {
     @Transactional(readOnly = true)
     public Cuestionario obtenerTodo(Long id){
 
-        return cuestionarioRepositoryFull.findById(id).orElseThrow(() -> new ErrorDeNegocio("No existe ese cuestionario"));
+        return cuestionarioRepository.findById(id).orElseThrow(() -> new ErrorDeNegocio("No existe ese cuestionario"));
 
 
     }
 
-    @Transactional
-    public Cuestionario saveCuestionario(Cuestionario cuestionario){
-        return cuestionarioRepository.save(cuestionario);
-    }
+
 
 
 

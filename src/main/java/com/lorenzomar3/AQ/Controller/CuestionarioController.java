@@ -6,6 +6,7 @@ import com.lorenzomar3.AQ.dto.dto.CuestionarioConTemasDTO;
 import com.lorenzomar3.AQ.dto.dto.CuestionarioPostDTO;
 import com.lorenzomar3.AQ.dto.dto.CuestionarioSimpleDTO;
 import com.lorenzomar3.AQ.dto.newDto.CuestionarioDTO;
+import com.lorenzomar3.AQ.dto.newDto.CuestionarioWithListDTO;
 import com.lorenzomar3.AQ.model.Cuestionario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,8 +38,17 @@ public class CuestionarioController {
 
         CuestionarioDTO cuestionarioGuardado = cuestionarioService.saveCuestionario(cuestionario).toDTO();
 
-        return new ResponseEntity<>(cuestionarioGuardado, HttpStatus.OK);
+        return new ResponseEntity<>(cuestionarioGuardado, HttpStatus.CREATED);
     }
+
+
+    @GetMapping("/fullQuestionarioById/{id}")
+    public ResponseEntity<CuestionarioWithListDTO> cuestionarioById(@PathVariable Long id) {
+
+        CuestionarioWithListDTO cuestionarioWithListDTO = cuestionarioService.obtenerTodo(id).toDTOwhitItemList();
+        return new ResponseEntity<>(cuestionarioWithListDTO, HttpStatus.OK);
+    }
+
 
 
 }

@@ -31,12 +31,15 @@ public class Setup implements ApplicationRunner {
     public void datos() {
 
         eym = new Cuestionario("Electricidad y Magnetismo");
+        fuerzaElectrica = new Tema("Campo electrico");
+
+        eym.agregarNuevoPreguntaOTema(fuerzaElectrica);
 
         /*
         eym = new Cuestionario("Electricidad y Magnetismo");
 
         matematicaDiscreta = new Cuestionario("Matematica discreta");
-        fuerzaElectrica = new Tema("Campo electrico");
+
         capacitores = new Tema("Capacitores");
         pregunta = new Pregunta("¿Como estas hoy?","Horriblemente mal");
         System.out.println("LLego");

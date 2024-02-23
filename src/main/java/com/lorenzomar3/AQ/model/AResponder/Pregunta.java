@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -16,7 +17,7 @@ public class Pregunta extends  AResponder{
     @Column(length = 10500)
     String respuestaTexto;
 
-    Integer descuentoDeRepregunta = 0;
+    Integer intentosParaQueDejeDeSerCriticoDisponible = 0;
 
     @Column(length = 1500)
     String imagen;
@@ -35,11 +36,16 @@ public class Pregunta extends  AResponder{
 
     @Override
     public List<AResponder> contenidoAResponder() {
-        return null;
+        return Collections.singletonList(this);
     }
 
     @Override
     public boolean contieneCritico() {
-        return false;
+        return intentosParaQueDejeDeSerCriticoDisponible >= 0;
+    }
+
+    @Override
+    public Integer numeroDePreguntas() {
+        return 1;
     }
 }

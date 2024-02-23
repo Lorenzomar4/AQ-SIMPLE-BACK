@@ -2,5 +2,5 @@ package com.lorenzomar3.AQ.model;
 
 public enum JerarquiaEnum {
 
-   PREGUNTA,PADRE,HIJO
+   PREGUNTA, TEMAPADRE, TEMAHIJO
 }
