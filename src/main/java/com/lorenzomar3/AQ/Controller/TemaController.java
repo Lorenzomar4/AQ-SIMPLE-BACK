@@ -21,10 +21,17 @@ public class TemaController {
 
     @PostMapping("/createIssue")
     public ResponseEntity<AResponderItemListDTO> crearTema(@RequestBody TemaPostDTO temaPost){
-
         AResponderItemListDTO itemDTO = temaService.crearTema(temaPost).toResponderItemListDTO();
-
         return new ResponseEntity<>(itemDTO, HttpStatus.CREATED);
+    }
+
+
+    @DeleteMapping("/deleteIssue/{id}")
+    public ResponseEntity<Void> eliminarTema(@PathVariable  Long id){
+
+        temaService.eliminarTema(id);
+
+        return new ResponseEntity<>(HttpStatus.OK);
 
     }
 

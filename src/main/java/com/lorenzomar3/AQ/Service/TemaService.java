@@ -37,5 +37,10 @@ public class TemaService {
 
     }
 
+    @Transactional
+    public void eliminarTema(Long id ){
+        temaRepository.deleteById(id);
+    }
+
 
 }
