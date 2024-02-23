@@ -5,11 +5,14 @@ import com.lorenzomar3.AQ.JsonVisualizador;
 import com.lorenzomar3.AQ.Repository.TemaRepository;
 import com.lorenzomar3.AQ.dto.conversor.TemaConversorDTO;
 import com.lorenzomar3.AQ.dto.dto.TemaPostDTO;
+import com.lorenzomar3.AQ.exception.ErrorDeNegocio;
 import com.lorenzomar3.AQ.model.AResponder.Tema;
 import com.lorenzomar3.AQ.model.Cuestionario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 public class TemaService {
@@ -28,6 +31,10 @@ public class TemaService {
         Cuestionario c = cuestionarioService.getById(temaPostDTO.getIdquestionnaire());
 
         Tema tema = TemaConversorDTO.fromJSON(temaPostDTO);
+        tema.setFechaDeCreacion(LocalDateTime.now());
+        tema.setUltimaActualizacion(LocalDateTime.now());
+
+
 
         c.agregarNuevoPreguntaOTema(tema);
 
@@ -40,6 +47,12 @@ public class TemaService {
     @Transactional
     public void eliminarTema(Long id ){
         temaRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Tema obtenerTemaPorId(Long id){
+        Tema tema = temaRepository.findById(id).orElseThrow( () -> new ErrorDeNegocio("El tema no existe"));
+        return tema;
     }
 
 

@@ -1,8 +1,11 @@
 package com.lorenzomar3.AQ.model.AResponder;
 
+import com.lorenzomar3.AQ.dto.conversor.TemaConversorDTO;
+import com.lorenzomar3.AQ.dto.newDto.TemaDTO;
 import com.lorenzomar3.AQ.exception.ErrorDeNegocio;
 import com.lorenzomar3.AQ.model.JerarquiaEnum;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +13,7 @@ import java.util.List;
 
 
 @Entity
+@Getter
 public class Tema extends AResponder {
 
     @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -57,6 +61,10 @@ public class Tema extends AResponder {
         listaDePreguntas.add(aresponder);
     }
 
+
+    public TemaDTO toTemaDTO(){
+        return TemaConversorDTO.fullTemaDTO(this);
+    }
 
 
 }

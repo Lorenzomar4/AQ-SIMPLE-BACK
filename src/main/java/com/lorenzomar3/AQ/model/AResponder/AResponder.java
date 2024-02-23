@@ -26,7 +26,7 @@ public abstract class AResponder {
     public String titulo;
 
     @Temporal(TemporalType.TIMESTAMP)
-    public LocalDateTime fechaDeCreacion;
+    public LocalDateTime fechaDeCreacion = LocalDateTime.now();
 
     @Temporal(TemporalType.TIMESTAMP)
     public LocalDateTime  ultimaActualizacion;
