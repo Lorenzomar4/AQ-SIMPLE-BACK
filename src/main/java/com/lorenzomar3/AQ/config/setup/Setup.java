@@ -23,6 +23,7 @@ public class Setup implements ApplicationRunner {
     public Tema fuerzaElectrica;
     public Tema capacitores;
     public Pregunta pregunta;
+    public Pregunta pregunta2;
 
 
     @Autowired
@@ -32,8 +33,14 @@ public class Setup implements ApplicationRunner {
 
         eym = new Cuestionario("Electricidad y Magnetismo");
         fuerzaElectrica = new Tema("Campo electrico");
+        pregunta = new Pregunta("¿Como estas hoy?","Horriblemente mal");
+        pregunta2 = new Pregunta("¿Como te fue en EYM?","¡Bien por suerte!");
 
+        eym.agregarNuevoPreguntaOTema(pregunta);
+        eym.agregarNuevoPreguntaOTema(pregunta2);
         eym.agregarNuevoPreguntaOTema(fuerzaElectrica);
+
+        //eym.agregarNuevoPreguntaOTema(fuerzaElectrica);
 
         /*
         eym = new Cuestionario("Electricidad y Magnetismo");
@@ -41,7 +48,7 @@ public class Setup implements ApplicationRunner {
         matematicaDiscreta = new Cuestionario("Matematica discreta");
 
         capacitores = new Tema("Capacitores");
-        pregunta = new Pregunta("¿Como estas hoy?","Horriblemente mal");
+
         System.out.println("LLego");
         fuerzaElectrica.agregarPregunta(pregunta);
         System.out.println("LLego2");

@@ -13,9 +13,9 @@ public class CuestionarioWithListDTO  extends  CuestionarioDTO{
 
     public List<AResponderItemListDTO> itemList;
 
-    public CuestionarioWithListDTO(Long id, String name, LocalDateTime birthdate, List<AResponderItemListDTO> itemList) {
-        super(id, name, birthdate);
+
+    public CuestionarioWithListDTO(Long id, String name, LocalDateTime creationDate, List<AResponderItemListDTO> itemList) {
+        super(id, name, creationDate);
         this.itemList = itemList;
     }
-
 }

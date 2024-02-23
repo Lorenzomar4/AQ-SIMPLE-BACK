@@ -1,5 +1,6 @@
 package com.lorenzomar3.AQ.Service;
 
+import com.lorenzomar3.AQ.JsonVisualizador;
 import com.lorenzomar3.AQ.Repository.CuestionarioRepository;
 import com.lorenzomar3.AQ.Repository.CuestionarioRepositoryFull;
 import com.lorenzomar3.AQ.Repository.TemaRepository;
@@ -76,7 +77,23 @@ public class CuestionarioService {
     @Transactional(readOnly = true)
     public Cuestionario obtenerTodo(Long id){
 
-        return cuestionarioRepository.findById(id).orElseThrow(() -> new ErrorDeNegocio("No existe ese cuestionario"));
+        Cuestionario c = cuestionarioRepository.findById(id).orElseThrow(() -> new ErrorDeNegocio("No existe ese cuestionario"));
+
+        /*
+         c.getListaAResponder().forEach( p -> {
+            JsonVisualizador.verJson(p);
+
+        });
+
+         */
+
+
+
+
+
+
+
+        return c;
 
 
     }

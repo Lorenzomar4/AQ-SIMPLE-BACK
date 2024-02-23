@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface CuestionarioRepository extends JpaRepository<Cuestionario, Long> {
      boolean existsById(Long id);
 
-     @EntityGraph(attributePaths = {"listaAResponder"} )
+
      Optional<Cuestionario> findById(Long id);
 
 

@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface CuestionarioRepositoryFull extends JpaRepository<Cuestionario, Long> {
 
 
-    @EntityGraph(attributePaths = {"listaDeTemas.listaDePreguntas.listaDePalabras"})
+    @EntityGraph(attributePaths = {"listaDeTemas.listaDePreguntas"})
     Optional<Cuestionario> findById(Long id);
 
 }

@@ -15,10 +15,10 @@ public class CuestionarioDTO {
 
     public LocalDateTime creationDate;
 
-    public CuestionarioDTO(Long id, String name, LocalDateTime birthdate) {
+    public CuestionarioDTO(Long id, String name, LocalDateTime creationDate) {
         this.id = id;
         this.name = name;
-        this.creationDate = birthdate;
+        this.creationDate = creationDate;
     }
 
 }

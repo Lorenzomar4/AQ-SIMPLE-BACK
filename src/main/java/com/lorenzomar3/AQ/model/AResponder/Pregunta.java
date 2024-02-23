@@ -1,5 +1,6 @@
 package com.lorenzomar3.AQ.model.AResponder;
 
+import com.lorenzomar3.AQ.model.JerarquiaEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.Getter;
@@ -15,19 +16,21 @@ import java.util.List;
 public class Pregunta extends  AResponder{
 
     @Column(length = 10500)
-    String respuestaTexto;
+    public String respuestaTexto;
 
-    Integer intentosParaQueDejeDeSerCriticoDisponible = 0;
-
-    @Column(length = 1500)
-    String imagen;
+    public Integer intentosParaQueDejeDeSerCriticoDisponible = 0;
 
     @Column(length = 1500)
-    String imagenRespuesta;
+    public String imagen;
+
+    @Column(length = 1500)
+    public String imagenRespuesta;
 
 
-    public Pregunta(String titulo) {
+    public Pregunta(String titulo, String respuestaTexto) {
         super(titulo);
+        this.tipo = JerarquiaEnum.PREGUNTA;
+        this.respuestaTexto = respuestaTexto;
     }
 
     public Pregunta() {
@@ -41,11 +44,11 @@ public class Pregunta extends  AResponder{
 
     @Override
     public boolean contieneCritico() {
-        return intentosParaQueDejeDeSerCriticoDisponible >= 0;
+        return intentosParaQueDejeDeSerCriticoDisponible > 0;
     }
 
     @Override
     public Integer numeroDePreguntas() {
-        return 1;
+        return 0;
     }
 }
