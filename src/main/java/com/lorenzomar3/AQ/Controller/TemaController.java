@@ -1,6 +1,7 @@
 package com.lorenzomar3.AQ.Controller;
 
 
+import com.lorenzomar3.AQ.JsonVisualizador;
 import com.lorenzomar3.AQ.Service.TemaService;
 import com.lorenzomar3.AQ.dto.conversor.TemaConversorDTO;
 import com.lorenzomar3.AQ.dto.dto.TemaPostDTO;
@@ -41,6 +42,15 @@ public class TemaController {
         TemaDTO temaDTO = temaService.obtenerTemaPorId(id).toTemaDTO();
 
         return new ResponseEntity<>(temaDTO, HttpStatus.OK);
+    }
+    @Transactional
+    @PutMapping("/updateIssue")
+    public ResponseEntity<TemaDTO> actualizarTema(@RequestBody TemaPostDTO temaDTO) {
+
+        JsonVisualizador.verJson(temaDTO);
+
+        TemaDTO tema = temaService.actualizarTema(temaDTO).toTemaDTO();
+        return new ResponseEntity<>(tema, HttpStatus.OK);
     }
 
 

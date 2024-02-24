@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -29,7 +28,7 @@ public abstract class AResponder {
     public LocalDateTime fechaDeCreacion = LocalDateTime.now();
 
     @Temporal(TemporalType.TIMESTAMP)
-    public LocalDateTime  ultimaActualizacion;
+    public LocalDateTime  ultimaActualizacion = LocalDateTime.now();;
 
     @Enumerated(EnumType.STRING)
     public JerarquiaEnum tipo;
@@ -40,12 +39,15 @@ public abstract class AResponder {
     public AResponder() {
 
     }
-
     public abstract List<AResponder> contenidoAResponder();
 
     public abstract boolean contieneCritico();
 
     public abstract  Integer numeroDePreguntas();
+
+    public abstract void asignarTipoSiSeAgregaDesdeCuestionario();
+
+
 
 
     public AResponderItemListDTO toResponderItemListDTO(){

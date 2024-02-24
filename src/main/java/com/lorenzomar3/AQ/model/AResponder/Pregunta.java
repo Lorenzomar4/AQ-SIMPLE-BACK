@@ -51,4 +51,9 @@ public class Pregunta extends  AResponder{
     public Integer numeroDePreguntas() {
         return 0;
     }
+
+    @Override
+    public void asignarTipoSiSeAgregaDesdeCuestionario() {
+        tipo = JerarquiaEnum.PREGUNTA;
+    }
 }

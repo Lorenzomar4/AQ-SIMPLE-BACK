@@ -1,5 +1,6 @@
 package com.lorenzomar3.AQ.Controller;
 
+import com.lorenzomar3.AQ.JsonVisualizador;
 import com.lorenzomar3.AQ.Service.CuestionarioService;
 import com.lorenzomar3.AQ.dto.conversor.CuestionarioDTOConversor;
 import com.lorenzomar3.AQ.dto.dto.CuestionarioConTemasDTO;
@@ -58,10 +59,10 @@ public class CuestionarioController {
     }
 
 
-
-
     @PutMapping("/editarCuestionario")
     public ResponseEntity<CuestionarioDTO> editarCuestionario(@RequestBody CuestionarioDTO cuestionarioDTO) {
+
+
         Cuestionario cuestionario = CuestionarioDTOConversor.fromJSON(cuestionarioDTO);
 
         CuestionarioDTO c = cuestionarioService.actualizarCuestionario(cuestionario).toDTO();

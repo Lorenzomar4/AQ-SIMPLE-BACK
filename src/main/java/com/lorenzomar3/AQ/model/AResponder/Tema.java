@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 @Entity
 @Getter
 public class Tema extends AResponder {
@@ -35,34 +34,38 @@ public class Tema extends AResponder {
 
     @Override
     public boolean contieneCritico() {
-        return listaDePreguntas.stream().anyMatch(aRespond ->  aRespond.contieneCritico());
+        return listaDePreguntas.stream().anyMatch(aRespond -> aRespond.contieneCritico());
     }
-
 
 
     @Override
     public Integer numeroDePreguntas() {
-      return  listaDePreguntas
+        return listaDePreguntas
                 .stream()
-                .filter(a->a.getTipo().equals(JerarquiaEnum.PREGUNTA))
+                .filter(a -> a.getTipo().equals(JerarquiaEnum.PREGUNTA))
                 .toList().size();
+    }
+
+    @Override
+    public void asignarTipoSiSeAgregaDesdeCuestionario() {
+        tipo = JerarquiaEnum.TEMA;
     }
 
     public void agregarPreguntaOTema(AResponder aresponder) {
 
-        if (!getTipo().equals(JerarquiaEnum.TEMAPADRE)) {
+        if (!getTipo().equals(JerarquiaEnum.TEMA)) {
             throw new ErrorDeNegocio("No se permite que se cree una jerarquia mas de temas!");
         }
 
         if (aresponder instanceof Tema) {
-            aresponder.setTipo(JerarquiaEnum.TEMAHIJO);
+            aresponder.setTipo(JerarquiaEnum.SUBTEMA);
         }
 
         listaDePreguntas.add(aresponder);
     }
 
 
-    public TemaDTO toTemaDTO(){
+    public TemaDTO toTemaDTO() {
         return TemaConversorDTO.fullTemaDTO(this);
     }
 
