@@ -1,6 +1,6 @@
 package com.lorenzomar3.AQ.dto.conversor;
 
-import com.lorenzomar3.AQ.dto.dto.TemaPostDTO;
+import com.lorenzomar3.AQ.dto.newDto.TemaPostDTO;
 import com.lorenzomar3.AQ.dto.newDto.AResponderItemListDTO;
 import com.lorenzomar3.AQ.dto.newDto.TemaDTO;
 import com.lorenzomar3.AQ.model.AResponder.AResponder;

@@ -3,11 +3,9 @@ package com.lorenzomar3.AQ.Controller;
 
 import com.lorenzomar3.AQ.JsonVisualizador;
 import com.lorenzomar3.AQ.Service.TemaService;
-import com.lorenzomar3.AQ.dto.conversor.TemaConversorDTO;
-import com.lorenzomar3.AQ.dto.dto.TemaPostDTO;
+import com.lorenzomar3.AQ.dto.newDto.TemaPostDTO;
 import com.lorenzomar3.AQ.dto.newDto.AResponderItemListDTO;
 import com.lorenzomar3.AQ.dto.newDto.TemaDTO;
-import com.lorenzomar3.AQ.model.AResponder.Tema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +49,12 @@ public class TemaController {
 
         TemaDTO tema = temaService.actualizarTema(temaDTO).toTemaDTO();
         return new ResponseEntity<>(tema, HttpStatus.OK);
+    }
+
+    @PostMapping("/saveSubIssue")
+    public ResponseEntity<Void> crearSubTema(@RequestBody TemaPostDTO temaPostDTO){
+        temaService.guardarSubTema(temaPostDTO);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 

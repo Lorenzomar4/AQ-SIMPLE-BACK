@@ -1,9 +1,9 @@
 package com.lorenzomar3.AQ.dto.dto;
 
 
+import com.lorenzomar3.AQ.dto.newDto.TemaPostDTO;
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

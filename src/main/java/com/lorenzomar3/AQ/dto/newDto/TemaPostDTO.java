@@ -1,10 +1,6 @@
-package com.lorenzomar3.AQ.dto.dto;
+package com.lorenzomar3.AQ.dto.newDto;
 
-import lombok.Data;
 import lombok.Getter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 public class TemaPostDTO {
@@ -16,7 +12,7 @@ public class TemaPostDTO {
     public TemaPostDTO() {
     }
 
-    Long idquestionnaire;
+    Long fatherid;
 
 
     public TemaPostDTO(Long id, String name) {
