@@ -57,10 +57,8 @@ public class Cuestionario {
     }
 
     public void agregarNuevoPreguntaOTema(AResponder aResponder) {
-
         aResponder.asignarTipoSiSeAgregaDesdeCuestionario();
         listaAResponder.add(aResponder);
-
     }
 
 }

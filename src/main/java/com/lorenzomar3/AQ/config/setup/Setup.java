@@ -2,7 +2,7 @@ package com.lorenzomar3.AQ.config.setup;
 
 import com.lorenzomar3.AQ.Repository.CuestionarioRepository;
 import com.lorenzomar3.AQ.Service.CuestionarioService;
-import com.lorenzomar3.AQ.model.AResponder.Pregunta;
+import com.lorenzomar3.AQ.model.AResponder.tipoDePreguntas.Pregunta;
 import com.lorenzomar3.AQ.model.AResponder.Tema;
 import com.lorenzomar3.AQ.model.Cuestionario;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +22,8 @@ public class Setup implements ApplicationRunner {
     public Cuestionario matematicaDiscreta;
     public Tema fuerzaElectrica;
     public Tema capacitores;
-    public Pregunta pregunta;
-    public Pregunta pregunta2;
+    //public Pregunta pregunta;
+    //public Pregunta pregunta2;
 
 
     @Autowired
@@ -33,11 +33,11 @@ public class Setup implements ApplicationRunner {
 
         eym = new Cuestionario("Electricidad y Magnetismo");
         fuerzaElectrica = new Tema("Campo electrico");
-        pregunta = new Pregunta("¿Como estas hoy?","Horriblemente mal");
-        pregunta2 = new Pregunta("¿Como te fue en EYM?","¡Bien por suerte!");
+        //pregunta = new Pregunta("¿Como estas hoy?","Horriblemente mal");
+       // pregunta2 = new Pregunta("¿Como te fue en EYM?","¡Bien por suerte!");
 
-        eym.agregarNuevoPreguntaOTema(pregunta);
-        eym.agregarNuevoPreguntaOTema(pregunta2);
+        //eym.agregarNuevoPreguntaOTema(pregunta);
+        //eym.agregarNuevoPreguntaOTema(pregunta2);
         eym.agregarNuevoPreguntaOTema(fuerzaElectrica);
 
         //eym.agregarNuevoPreguntaOTema(fuerzaElectrica);

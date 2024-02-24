@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Inheritance(strategy= InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @Setter
 public abstract class AResponder {
@@ -19,7 +19,7 @@ public abstract class AResponder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id ;
+    public Long id;
 
     @Column(length = 10500)
     public String titulo;
@@ -28,7 +28,7 @@ public abstract class AResponder {
     public LocalDateTime fechaDeCreacion = LocalDateTime.now();
 
     @Temporal(TemporalType.TIMESTAMP)
-    public LocalDateTime  ultimaActualizacion = LocalDateTime.now();;
+    public LocalDateTime ultimaActualizacion = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
     public JerarquiaEnum tipo;
@@ -36,23 +36,22 @@ public abstract class AResponder {
     public AResponder(String titulo) {
         this.titulo = titulo;
     }
+
     public AResponder() {
 
     }
+
     public abstract List<AResponder> contenidoAResponder();
 
     public abstract boolean contieneCritico();
 
-    public abstract  Integer numeroDePreguntas();
+    public abstract Integer numeroDePreguntas();
 
     public abstract void asignarTipoSiSeAgregaDesdeCuestionario();
 
 
-
-
-    public AResponderItemListDTO toResponderItemListDTO(){
-       return  AResponseItemDTOConversor.toDTO(this);
+    public AResponderItemListDTO toResponderItemListDTO() {
+        return AResponseItemDTOConversor.toDTO(this);
     }
-
 
 }

@@ -1,8 +1,10 @@
-package com.lorenzomar3.AQ.model.AResponder;
+package com.lorenzomar3.AQ.model.AResponder.tipoDePreguntas;
 
+import com.lorenzomar3.AQ.model.AResponder.AResponder;
+import com.lorenzomar3.AQ.model.AResponder.Respuesta;
+import com.lorenzomar3.AQ.model.AResponder.TeoriaDeLaPregunta;
 import com.lorenzomar3.AQ.model.JerarquiaEnum;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,24 +15,24 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class Pregunta extends  AResponder{
-
-    @Column(length = 10500)
-    public String respuestaTexto;
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class  Pregunta extends AResponder implements  IPregunta{
 
     public Integer intentosParaQueDejeDeSerCriticoDisponible = 0;
 
     @Column(length = 1500)
-    public String imagen;
+    public String imagenTitulo;
 
-    @Column(length = 1500)
-    public String imagenRespuesta;
+    @OneToMany(fetch = FetchType.LAZY ,orphanRemoval = true)
+    @JoinColumn(name ="id_pregunta")
+    public List<TeoriaDeLaPregunta> listaDeTeoriaDeLaPregunta;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    public List<Respuesta> opcionDeRespuestas;
 
-    public Pregunta(String titulo, String respuestaTexto) {
+    public Pregunta(String titulo, String imagenTitulo) {
         super(titulo);
-        this.tipo = JerarquiaEnum.PREGUNTA;
-        this.respuestaTexto = respuestaTexto;
+        this.imagenTitulo = imagenTitulo;
     }
 
     public Pregunta() {
@@ -56,4 +58,7 @@ public class Pregunta extends  AResponder{
     public void asignarTipoSiSeAgregaDesdeCuestionario() {
         tipo = JerarquiaEnum.PREGUNTA;
     }
+
+
+
 }
