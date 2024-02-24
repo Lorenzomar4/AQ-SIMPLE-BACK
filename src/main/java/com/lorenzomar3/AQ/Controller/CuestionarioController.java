@@ -47,8 +47,11 @@ public class CuestionarioController {
     @Transactional(readOnly = true)
     @GetMapping("/fullQuestionarioById/{id}")
     public ResponseEntity<CuestionarioWithListDTO> cuestionarioById(@PathVariable Long id) {
+        System.out.println("fullQuestionarioById");
 
         CuestionarioWithListDTO cuestionarioWithListDTO = cuestionarioService.obtenerTodo(id).toDTOwhitItemList();
+
+        JsonVisualizador.verJson(cuestionarioWithListDTO);
         return new ResponseEntity<>(cuestionarioWithListDTO, HttpStatus.OK);
     }
 

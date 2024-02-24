@@ -23,6 +23,9 @@ public class TemaController {
     @PostMapping("/createIssue")
     public ResponseEntity<AResponderItemListDTO> crearTema(@RequestBody TemaPostDTO temaPost) {
         AResponderItemListDTO itemDTO = temaService.crearTema(temaPost).toResponderItemListDTO();
+        JsonVisualizador.verJson(temaPost);
+
+
         return new ResponseEntity<>(itemDTO, HttpStatus.CREATED);
     }
 
@@ -51,6 +54,7 @@ public class TemaController {
         return new ResponseEntity<>(tema, HttpStatus.OK);
     }
 
+    @Transactional
     @PostMapping("/saveSubIssue")
     public ResponseEntity<Void> crearSubTema(@RequestBody TemaPostDTO temaPostDTO){
         temaService.guardarSubTema(temaPostDTO);

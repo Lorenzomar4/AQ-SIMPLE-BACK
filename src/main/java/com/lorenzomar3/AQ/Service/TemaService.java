@@ -75,6 +75,8 @@ public class TemaService {
 
 
         temaPadre.agregarPreguntaOTema(subTema);
+
+        temaRepository.save(temaPadre);
         JsonVisualizador.verJson(subTema);
 
     }

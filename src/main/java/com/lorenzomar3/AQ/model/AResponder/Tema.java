@@ -7,6 +7,7 @@ import com.lorenzomar3.AQ.model.JerarquiaEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +63,7 @@ public class Tema extends AResponder {
         }
 
         listaDePreguntas.add(aresponder);
+        setUltimaActualizacion(LocalDateTime.now());
     }
 
 
