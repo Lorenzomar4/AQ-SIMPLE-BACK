@@ -1,4 +1,4 @@
-package com.lorenzomar3.AQ.model.AResponder.tipoDePreguntas;
+package com.lorenzomar3.AQ.model.AResponder;
 
 import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import com.lorenzomar3.AQ.model.AResponder.Respuesta;
@@ -16,19 +16,17 @@ import java.util.List;
 @Getter
 @Setter
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class  Pregunta extends AResponder implements  IPregunta{
+
+public abstract  class  Pregunta  <T> extends AResponder   {
 
     public Integer intentosParaQueDejeDeSerCriticoDisponible = 0;
 
     @Column(length = 1500)
     public String imagenTitulo;
 
-    @OneToMany(fetch = FetchType.LAZY ,orphanRemoval = true)
-    @JoinColumn(name ="id_pregunta")
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "id_pregunta")
     public List<TeoriaDeLaPregunta> listaDeTeoriaDeLaPregunta;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    public List<Respuesta> opcionDeRespuestas;
 
     public Pregunta(String titulo, String imagenTitulo) {
         super(titulo);
@@ -36,8 +34,9 @@ public abstract class  Pregunta extends AResponder implements  IPregunta{
     }
 
     public Pregunta() {
-
     }
+
+
 
     @Override
     public List<AResponder> contenidoAResponder() {
@@ -59,6 +58,8 @@ public abstract class  Pregunta extends AResponder implements  IPregunta{
         tipo = JerarquiaEnum.PREGUNTA;
     }
 
-
+    public abstract  boolean laRespuestaEsCorrecta(T respuesta);
 
 }
+
+

@@ -2,7 +2,6 @@ package com.lorenzomar3.AQ.config.setup;
 
 import com.lorenzomar3.AQ.Repository.CuestionarioRepository;
 import com.lorenzomar3.AQ.Service.CuestionarioService;
-import com.lorenzomar3.AQ.model.AResponder.tipoDePreguntas.Pregunta;
 import com.lorenzomar3.AQ.model.AResponder.Tema;
 import com.lorenzomar3.AQ.model.Cuestionario;
 import org.springframework.beans.factory.annotation.Autowired;

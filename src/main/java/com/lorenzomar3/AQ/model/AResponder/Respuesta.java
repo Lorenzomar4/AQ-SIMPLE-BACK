@@ -9,16 +9,10 @@ import lombok.Getter;
 @Getter
 public class Respuesta {
 
-
-
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     public Long id;
     public String respuestaPropuesta;
     public Boolean esLaRespuestaVerdadera;
-
-
-
-
 
 }
