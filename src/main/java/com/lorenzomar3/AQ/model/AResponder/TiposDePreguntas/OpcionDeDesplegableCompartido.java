@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Entity
 @Getter
-public class OpcionDeMultipleEleccion {
+public class OpcionDeDesplegableCompartido {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
