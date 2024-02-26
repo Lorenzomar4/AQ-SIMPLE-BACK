@@ -1,9 +1,7 @@
 package com.lorenzomar3.AQ.model.AResponder;
 
-import com.lorenzomar3.AQ.model.AResponder.AResponder;
-import com.lorenzomar3.AQ.model.AResponder.Respuesta;
-import com.lorenzomar3.AQ.model.AResponder.TeoriaDeLaPregunta;
-import com.lorenzomar3.AQ.model.JerarquiaEnum;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.lorenzomar3.AQ.model.TipoAResponder;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,8 +14,9 @@ import java.util.List;
 @Getter
 @Setter
 @Inheritance(strategy = InheritanceType.JOINED)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 
-public abstract  class  Pregunta  <T> extends AResponder   {
+public abstract class Pregunta<T> extends AResponder {
 
     public Integer intentosParaQueDejeDeSerCriticoDisponible = 0;
 
@@ -28,14 +27,18 @@ public abstract  class  Pregunta  <T> extends AResponder   {
     @JoinColumn(name = "id_pregunta")
     public List<TeoriaDeLaPregunta> listaDeTeoriaDeLaPregunta;
 
+
     public Pregunta(String titulo, String imagenTitulo) {
         super(titulo);
         this.imagenTitulo = imagenTitulo;
     }
 
-    public Pregunta() {
+    public Pregunta(String titulo) {
+        super(titulo);
     }
 
+    public Pregunta() {
+    }
 
 
     @Override
@@ -55,10 +58,11 @@ public abstract  class  Pregunta  <T> extends AResponder   {
 
     @Override
     public void asignarTipoSiSeAgregaDesdeCuestionario() {
-        tipo = JerarquiaEnum.PREGUNTA;
+
+        tipo = AsignadorDeTipoALasPreguntas.getInstance().asignarTipo(this);
     }
 
-    public abstract  boolean laRespuestaEsCorrecta(T respuesta);
+    public abstract boolean laRespuestaEsCorrecta(T respuesta);
 
 }
 

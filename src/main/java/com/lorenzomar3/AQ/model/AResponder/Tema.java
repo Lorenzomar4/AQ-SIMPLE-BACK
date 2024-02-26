@@ -3,7 +3,7 @@ package com.lorenzomar3.AQ.model.AResponder;
 import com.lorenzomar3.AQ.dto.conversor.TemaConversorDTO;
 import com.lorenzomar3.AQ.dto.newDto.TemaDTO;
 import com.lorenzomar3.AQ.exception.ErrorDeNegocio;
-import com.lorenzomar3.AQ.model.JerarquiaEnum;
+import com.lorenzomar3.AQ.model.TipoAResponder;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -43,23 +43,23 @@ public class Tema extends AResponder {
     public Integer numeroDePreguntas() {
         return listaDePreguntas
                 .stream()
-                .filter(a -> a.getTipo().equals(JerarquiaEnum.PREGUNTA))
+                .filter(a -> a.getTipo().equals(TipoAResponder.PREGUNTA_SIMPLE))
                 .toList().size();
     }
 
     @Override
     public void asignarTipoSiSeAgregaDesdeCuestionario() {
-        tipo = JerarquiaEnum.TEMA;
+        tipo = TipoAResponder.TEMA;
     }
 
     public void agregarPreguntaOTema(AResponder aresponder) {
 
-        if (!getTipo().equals(JerarquiaEnum.TEMA)) {
+        if (!getTipo().equals(TipoAResponder.TEMA)) {
             throw new ErrorDeNegocio("No se permite que se cree una jerarquia mas de temas!");
         }
 
         if (aresponder instanceof Tema) {
-            aresponder.setTipo(JerarquiaEnum.SUBTEMA);
+            aresponder.setTipo(TipoAResponder.SUBTEMA);
         }
 
         listaDePreguntas.add(aresponder);

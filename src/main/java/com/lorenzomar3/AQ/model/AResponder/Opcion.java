@@ -19,5 +19,8 @@ public class Opcion {
 
     public Boolean esLaOpcionVerdadera;
 
-
+    public Opcion(String respuesta, Boolean esLaOpcionVerdadera) {
+        this.respuesta = respuesta;
+        this.esLaOpcionVerdadera = esLaOpcionVerdadera;
+    }
 }

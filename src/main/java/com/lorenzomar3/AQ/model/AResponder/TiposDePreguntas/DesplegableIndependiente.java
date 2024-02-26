@@ -33,7 +33,6 @@ public class DesplegableIndependiente extends Pregunta<List<RespuestaDeDesplegab
                     preguntaConSuIdDeLaRespuestaCorrespondiente.put(pregunta.getId(), pregunta.getIdDeLaRespuestaCorrecta());
                 }
         );
-
     }
 
     @Override

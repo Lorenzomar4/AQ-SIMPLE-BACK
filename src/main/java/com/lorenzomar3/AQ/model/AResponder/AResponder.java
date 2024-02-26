@@ -2,7 +2,7 @@ package com.lorenzomar3.AQ.model.AResponder;
 
 import com.lorenzomar3.AQ.dto.conversor.AResponseItemDTOConversor;
 import com.lorenzomar3.AQ.dto.newDto.AResponderItemListDTO;
-import com.lorenzomar3.AQ.model.JerarquiaEnum;
+import com.lorenzomar3.AQ.model.TipoAResponder;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +31,7 @@ public abstract class AResponder {
     public LocalDateTime ultimaActualizacion = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
-    public JerarquiaEnum tipo;
+    public TipoAResponder tipo;
 
     public AResponder(String titulo) {
         this.titulo = titulo;

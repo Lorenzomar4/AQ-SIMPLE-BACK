@@ -8,13 +8,16 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class SeleccionUnica extends Pregunta<Long> {
 
 
@@ -22,8 +25,13 @@ public class SeleccionUnica extends Pregunta<Long> {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_pregunta")
-    public List<Opcion> listaDeOpcionesDisponible;
+    public List<Opcion> listaDeOpcionesDisponible = new ArrayList<>();
 
+    public SeleccionUnica(String titulo, List<Opcion> listaDeOpcionesDisponible) {
+        super(titulo);
+        setListaDeOpcionesDisponible(listaDeOpcionesDisponible);
+        this.listaDeOpcionesDisponible = listaDeOpcionesDisponible;
+    }
 
     @Override
     public boolean laRespuestaEsCorrecta(Long idRespuestaCorrecta) {
