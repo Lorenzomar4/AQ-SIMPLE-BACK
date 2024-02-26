@@ -3,10 +3,7 @@ package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas;
 import com.lorenzomar3.AQ.exception.ErrorDeNegocio;
 import com.lorenzomar3.AQ.model.AResponder.Opcion;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,7 +20,7 @@ public class SeleccionUnica extends Pregunta<Long> {
 
     Long idDeLaRespuestaCorrecta;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY ,  cascade = CascadeType.ALL)
     @JoinColumn(name = "id_pregunta")
     public List<Opcion> listaDeOpcionesDisponible = new ArrayList<>();
 
