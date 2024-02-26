@@ -1,7 +1,7 @@
 package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas;
 
 import com.lorenzomar3.AQ.exception.ErrorDeNegocio;
-import com.lorenzomar3.AQ.model.AResponder.OpcionDeSeleccionUnica;
+import com.lorenzomar3.AQ.model.AResponder.Opcion;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -22,7 +22,7 @@ public class SeleccionUnica extends Pregunta<Long> {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_pregunta")
-    public List<OpcionDeSeleccionUnica> listaDeOpcionesDisponible;
+    public List<Opcion> listaDeOpcionesDisponible;
 
 
     @Override
@@ -31,7 +31,7 @@ public class SeleccionUnica extends Pregunta<Long> {
     }
 
 
-    public void setListaDeOpcionesDisponible(List<OpcionDeSeleccionUnica> lista) {
+    public void setListaDeOpcionesDisponible(List<Opcion> lista) {
         if (!existeUnaOpcionVerdaderaUnicamente(lista)) {
             throw new ErrorDeNegocio("¡Asegurese de que haya solamente una opcion valida!");
         }
@@ -41,20 +41,20 @@ public class SeleccionUnica extends Pregunta<Long> {
 
     }
 
-    private Boolean existeUnaOpcionVerdaderaUnicamente(List<OpcionDeSeleccionUnica> lista) {
+    private Boolean existeUnaOpcionVerdaderaUnicamente(List<Opcion> lista) {
         int numeroDeOpcionesVerdaderas = lista.stream().filter(op -> op.getEsLaOpcionVerdadera()).toList().size();
 
         return numeroDeOpcionesVerdaderas == 1;
 
     }
 
-    public void agregarLaOpcionALaListaYAsignarLaIdDeLaOpcionCorrecta(OpcionDeSeleccionUnica opcionDeSeleccionUnica) {
+    public void agregarLaOpcionALaListaYAsignarLaIdDeLaOpcionCorrecta(Opcion opcion) {
 
-        if (opcionDeSeleccionUnica.getEsLaOpcionVerdadera()) {
-            idDeLaRespuestaCorrecta = opcionDeSeleccionUnica.getId();
+        if (opcion.getEsLaOpcionVerdadera()) {
+            idDeLaRespuestaCorrecta = opcion.getId();
         }
 
-        listaDeOpcionesDisponible.add(opcionDeSeleccionUnica);
+        listaDeOpcionesDisponible.add(opcion);
 
 
     }

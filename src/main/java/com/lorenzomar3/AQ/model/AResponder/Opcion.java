@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class OpcionDeSeleccionUnica {
+public class Opcion {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     Long id;

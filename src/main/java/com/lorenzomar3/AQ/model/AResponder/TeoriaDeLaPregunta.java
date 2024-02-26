@@ -4,7 +4,7 @@ package com.lorenzomar3.AQ.model.AResponder;
 import jakarta.persistence.*;
 
 @Entity
-public class TeoriaDeLaPregunta {
+public class TeoriaDeLaPregunta  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
