@@ -1,7 +1,9 @@
 package com.lorenzomar3.AQ.model.AResponder;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.model.TipoAResponder;
+import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,15 +20,16 @@ import java.util.List;
 
 public abstract class Pregunta<T> extends AResponder {
 
+
+    @JsonView(View.JustToAnswer.class)
     public Integer intentosParaQueDejeDeSerCriticoDisponible = 0;
 
     @Column(length = 1500)
+    @JsonView(View.JustToAnswer.class)
     public String imagenTitulo;
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinColumn(name = "id_pregunta")
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true ,mappedBy = "pregunaDuenia")
     public List<TeoriaDeLaPregunta> listaDeTeoriaDeLaPregunta;
-
 
     public Pregunta(String titulo, String imagenTitulo) {
         super(titulo);

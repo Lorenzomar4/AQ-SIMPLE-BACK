@@ -1,8 +1,10 @@
 package com.lorenzomar3.AQ.model.AResponder;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.dto.conversor.AResponseItemDTOConversor;
 import com.lorenzomar3.AQ.dto.newDto.AResponderItemListDTO;
 import com.lorenzomar3.AQ.model.TipoAResponder;
+import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,17 +21,22 @@ public abstract class AResponder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView(View.JustToAnswer.class)
     public Long id;
 
     @Column(length = 10500)
+    @JsonView(View.JustToAnswer.class)
     public String titulo;
+
 
     @Temporal(TemporalType.TIMESTAMP)
     public LocalDateTime fechaDeCreacion = LocalDateTime.now();
 
+
     @Temporal(TemporalType.TIMESTAMP)
     public LocalDateTime ultimaActualizacion = LocalDateTime.now();
 
+    @JsonView(View.JustToAnswer.class)
     @Enumerated(EnumType.STRING)
     public TipoAResponder tipo;
 

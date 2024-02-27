@@ -1,8 +1,10 @@
 package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas;
 
-import com.lorenzomar3.AQ.exception.ErrorDeNegocio;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.AResponder.Opcion;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
+import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,10 +20,9 @@ import java.util.List;
 public class SeleccionUnica extends Pregunta<Long> {
 
 
-    Long idDeLaRespuestaCorrecta;
-
-    @OneToMany(fetch = FetchType.LAZY ,  cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "id_pregunta")
+    @JsonView(View.JustToAnswer.class)
     public List<Opcion> listaDeOpcionesDisponible = new ArrayList<>();
 
     public SeleccionUnica(String titulo, List<Opcion> listaDeOpcionesDisponible) {
@@ -32,13 +33,16 @@ public class SeleccionUnica extends Pregunta<Long> {
 
     @Override
     public boolean laRespuestaEsCorrecta(Long idRespuestaCorrecta) {
-        return idDeLaRespuestaCorrecta.equals(idRespuestaCorrecta);
+        return idRespuestaCorrecta.equals(filtrarLaOpcionCorrecta());
     }
 
+    public Long filtrarLaOpcionCorrecta() {
+        return listaDeOpcionesDisponible.stream().filter(Opcion::getEsLaOpcionVerdadera).toList().get(0).getId();
+    }
 
     public void setListaDeOpcionesDisponible(List<Opcion> lista) {
         if (!existeUnaOpcionVerdaderaUnicamente(lista)) {
-            throw new ErrorDeNegocio("¡Asegurese de que haya solamente una opcion valida!");
+            throw new BussinesException("¡Asegurese de que haya solamente una opcion valida!");
         }
 
 
@@ -54,10 +58,6 @@ public class SeleccionUnica extends Pregunta<Long> {
     }
 
     public void agregarLaOpcionALaListaYAsignarLaIdDeLaOpcionCorrecta(Opcion opcion) {
-
-        if (opcion.getEsLaOpcionVerdadera()) {
-            idDeLaRespuestaCorrecta = opcion.getId();
-        }
 
         listaDeOpcionesDisponible.add(opcion);
 

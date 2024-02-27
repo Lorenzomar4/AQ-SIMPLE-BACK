@@ -44,6 +44,7 @@ public class TemaController {
 
         return new ResponseEntity<>(temaDTO, HttpStatus.OK);
     }
+
     @Transactional
     @PutMapping("/updateIssue")
     public ResponseEntity<TemaDTO> actualizarTema(@RequestBody TemaPostDTO temaDTO) {
@@ -56,7 +57,7 @@ public class TemaController {
 
     @Transactional
     @PostMapping("/saveSubIssue")
-    public ResponseEntity<Void> crearSubTema(@RequestBody TemaPostDTO temaPostDTO){
+    public ResponseEntity<Void> crearSubTema(@RequestBody TemaPostDTO temaPostDTO) {
         temaService.guardarSubTema(temaPostDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

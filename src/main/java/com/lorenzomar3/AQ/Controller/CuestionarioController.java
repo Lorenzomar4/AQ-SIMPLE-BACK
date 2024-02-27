@@ -64,10 +64,7 @@ public class CuestionarioController {
 
     @PutMapping("/editarCuestionario")
     public ResponseEntity<CuestionarioDTO> editarCuestionario(@RequestBody CuestionarioDTO cuestionarioDTO) {
-
-
         Cuestionario cuestionario = CuestionarioDTOConversor.fromJSON(cuestionarioDTO);
-
         CuestionarioDTO c = cuestionarioService.actualizarCuestionario(cuestionario).toDTO();
         return new ResponseEntity<>(c, HttpStatus.OK);
     }

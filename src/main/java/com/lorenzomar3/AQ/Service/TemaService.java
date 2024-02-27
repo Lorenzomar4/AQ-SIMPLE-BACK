@@ -5,7 +5,7 @@ import com.lorenzomar3.AQ.JsonVisualizador;
 import com.lorenzomar3.AQ.Repository.TemaRepository;
 import com.lorenzomar3.AQ.dto.conversor.TemaConversorDTO;
 import com.lorenzomar3.AQ.dto.newDto.TemaPostDTO;
-import com.lorenzomar3.AQ.exception.ErrorDeNegocio;
+import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.AResponder.Tema;
 import com.lorenzomar3.AQ.model.Cuestionario;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +53,7 @@ public class TemaService {
 
 
     public Tema getById(Long id ){
-        return temaRepository.findById(id).orElseThrow( () -> new ErrorDeNegocio("El tema no existe"));
+        return temaRepository.findById(id).orElseThrow( () -> new BussinesException("El tema no existe"));
     }
 
     @Transactional

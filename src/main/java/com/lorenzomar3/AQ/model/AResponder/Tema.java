@@ -2,7 +2,7 @@ package com.lorenzomar3.AQ.model.AResponder;
 
 import com.lorenzomar3.AQ.dto.conversor.TemaConversorDTO;
 import com.lorenzomar3.AQ.dto.newDto.TemaDTO;
-import com.lorenzomar3.AQ.exception.ErrorDeNegocio;
+import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.TipoAResponder;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -17,7 +17,7 @@ import java.util.List;
 public class Tema extends AResponder {
 
     @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "tema_al_que_pertenece")
+    @JoinColumn(name = "duenio")
     public List<AResponder> listaDePreguntas = new ArrayList<>();
 
 
@@ -55,7 +55,7 @@ public class Tema extends AResponder {
     public void agregarPreguntaOTema(AResponder aresponder) {
 
         if (!getTipo().equals(TipoAResponder.TEMA)) {
-            throw new ErrorDeNegocio("No se permite que se cree una jerarquia mas de temas!");
+            throw new BussinesException("No se permite que se cree una jerarquia mas de temas!");
         }
 
         if (aresponder instanceof Tema) {

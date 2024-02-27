@@ -1,11 +1,10 @@
 package com.lorenzomar3.AQ.Service;
 
-import com.lorenzomar3.AQ.JsonVisualizador;
 import com.lorenzomar3.AQ.Repository.CuestionarioRepository;
 import com.lorenzomar3.AQ.Repository.CuestionarioRepositoryFull;
 import com.lorenzomar3.AQ.Repository.TemaRepository;
 import com.lorenzomar3.AQ.dto.dto.CuestionarioSimpleDTO;
-import com.lorenzomar3.AQ.exception.ErrorDeNegocio;
+import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.Cuestionario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,7 +39,7 @@ public class CuestionarioService {
     @Transactional(readOnly = true)
     public Cuestionario obtenerTodo(Long id){
 
-        Cuestionario c = cuestionarioRepository.findById(id).orElseThrow(() -> new ErrorDeNegocio("No existe ese cuestionario"));
+        Cuestionario c = cuestionarioRepository.findById(id).orElseThrow(() -> new BussinesException("No existe ese cuestionario"));
         return c;
     }
 
@@ -48,7 +47,7 @@ public class CuestionarioService {
 
     @Transactional(readOnly = true)
     public Cuestionario getById(Long id) {
-        return cuestionarioRepository.findById(id).orElseThrow(() -> new ErrorDeNegocio("No existe ese cuestionario"));
+        return cuestionarioRepository.findById(id).orElseThrow(() -> new BussinesException("No existe ese cuestionario"));
     }
 
     @Transactional
@@ -59,13 +58,13 @@ public class CuestionarioService {
         cuestionarioRepository.save(cuestionarioBD);
         cuestionarioBD = cuestionarioRepository.
                 findById(cuestionarioBD.getId())
-                .orElseThrow(() -> new ErrorDeNegocio("El cuestionario no fue guardado correctamente"));
+                .orElseThrow(() -> new BussinesException("El cuestionario no fue guardado correctamente"));
         return cuestionarioBD;
     }
 
     @Transactional
     public void eliminarCuestionario(Long id) {
-        Cuestionario cuestionario = cuestionarioRepository.findById(id).orElseThrow(() -> new ErrorDeNegocio("El elemento no existe"));
+        Cuestionario cuestionario = cuestionarioRepository.findById(id).orElseThrow(() -> new BussinesException("El elemento no existe"));
 
         cuestionarioRepository.deleteById(cuestionario.getId());
 
@@ -74,7 +73,7 @@ public class CuestionarioService {
     @Transactional(propagation = Propagation.SUPPORTS)
     public Cuestionario actualizarCuestionario(Cuestionario unCuestionario){
 
-        Cuestionario cuestionario = cuestionarioRepository.findById(unCuestionario.getId()).orElseThrow(() -> new ErrorDeNegocio("El elemento no existe"));
+        Cuestionario cuestionario = cuestionarioRepository.findById(unCuestionario.getId()).orElseThrow(() -> new BussinesException("El elemento no existe"));
 
         cuestionario.setNombreCuestionario(unCuestionario.getNombreCuestionario());
 

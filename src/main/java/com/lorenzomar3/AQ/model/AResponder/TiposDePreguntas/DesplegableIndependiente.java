@@ -29,10 +29,14 @@ public class DesplegableIndependiente extends Pregunta<List<RespuestaDeDesplegab
     @PostConstruct
     public void init() {
 
+        /*
+
         listaDePreguntasConOpcionUnicas.forEach(pregunta -> {
                     preguntaConSuIdDeLaRespuestaCorrespondiente.put(pregunta.getId(), pregunta.getIdDeLaRespuestaCorrecta());
                 }
         );
+        */
+
     }
 
     @Override

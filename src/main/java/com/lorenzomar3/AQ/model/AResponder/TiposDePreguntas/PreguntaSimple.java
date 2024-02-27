@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PreguntaSimple extends Pregunta<Boolean> {
 
+
+
     public String respuestaEstablecida;
 
     public PreguntaSimple(String titulo, String respuestaEstablecida) {
