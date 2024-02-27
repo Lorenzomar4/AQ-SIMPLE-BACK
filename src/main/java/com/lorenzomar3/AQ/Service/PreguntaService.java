@@ -1,9 +1,6 @@
 package com.lorenzomar3.AQ.Service;
 
-import com.lorenzomar3.AQ.Repository.PreguntaRepository.BasePreguntaRepositorio;
-import com.lorenzomar3.AQ.Repository.PreguntaRepository.OpcionMultipleRepository;
-import com.lorenzomar3.AQ.Repository.PreguntaRepository.PreguntaRepository;
-import com.lorenzomar3.AQ.Repository.PreguntaRepository.SeleccionUnicaRepository;
+import com.lorenzomar3.AQ.Repository.PreguntaRepository.*;
 import com.lorenzomar3.AQ.dto.dto.ObtenerPreguntaDTO;
 import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
@@ -30,6 +27,9 @@ public class PreguntaService {
     @Autowired
     OpcionMultipleRepository opcionMultipleRepository;
 
+    @Autowired
+    DesplegableCompartidoRepositorio desplegableCompartidoRepositorio;
+
     HashMap<TipoAResponder, BasePreguntaRepositorio<?>> mapDeRepositorios = new HashMap<>();
 
     @PostConstruct
@@ -38,6 +38,7 @@ public class PreguntaService {
         mapDeRepositorios.put(TipoAResponder.VERDADERO_FALSO, preguntaRepository);
         mapDeRepositorios.put(TipoAResponder.SELECCION_UNICA, seleccionUnicaRepository);
         mapDeRepositorios.put(TipoAResponder.OPCION_MULTIPLE, opcionMultipleRepository);
+        mapDeRepositorios.put(TipoAResponder.DESPLEGABLE_COMPARTIDO,desplegableCompartidoRepositorio);
 
     }
 

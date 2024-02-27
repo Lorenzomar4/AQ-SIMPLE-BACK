@@ -6,17 +6,19 @@ import com.lorenzomar3.AQ.model.View;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Setter
 @Getter
+@NoArgsConstructor
 public class DesplegableCompartido extends Pregunta<List<OpcionDeDesplegableCompartido>> {
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_pregunta")
     @JsonView(View.JustToAnswer.class)
     public List<OpcionDeDesplegableCompartido> listaDeOpciones;
@@ -24,12 +26,21 @@ public class DesplegableCompartido extends Pregunta<List<OpcionDeDesplegableComp
     @Transient
     HashMap<String, String> mapPreguntaRespuesta = new HashMap<>();
 
-    @PostConstruct
+    public DesplegableCompartido(String titulo, List<OpcionDeDesplegableCompartido> listaDeOpciones) {
+        super(titulo);
+        this.listaDeOpciones = listaDeOpciones;
+    }
+
+    @PostLoad
     public void init() {
         listaDeOpciones.forEach(opcion -> {
                     mapPreguntaRespuesta.put(opcion.getPregunta(), opcion.getRespuesta());
                 }
         );
+
+        Collections.shuffle(listaDeOpciones);
+
+
     }
 
     @Override
@@ -44,5 +55,13 @@ public class DesplegableCompartido extends Pregunta<List<OpcionDeDesplegableComp
 
 
         return verificarQueLasRespuestasIngresadasCoincidanConAsignadasALaPregunta;
+    }
+
+    @JsonView(View.JustToAnswer.class)
+    public List<String> posiblesRespuestasParaCadaOpcion() {
+        List<String> posiblesRespuesta = new ArrayList<>(listaDeOpciones.stream().map(op -> op.getRespuesta()).toList());
+        Collections.shuffle(posiblesRespuesta);
+        return posiblesRespuesta;
+
     }
 }

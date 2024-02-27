@@ -7,9 +7,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class OpcionDeDesplegableCompartido {
 
     @Id
@@ -19,6 +21,11 @@ public class OpcionDeDesplegableCompartido {
 
     @JsonView(View.JustToAnswer.class)
     String pregunta;
+
+    public OpcionDeDesplegableCompartido(String pregunta, String respuesta) {
+        this.pregunta = pregunta;
+        this.respuesta = respuesta;
+    }
 
     String respuesta;
 

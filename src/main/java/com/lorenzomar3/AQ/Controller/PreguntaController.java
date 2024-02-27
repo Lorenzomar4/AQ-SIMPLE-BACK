@@ -31,9 +31,12 @@ public class PreguntaController {
     @PostMapping("/getQuestionForAnswer")
     public ResponseEntity<Pregunta<?>> getQuestion(@RequestBody  ObtenerPreguntaDTO getQuestionDTO) {
 
-        JsonVisualizador.verJson(getQuestionDTO);
 
-        return new ResponseEntity<>(preguntaService.obtenerPregunta(getQuestionDTO), HttpStatus.OK);
+
+        Pregunta<?> pregunta = preguntaService.obtenerPregunta(getQuestionDTO);
+
+
+        return new ResponseEntity<>(pregunta, HttpStatus.OK);
 
     }
 

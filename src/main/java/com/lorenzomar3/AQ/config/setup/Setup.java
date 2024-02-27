@@ -4,10 +4,7 @@ import com.lorenzomar3.AQ.Repository.CuestionarioRepository;
 import com.lorenzomar3.AQ.Service.CuestionarioService;
 import com.lorenzomar3.AQ.model.AResponder.Opcion;
 import com.lorenzomar3.AQ.model.AResponder.Tema;
-import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.OpcionMultiple;
-import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.PreguntaSimple;
-import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.SeleccionUnica;
-import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.VerdaderoOFalso;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.*;
 import com.lorenzomar3.AQ.model.Cuestionario;
 import com.lorenzomar3.AQ.model.TipoAResponder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +27,10 @@ public class Setup implements ApplicationRunner {
     public Cuestionario matematicaDiscreta;
     public Tema fuerzaElectrica;
     public Tema capacitores;
-    //public Pregunta pregunta;
-    //public Pregunta pregunta2;
 
     public PreguntaSimple preguntaSimple;
 
-    public VerdaderoOFalso  preguntaVF;
+    public VerdaderoOFalso preguntaVF;
 
     SeleccionUnica seleccionUnica;
 
@@ -45,6 +40,20 @@ public class Setup implements ApplicationRunner {
     Opcion SeleccionUnicaOpcion1;
     Opcion SeleccionUnicaOpcion2;
     Opcion SeleccionUnicaOpcion3;
+
+
+    OpcionDeDesplegableCompartido opcionDeDesplegableCompartido1;
+    OpcionDeDesplegableCompartido opcionDeDesplegableCompartido2;
+
+    OpcionDeDesplegableCompartido opcionDeDesplegableCompartido3;
+
+    OpcionDeDesplegableCompartido opcionDeDesplegableCompartido4;
+
+
+
+
+    DesplegableCompartido desplegableCompartido;
+
 
 
 
@@ -71,8 +80,19 @@ public class Setup implements ApplicationRunner {
         Opcion opcion3 = new Opcion("tiene 5 nucleos", false);
         Opcion opcion4 = new Opcion("tiene 8 nucleos", true);
 
-        opcionMultiple = new OpcionMultiple("Intel i7 10700", List.of(opcion1,opcion2,opcion3,opcion4));
+        opcionMultiple = new OpcionMultiple("Intel i7 10700", List.of(opcion1, opcion2, opcion3, opcion4));
 
+        opcionDeDesplegableCompartido1 = new OpcionDeDesplegableCompartido("Sao Pablo","Brasil");
+        opcionDeDesplegableCompartido2 = new OpcionDeDesplegableCompartido("Buenos Aires","Argentina");
+        opcionDeDesplegableCompartido3 = new OpcionDeDesplegableCompartido("Montevideo","Uruguay");
+        opcionDeDesplegableCompartido4 = new OpcionDeDesplegableCompartido("Lima","Peru");
+
+
+
+
+        desplegableCompartido = new DesplegableCompartido("A que pais pertenecen cada una de estas provincias",
+                List.of(opcionDeDesplegableCompartido1,opcionDeDesplegableCompartido2,
+                        opcionDeDesplegableCompartido3,opcionDeDesplegableCompartido4));
 
         eym.agregarNuevoPreguntaOTema(fuerzaElectrica);
         eym.agregarNuevoPreguntaOTema(capacitores);
@@ -80,6 +100,7 @@ public class Setup implements ApplicationRunner {
         eym.agregarNuevoPreguntaOTema(preguntaVF);
         eym.agregarNuevoPreguntaOTema(seleccionUnica);
         eym.agregarNuevoPreguntaOTema(opcionMultiple);
+        eym.agregarNuevoPreguntaOTema(desplegableCompartido);
 
     }
 
@@ -90,7 +111,7 @@ public class Setup implements ApplicationRunner {
         guardarCuestionario();
     }
 
-    public void guardarCuestionario(){
+    public void guardarCuestionario() {
 
         cuestionarioService.saveCuestionario(eym);
 
