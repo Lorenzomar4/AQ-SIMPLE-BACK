@@ -1,6 +1,8 @@
 package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
+import com.lorenzomar3.AQ.model.View;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,6 +18,7 @@ public class DesplegableCompartido extends Pregunta<List<OpcionDeDesplegableComp
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_pregunta")
+    @JsonView(View.JustToAnswer.class)
     public List<OpcionDeDesplegableCompartido> listaDeOpciones;
 
     @Transient

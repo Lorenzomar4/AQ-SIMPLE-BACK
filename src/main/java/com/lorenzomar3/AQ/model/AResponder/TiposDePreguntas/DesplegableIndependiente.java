@@ -1,6 +1,8 @@
 package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
+import com.lorenzomar3.AQ.model.View;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -20,6 +22,7 @@ public class DesplegableIndependiente extends Pregunta<List<RespuestaDeDesplegab
 
     @OneToMany
     @JoinColumn(name = "id_pregunta_desplegable_ind")
+    @JsonView(View.JustToAnswer.class)
     List<SeleccionUnica> listaDePreguntasConOpcionUnicas;
 
 

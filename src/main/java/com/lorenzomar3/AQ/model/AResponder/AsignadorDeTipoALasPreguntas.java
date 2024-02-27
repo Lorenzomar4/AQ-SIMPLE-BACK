@@ -31,7 +31,6 @@ public class AsignadorDeTipoALasPreguntas {
         mapAsignadorDeTipo.put(DesplegableCompartido.class,TipoAResponder.DESPLEGABLE_COMPARTIDO);
         mapAsignadorDeTipo.put(DesplegableIndependiente.class,TipoAResponder.DESPLEGABLE_COMPARTIDO);
 
-
         return mapAsignadorDeTipo.get(tipo.getClass());
 
     }

@@ -28,7 +28,7 @@ public abstract class Pregunta<T> extends AResponder {
     @JsonView(View.JustToAnswer.class)
     public String imagenTitulo;
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true ,mappedBy = "pregunaDuenia")
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "pregunaDuenia")
     public List<TeoriaDeLaPregunta> listaDeTeoriaDeLaPregunta;
 
     public Pregunta(String titulo, String imagenTitulo) {
