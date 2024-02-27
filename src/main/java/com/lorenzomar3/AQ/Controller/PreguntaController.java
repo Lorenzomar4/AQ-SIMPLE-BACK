@@ -22,15 +22,7 @@ public class PreguntaController {
 
     }
 
-    @Transactional(readOnly = true)
 
-    @GetMapping("/todasLasPreguntas")
-    public List<Pregunta<?>> obtenerTodasLasPreguntas(){
-
-        return preguntaService.obtenerTodasLasPreguntas();
-
-
-    }
 
 
 

@@ -14,8 +14,4 @@ public class PreguntaService {
     @Autowired
     PreguntaRepository preguntaRepository;
 
-    @Transactional(readOnly = true)
-    public List<Pregunta<?>> obtenerTodasLasPreguntas(){
-        return preguntaRepository.findAll();
-    }
 }
