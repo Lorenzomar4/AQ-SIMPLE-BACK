@@ -52,7 +52,6 @@ public class DesplegableCompartido extends Pregunta {
                         .allMatch(opcionElegida ->
                                 mapPreguntaRespuesta.get(opcionElegida.getPregunta())
                                         .equals(opcionElegida.getRespuestaCorrecta()));
-
         return verificarQueLasRespuestasIngresadasCoincidanConAsignadasALaPregunta;
     }
 

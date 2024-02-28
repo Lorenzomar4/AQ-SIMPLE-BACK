@@ -3,6 +3,7 @@ package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.Verificador.Verificador;
 import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
@@ -25,31 +26,16 @@ public class OpcionMultiple extends Pregunta {
     @JsonView(View.JustToAnswer.class)
     public List<Opcion> listaDeOpciones;
 
-    @Transient
-    HashMap<Long, Boolean> mapDeOpcionesConSuValidez = new HashMap<>();
 
     public OpcionMultiple(String titulo) {
         super(titulo);
     }
 
-    @PostLoad
-    public void init() {
-
-        listaDeOpciones.forEach(op -> {
-            mapDeOpcionesConSuValidez.put(op.getId(), op.getRespuestaCorrecta());
-        });
-
-    }
 
     @Override
     public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuesta) {
-
-        return respuesta.getListaDeOpciones()
-                .stream().allMatch(opIngresado -> verificarCoincidencias(opIngresado));
-    }
-
-    public Boolean verificarCoincidencias(Opcion opcion) {
-        return mapDeOpcionesConSuValidez.get(opcion.getId()).equals(opcion.getRespuestaCorrecta());
+        Verificador<Boolean, Opcion> verificador = new Verificador<>();
+        return verificador.coincidenciaTotal(listaDeOpciones, respuesta.getListaDeOpciones());
     }
 
 
