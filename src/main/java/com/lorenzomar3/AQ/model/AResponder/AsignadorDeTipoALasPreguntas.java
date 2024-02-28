@@ -22,9 +22,9 @@ public class AsignadorDeTipoALasPreguntas {
 
     }
 
-    public TipoAResponder asignarTipo(Pregunta<?> tipo) {
+    public TipoAResponder asignarTipo(Pregunta tipo) {
 
-        HashMap<Class<? extends Pregunta<?>>, TipoAResponder> mapAsignadorDeTipo = new HashMap<>();
+        HashMap<Class<? extends Pregunta>, TipoAResponder> mapAsignadorDeTipo = new HashMap<>();
 
         mapAsignadorDeTipo.put(PreguntaSimple.class, TipoAResponder.PREGUNTA_SIMPLE);
         mapAsignadorDeTipo.put(VerdaderoOFalso.class, TipoAResponder.VERDADERO_FALSO);

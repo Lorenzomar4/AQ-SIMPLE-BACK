@@ -29,11 +29,11 @@ public class PreguntaController {
 
     @JsonView(View.JustToAnswer.class)
     @PostMapping("/getQuestionForAnswer")
-    public ResponseEntity<Pregunta<?>> getQuestion(@RequestBody  ObtenerPreguntaDTO getQuestionDTO) {
+    public ResponseEntity<Pregunta> getQuestion(@RequestBody  ObtenerPreguntaDTO getQuestionDTO) {
 
 
 
-        Pregunta<?> pregunta = preguntaService.obtenerPregunta(getQuestionDTO);
+        Pregunta pregunta = preguntaService.obtenerPregunta(getQuestionDTO);
 
 
         return new ResponseEntity<>(pregunta, HttpStatus.OK);

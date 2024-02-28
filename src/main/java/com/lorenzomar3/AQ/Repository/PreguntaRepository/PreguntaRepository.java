@@ -14,9 +14,9 @@ import java.util.Optional;
 
 //Para VF Y PreguntaSimple funciona correctamente. Para el resto se queda corto y genera el error de fuera de session aunque se utilice EntityGraph
 @Repository
-public interface PreguntaRepository  extends BasePreguntaRepositorio<Pregunta<?>> {
+public interface PreguntaRepository  extends BasePreguntaRepositorio<Pregunta> {
 
     @Override
     @EntityGraph(attributePaths = {"listaDeTeoriaDeLaPregunta"})
-    public Optional<Pregunta<?>>  findById(Long id);
+    public Optional<Pregunta>  findById(Long id);
 }

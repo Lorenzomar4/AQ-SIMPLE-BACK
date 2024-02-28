@@ -45,9 +45,9 @@ public class PreguntaService {
     }
 
 
-    public Pregunta<?> obtenerPregunta(ObtenerPreguntaDTO getQuestionDTO) {
+    public Pregunta obtenerPregunta(ObtenerPreguntaDTO getQuestionDTO) {
 
-        return (Pregunta<?>) mapDeRepositorios.get(getQuestionDTO.getTipoAResponder()).findById(getQuestionDTO.getId()).orElseThrow(
+        return (Pregunta) mapDeRepositorios.get(getQuestionDTO.getTipoAResponder()).findById(getQuestionDTO.getId()).orElseThrow(
                 () -> new BussinesException("No se encuentra una pregunta con el tipo De id solicitadO"));
     }
 
