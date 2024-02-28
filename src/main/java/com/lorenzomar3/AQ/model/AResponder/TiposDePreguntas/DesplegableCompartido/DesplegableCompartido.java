@@ -1,6 +1,8 @@
 package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableCompartido;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
+import com.lorenzomar3.AQ.model.AResponder.Opcion;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.*;
@@ -14,7 +16,7 @@ import java.util.*;
 @Setter
 @Getter
 @NoArgsConstructor
-public class DesplegableCompartido extends Pregunta<List<OpcionDeDesplegableCompartido>> {
+public class DesplegableCompartido extends Pregunta<RespuestaDePreguntaDTO> {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_pregunta")
@@ -29,6 +31,9 @@ public class DesplegableCompartido extends Pregunta<List<OpcionDeDesplegableComp
         this.listaDeOpciones = listaDeOpciones;
     }
 
+
+
+
     @PostLoad
     public void init() {
         listaDeOpciones.forEach(opcion -> {
@@ -42,18 +47,19 @@ public class DesplegableCompartido extends Pregunta<List<OpcionDeDesplegableComp
     }
 
     @Override
-    public boolean laRespuestaEsCorrecta(List<OpcionDeDesplegableCompartido> listaDeOpcionesElegidas) {
+    public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
 
         Boolean verificarQueLasRespuestasIngresadasCoincidanConAsignadasALaPregunta =
 
-                listaDeOpcionesElegidas.stream()
+                respuestaDePreguntaDTO.getListaDeOpcionesParaDesplegableCompartidos().stream()
                         .allMatch(opcionElegida ->
                                 mapPreguntaRespuesta.get(opcionElegida.getPregunta())
                                         .equals(opcionElegida.getRespuesta()));
 
-
         return verificarQueLasRespuestasIngresadasCoincidanConAsignadasALaPregunta;
     }
+
+
 
     @JsonView(View.JustToAnswer.class)
     public List<String> posiblesRespuestasParaCadaOpcion() {

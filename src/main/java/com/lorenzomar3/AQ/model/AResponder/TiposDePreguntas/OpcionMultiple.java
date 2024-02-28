@@ -30,6 +30,10 @@ public class OpcionMultiple extends Pregunta<RespuestaDePreguntaDTO> {
     @Transient
     HashMap<Long, Boolean> mapDeOpcionesConSuValidez = new HashMap<>();
 
+    public OpcionMultiple(String titulo) {
+        super(titulo);
+    }
+
     @PostLoad
     public void init() {
 
@@ -37,10 +41,6 @@ public class OpcionMultiple extends Pregunta<RespuestaDePreguntaDTO> {
             mapDeOpcionesConSuValidez.put(op.getId(), op.getEsLaOpcionVerdadera());
         });
 
-    }
-
-    public OpcionMultiple(String titulo) {
-        super(titulo);
     }
 
     @Override

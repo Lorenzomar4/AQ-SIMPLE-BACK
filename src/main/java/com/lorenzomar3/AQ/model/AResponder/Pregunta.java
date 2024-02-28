@@ -66,7 +66,6 @@ public abstract class Pregunta<T> extends AResponder implements IPregunta<T> {
     }
 
 
-
 }
 
 

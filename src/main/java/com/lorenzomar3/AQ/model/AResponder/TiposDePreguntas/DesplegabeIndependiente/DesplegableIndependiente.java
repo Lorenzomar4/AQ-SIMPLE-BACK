@@ -1,6 +1,7 @@
 package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegabeIndependiente;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.model.AResponder.AsignadorDeTipoALasPreguntas;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.RespuestaDeDesplegableIndependiente;
@@ -19,7 +20,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DesplegableIndependiente extends Pregunta<List<RespuestaDeDesplegableIndependiente>> {
+public class DesplegableIndependiente extends Pregunta<RespuestaDePreguntaDTO> {
 
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -47,11 +48,17 @@ public class DesplegableIndependiente extends Pregunta<List<RespuestaDeDesplegab
 
 
     @Override
-    public boolean laRespuestaEsCorrecta(List<RespuestaDeDesplegableIndependiente> listaRespuesta) {
-        return listaRespuesta.stream().allMatch(resp ->
-                preguntaConSuIdDeLaRespuestaCorrespondiente.get(resp.getIdDeLaPregunta())
-                        .equals(resp.getIdDeLaRespuestaSeleccionada())
-        );
+    public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
+
+        List<SeleccionUnicaParaDesplegableIndependiente> lista = respuestaDePreguntaDTO
+                .getListaDeSeleccionesUnicasParaDesplegableIndependiente();
+
+        return lista.stream().allMatch(this::verificarCoincidecia);
+
+    }
+
+    public Boolean verificarCoincidecia(SeleccionUnicaParaDesplegableIndependiente seleccionUnica) {
+        return preguntaConSuIdDeLaRespuestaCorrespondiente.get(seleccionUnica.getId()).equals(seleccionUnica.filtrarLaOpcionCorrecta());
     }
 
 
