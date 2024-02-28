@@ -1,6 +1,7 @@
 package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableCompartido;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.Verificador.IRespuestaOpcion;
 import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class OpcionDeDesplegableCompartido {
+public class OpcionDeDesplegableCompartido implements IRespuestaOpcion<String> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,12 +23,17 @@ public class OpcionDeDesplegableCompartido {
     @JsonView(View.JustToAnswer.class)
     String pregunta;
 
+    String respuesta;
+
+
     public OpcionDeDesplegableCompartido(String pregunta, String respuesta) {
         this.pregunta = pregunta;
         this.respuesta = respuesta;
     }
 
-    String respuesta;
 
-
+    @Override
+    public String getRespuestaCorrecta() {
+        return respuesta;
+    }
 }

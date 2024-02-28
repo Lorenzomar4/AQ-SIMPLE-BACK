@@ -2,7 +2,6 @@ package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableComparti
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
-import com.lorenzomar3.AQ.model.AResponder.Opcion;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.*;
@@ -35,7 +34,7 @@ public class DesplegableCompartido extends Pregunta {
     @PostLoad
     public void init() {
         listaDeOpciones.forEach(opcion -> {
-                    mapPreguntaRespuesta.put(opcion.getPregunta(), opcion.getRespuesta());
+                    mapPreguntaRespuesta.put(opcion.getPregunta(), opcion.getRespuestaCorrecta());
                 }
         );
 
@@ -52,7 +51,7 @@ public class DesplegableCompartido extends Pregunta {
                 respuestaDePreguntaDTO.getListaDeOpcionesParaDesplegableCompartidos().stream()
                         .allMatch(opcionElegida ->
                                 mapPreguntaRespuesta.get(opcionElegida.getPregunta())
-                                        .equals(opcionElegida.getRespuesta()));
+                                        .equals(opcionElegida.getRespuestaCorrecta()));
 
         return verificarQueLasRespuestasIngresadasCoincidanConAsignadasALaPregunta;
     }
@@ -60,7 +59,7 @@ public class DesplegableCompartido extends Pregunta {
 
     @JsonView(View.JustToAnswer.class)
     public List<String> posiblesRespuestasParaCadaOpcion() {
-        List<String> posiblesRespuesta = new ArrayList<>(listaDeOpciones.stream().map(op -> op.getRespuesta()).toList());
+        List<String> posiblesRespuesta = new ArrayList<>(listaDeOpciones.stream().map(op -> op.getRespuestaCorrecta()).toList());
         Collections.shuffle(posiblesRespuesta);
         return posiblesRespuesta;
 

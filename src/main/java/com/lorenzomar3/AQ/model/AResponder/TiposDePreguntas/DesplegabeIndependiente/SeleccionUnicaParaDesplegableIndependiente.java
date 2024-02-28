@@ -1,9 +1,8 @@
 package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegabeIndependiente;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
-import com.lorenzomar3.AQ.model.AResponder.IPregunta;
-import com.lorenzomar3.AQ.model.AResponder.Opcion;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.Verificador.IRespuestaOpcion;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.Opcion;
 import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -19,7 +18,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class SeleccionUnicaParaDesplegableIndependiente  {
+public class SeleccionUnicaParaDesplegableIndependiente implements IRespuestaOpcion<Long> {
 
 
     @Id
@@ -42,9 +41,11 @@ public class SeleccionUnicaParaDesplegableIndependiente  {
     }
 
 
-    public Long filtrarLaOpcionCorrecta() {
-        return listaDeOpcionesDisponible.stream().filter(Opcion::getEsLaOpcionVerdadera).toList().get(0).getId();
+
+
+
+    @Override
+    public Long getRespuestaCorrecta() {
+        return listaDeOpcionesDisponible.stream().filter(Opcion::getRespuestaCorrecta).toList().get(0).getId();
     }
-
-
 }

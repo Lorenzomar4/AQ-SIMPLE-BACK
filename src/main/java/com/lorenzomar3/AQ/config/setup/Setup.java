@@ -2,7 +2,7 @@ package com.lorenzomar3.AQ.config.setup;
 
 import com.lorenzomar3.AQ.Repository.CuestionarioRepository;
 import com.lorenzomar3.AQ.Service.CuestionarioService;
-import com.lorenzomar3.AQ.model.AResponder.Opcion;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.Opcion;
 import com.lorenzomar3.AQ.model.AResponder.Tema;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.*;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegabeIndependiente.DesplegableIndependiente;

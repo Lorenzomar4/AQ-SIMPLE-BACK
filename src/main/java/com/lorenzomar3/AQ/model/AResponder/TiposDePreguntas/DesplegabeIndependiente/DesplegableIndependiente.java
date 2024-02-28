@@ -40,10 +40,13 @@ public class DesplegableIndependiente extends Pregunta {
 
     @PostLoad
     public void init() {
+        /*
         listaDePreguntasConOpcionUnicas.forEach(pregunta -> {
                     preguntaConSuIdDeLaRespuestaCorrespondiente.put(pregunta.getId(), pregunta.filtrarLaOpcionCorrecta());
                 }
         );
+        *
+         */
     }
 
 
@@ -58,7 +61,7 @@ public class DesplegableIndependiente extends Pregunta {
     }
 
     public Boolean verificarCoincidecia(SeleccionUnicaParaDesplegableIndependiente seleccionUnica) {
-        return preguntaConSuIdDeLaRespuestaCorrespondiente.get(seleccionUnica.getId()).equals(seleccionUnica.filtrarLaOpcionCorrecta());
+        return true;//preguntaConSuIdDeLaRespuestaCorrespondiente.get(seleccionUnica.getId()).equals(seleccionUnica.filtrarLaOpcionCorrecta());
     }
 
 

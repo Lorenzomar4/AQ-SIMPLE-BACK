@@ -2,14 +2,12 @@ package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
-import com.lorenzomar3.AQ.model.AResponder.Opcion;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 @Entity
@@ -38,7 +36,7 @@ public class OpcionMultiple extends Pregunta {
     public void init() {
 
         listaDeOpciones.forEach(op -> {
-            mapDeOpcionesConSuValidez.put(op.getId(), op.getEsLaOpcionVerdadera());
+            mapDeOpcionesConSuValidez.put(op.getId(), op.getRespuestaCorrecta());
         });
 
     }
@@ -51,7 +49,7 @@ public class OpcionMultiple extends Pregunta {
     }
 
     public Boolean verificarCoincidencias(Opcion opcion) {
-        return mapDeOpcionesConSuValidez.get(opcion.getId()).equals(opcion.getEsLaOpcionVerdadera());
+        return mapDeOpcionesConSuValidez.get(opcion.getId()).equals(opcion.getRespuestaCorrecta());
     }
 
 

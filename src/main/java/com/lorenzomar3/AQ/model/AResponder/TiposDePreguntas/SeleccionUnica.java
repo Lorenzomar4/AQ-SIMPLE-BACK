@@ -3,8 +3,8 @@ package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.exception.BussinesException;
-import com.lorenzomar3.AQ.model.AResponder.Opcion;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.Verificador.Verificador;
 import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -30,15 +30,15 @@ public class SeleccionUnica extends Pregunta {
     @Transient
     HashMap<Long, Boolean> mapDeOpcionesConSuValidez = new HashMap<>();
 
+
     @PostLoad
     public void init() {
 
         listaDeOpcionesDisponible.forEach(op -> {
-                    mapDeOpcionesConSuValidez.put(op.getId(), op.getEsLaOpcionVerdadera());
+                    mapDeOpcionesConSuValidez.put(op.getId(), op.getRespuestaCorrecta());
                 }
         );
     }
-
 
     public SeleccionUnica(String titulo, List<Opcion> listaDeOpcionesDisponible) {
         super(titulo);
@@ -48,13 +48,12 @@ public class SeleccionUnica extends Pregunta {
 
     @Override
     public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
-        List<Opcion> listaDeOpciones = respuestaDePreguntaDTO.getListaDeOpciones();
-        validacionDeOpcionUnica(listaDeOpciones);
-        return listaDeOpciones.stream().allMatch(opIngresado -> verificarCoincidencias(opIngresado));
+        Verificador<Boolean, Opcion> verificador = new Verificador<>();
+        return verificador.coincidenciaTotal(listaDeOpcionesDisponible,respuestaDePreguntaDTO.getListaDeOpciones());
     }
 
     public Boolean verificarCoincidencias(Opcion opcion) {
-        return mapDeOpcionesConSuValidez.get(opcion.getId()).equals(opcion.getEsLaOpcionVerdadera());
+        return mapDeOpcionesConSuValidez.get(opcion.getId()).equals(opcion.getRespuestaCorrecta());
     }
 
 
@@ -72,7 +71,7 @@ public class SeleccionUnica extends Pregunta {
     }
 
     private Boolean existeUnaOpcionVerdaderaUnicamente(List<Opcion> lista) {
-        int numeroDeOpcionesVerdaderas = lista.stream().filter(op -> op.getEsLaOpcionVerdadera()).toList().size();
+        int numeroDeOpcionesVerdaderas = lista.stream().filter(op -> op.getRespuestaCorrecta()).toList().size();
 
         return numeroDeOpcionesVerdaderas == 1;
 
