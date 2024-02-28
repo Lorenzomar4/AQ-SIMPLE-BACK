@@ -38,15 +38,15 @@ public class SeleccionUnica extends Pregunta<RespuestaDePreguntaDTO> {
         Opcion correcta = obtenerLaOpcionQueSeIndiqueVerdadera(listaDeOpcionesDisponible);
         Opcion queElUsuarioConsideraCorrecta = obtenerLaOpcionQueSeIndiqueVerdadera(respuestaDePreguntaDTO.getListaDeOpciones());
 
-        return  correcta.getId().equals(queElUsuarioConsideraCorrecta.getId());
+        return correcta.getId().equals(queElUsuarioConsideraCorrecta.getId());
     }
 
 
-    private Opcion filtrarLaOpcionCorrecta(List<Opcion> lista){
+    private Opcion filtrarLaOpcionCorrecta(List<Opcion> lista) {
         return lista.stream().filter(Opcion::getEsLaOpcionVerdadera).toList().get(0);
     }
 
-    public Opcion obtenerLaOpcionQueSeIndiqueVerdadera(List<Opcion> lista){
+    public Opcion obtenerLaOpcionQueSeIndiqueVerdadera(List<Opcion> lista) {
         validacionDeOpcionUnica(lista);
 
         return filtrarLaOpcionCorrecta(lista);
