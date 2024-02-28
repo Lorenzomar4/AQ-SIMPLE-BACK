@@ -27,18 +27,6 @@ public class SeleccionUnica extends Pregunta {
     @JsonView(View.JustToAnswer.class)
     public List<Opcion> listaDeOpcionesDisponible = new ArrayList<>();
 
-    @Transient
-    HashMap<Long, Boolean> mapDeOpcionesConSuValidez = new HashMap<>();
-
-
-    @PostLoad
-    public void init() {
-
-        listaDeOpcionesDisponible.forEach(op -> {
-                    mapDeOpcionesConSuValidez.put(op.getId(), op.getRespuestaCorrecta());
-                }
-        );
-    }
 
     public SeleccionUnica(String titulo, List<Opcion> listaDeOpcionesDisponible) {
         super(titulo);
@@ -48,12 +36,9 @@ public class SeleccionUnica extends Pregunta {
 
     @Override
     public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
+        validacionDeOpcionUnica(respuestaDePreguntaDTO.getListaDeOpciones());
         Verificador<Boolean, Opcion> verificador = new Verificador<>();
-        return verificador.coincidenciaTotal(listaDeOpcionesDisponible,respuestaDePreguntaDTO.getListaDeOpciones());
-    }
-
-    public Boolean verificarCoincidencias(Opcion opcion) {
-        return mapDeOpcionesConSuValidez.get(opcion.getId()).equals(opcion.getRespuestaCorrecta());
+        return verificador.coincidenciaTotal(listaDeOpcionesDisponible, respuestaDePreguntaDTO.getListaDeOpciones());
     }
 
 

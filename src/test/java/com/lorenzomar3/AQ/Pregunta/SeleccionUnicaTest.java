@@ -1,4 +1,4 @@
-package com.lorenzomar3.AQ;
+package com.lorenzomar3.AQ.Pregunta;
 
 import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.*;
