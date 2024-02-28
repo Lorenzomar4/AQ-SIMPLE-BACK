@@ -29,15 +29,17 @@ public class SeleccionUnicaParaDesplegableIndependiente implements IPregunta<Lon
     @JsonView(View.JustToAnswer.class)
     String titulo;
 
-    public SeleccionUnicaParaDesplegableIndependiente(String titulo, List<Opcion> listaDeOpcionesDisponible) {
-        this.titulo = titulo;
-        this.listaDeOpcionesDisponible = listaDeOpcionesDisponible;
-    }
+
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "id_desplegable_independiente")
     @JsonView(View.JustToAnswer.class)
     public List<Opcion> listaDeOpcionesDisponible = new ArrayList<>();
+
+    public SeleccionUnicaParaDesplegableIndependiente(String titulo, List<Opcion> listaDeOpcionesDisponible) {
+        this.titulo = titulo;
+        this.listaDeOpcionesDisponible = listaDeOpcionesDisponible;
+    }
 
 
     public Long filtrarLaOpcionCorrecta() {
