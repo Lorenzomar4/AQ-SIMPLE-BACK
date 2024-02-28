@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
-public class PreguntaSimple extends Pregunta<RespuestaDePreguntaDTO> {
+public class PreguntaSimple extends Pregunta {
 
 
     public String respuestaEstablecida;

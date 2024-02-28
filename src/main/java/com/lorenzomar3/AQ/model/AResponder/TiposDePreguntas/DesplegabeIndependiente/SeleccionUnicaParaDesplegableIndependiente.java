@@ -1,6 +1,7 @@
 package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegabeIndependiente;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.model.AResponder.IPregunta;
 import com.lorenzomar3.AQ.model.AResponder.Opcion;
 import com.lorenzomar3.AQ.model.View;
@@ -18,7 +19,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class SeleccionUnicaParaDesplegableIndependiente implements IPregunta<Long> {
+public class SeleccionUnicaParaDesplegableIndependiente  {
 
 
     @Id
@@ -46,8 +47,4 @@ public class SeleccionUnicaParaDesplegableIndependiente implements IPregunta<Lon
     }
 
 
-    @Override
-    public boolean laRespuestaEsCorrecta(Long respuesta) {
-        return filtrarLaOpcionCorrecta().equals(respuesta);
-    }
 }

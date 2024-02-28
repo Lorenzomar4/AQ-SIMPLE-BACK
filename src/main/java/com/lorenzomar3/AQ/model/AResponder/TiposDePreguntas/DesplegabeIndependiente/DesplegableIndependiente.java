@@ -20,7 +20,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DesplegableIndependiente extends Pregunta<RespuestaDePreguntaDTO> {
+public class DesplegableIndependiente extends Pregunta {
 
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

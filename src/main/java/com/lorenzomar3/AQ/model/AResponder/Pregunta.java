@@ -2,6 +2,7 @@ package com.lorenzomar3.AQ.model.AResponder;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.model.TipoAResponder;
 import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.*;
@@ -18,7 +19,7 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 
-public abstract class Pregunta<T> extends AResponder implements IPregunta<T> {
+public abstract class Pregunta extends AResponder implements IPregunta {
 
 
     @JsonView(View.JustToAnswer.class)

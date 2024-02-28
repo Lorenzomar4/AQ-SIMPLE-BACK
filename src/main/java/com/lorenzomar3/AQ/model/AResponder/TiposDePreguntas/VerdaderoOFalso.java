@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
-public class VerdaderoOFalso extends Pregunta<RespuestaDePreguntaDTO> {
+public class VerdaderoOFalso extends Pregunta {
 
     public Boolean respuestaVerdadera;
 

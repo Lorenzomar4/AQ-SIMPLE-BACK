@@ -18,7 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SeleccionUnica extends Pregunta<RespuestaDePreguntaDTO> {
+public class SeleccionUnica extends Pregunta {
 
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

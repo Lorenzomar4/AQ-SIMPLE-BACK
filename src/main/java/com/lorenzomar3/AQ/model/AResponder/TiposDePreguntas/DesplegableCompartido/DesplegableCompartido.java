@@ -16,7 +16,7 @@ import java.util.*;
 @Setter
 @Getter
 @NoArgsConstructor
-public class DesplegableCompartido extends Pregunta<RespuestaDePreguntaDTO> {
+public class DesplegableCompartido extends Pregunta {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_pregunta")

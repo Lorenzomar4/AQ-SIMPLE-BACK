@@ -14,7 +14,7 @@ import java.util.List;
 
 @Entity
 @NoArgsConstructor
-public class OpcionMultiple extends Pregunta<RespuestaDePreguntaDTO> {
+public class OpcionMultiple extends Pregunta {
 
 
     public OpcionMultiple(String titulo, List<Opcion> listaDeOpciones) {

@@ -1,6 +1,8 @@
 package com.lorenzomar3.AQ.model.AResponder;
 
-public interface IPregunta <T>{
-    boolean laRespuestaEsCorrecta(T respuesta);
+import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
+
+public interface IPregunta{
+    boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuesta);
 
 }
