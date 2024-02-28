@@ -1,7 +1,6 @@
 package com.lorenzomar3.AQ.Repository.PreguntaRepository;
 
-import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableCompartido;
-import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.OpcionMultiple;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableCompartido.DesplegableCompartido;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Repository;
 

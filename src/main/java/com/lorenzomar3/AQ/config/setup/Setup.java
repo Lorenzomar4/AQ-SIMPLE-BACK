@@ -5,14 +5,16 @@ import com.lorenzomar3.AQ.Service.CuestionarioService;
 import com.lorenzomar3.AQ.model.AResponder.Opcion;
 import com.lorenzomar3.AQ.model.AResponder.Tema;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.*;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegabeIndependiente.DesplegableIndependiente;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegabeIndependiente.SeleccionUnicaParaDesplegableIndependiente;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableCompartido.DesplegableCompartido;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableCompartido.OpcionDeDesplegableCompartido;
 import com.lorenzomar3.AQ.model.Cuestionario;
-import com.lorenzomar3.AQ.model.TipoAResponder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -53,13 +55,13 @@ public class Setup implements ApplicationRunner {
 
     DesplegableCompartido desplegableCompartido;
 
-    SeleccionUnica seleccionUnica2;
+    SeleccionUnicaParaDesplegableIndependiente seleccionUnicaParaDesplegableInd1;
 
     Opcion opA;
     Opcion opB;
     Opcion opC;
 
-    SeleccionUnica seleccionUnica3;
+    SeleccionUnicaParaDesplegableIndependiente seleccionUnicaParaDesplegableInd2;
 
     Opcion opD;
     Opcion opE;
@@ -112,12 +114,12 @@ public class Setup implements ApplicationRunner {
         opF = new Opcion("2003", false);
 
 
-        seleccionUnica2 = new SeleccionUnica("¿En que año se declaro la independencia?", List.of(opA, opB, opC));
-        seleccionUnica3 = new SeleccionUnica("En que año boca gano su sexta libertadores?", List.of(opD, opE, opF));
+        seleccionUnicaParaDesplegableInd1 = new SeleccionUnicaParaDesplegableIndependiente("¿En que año se declaro la independencia?", List.of(opA, opB, opC));
+        seleccionUnicaParaDesplegableInd2 = new SeleccionUnicaParaDesplegableIndependiente("En que año boca gano su sexta libertadores?", List.of(opD, opE, opF));
 
         desplegableIndependiente =
                 new DesplegableIndependiente("Para cada pregunta seleccione una opcion que considere correcta",
-                        List.of(seleccionUnica2,seleccionUnica3)
+                        List.of(seleccionUnicaParaDesplegableInd1, seleccionUnicaParaDesplegableInd2)
                 );
 
 

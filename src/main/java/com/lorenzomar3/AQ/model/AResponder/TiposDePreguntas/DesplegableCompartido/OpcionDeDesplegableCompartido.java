@@ -1,4 +1,4 @@
-package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas;
+package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableCompartido;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.model.View;

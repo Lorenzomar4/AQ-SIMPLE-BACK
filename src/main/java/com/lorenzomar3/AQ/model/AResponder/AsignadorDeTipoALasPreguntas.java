@@ -1,6 +1,8 @@
 package com.lorenzomar3.AQ.model.AResponder;
 
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.*;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegabeIndependiente.DesplegableIndependiente;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableCompartido.DesplegableCompartido;
 import com.lorenzomar3.AQ.model.TipoAResponder;
 
 import java.util.HashMap;

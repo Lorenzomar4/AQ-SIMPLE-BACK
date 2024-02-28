@@ -1,16 +1,14 @@
-package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas;
+package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableCompartido;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 import com.lorenzomar3.AQ.model.View;
-import jakarta.annotation.PostConstruct;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Entity
 @Setter

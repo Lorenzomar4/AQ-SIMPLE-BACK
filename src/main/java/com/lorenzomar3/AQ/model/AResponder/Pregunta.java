@@ -18,7 +18,7 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 
-public abstract class Pregunta<T> extends AResponder {
+public abstract class Pregunta<T> extends AResponder implements IPregunta<T> {
 
 
     @JsonView(View.JustToAnswer.class)
@@ -65,7 +65,7 @@ public abstract class Pregunta<T> extends AResponder {
         tipo = AsignadorDeTipoALasPreguntas.getInstance().asignarTipo(this);
     }
 
-    public abstract boolean laRespuestaEsCorrecta(T respuesta);
+
 
 }
 
