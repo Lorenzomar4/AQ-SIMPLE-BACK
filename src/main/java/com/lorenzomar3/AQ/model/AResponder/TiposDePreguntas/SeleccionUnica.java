@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Entity
@@ -26,6 +27,18 @@ public class SeleccionUnica extends Pregunta {
     @JsonView(View.JustToAnswer.class)
     public List<Opcion> listaDeOpcionesDisponible = new ArrayList<>();
 
+    @Transient
+    HashMap<Long, Boolean> mapDeOpcionesConSuValidez = new HashMap<>();
+
+    @PostLoad
+    public void init() {
+
+        listaDeOpcionesDisponible.forEach(op -> {
+                    mapDeOpcionesConSuValidez.put(op.getId(), op.getEsLaOpcionVerdadera());
+                }
+        );
+    }
+
 
     public SeleccionUnica(String titulo, List<Opcion> listaDeOpcionesDisponible) {
         super(titulo);
@@ -35,23 +48,15 @@ public class SeleccionUnica extends Pregunta {
 
     @Override
     public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
-        Opcion correcta = obtenerLaOpcionQueSeIndiqueVerdadera(listaDeOpcionesDisponible);
-        Opcion queElUsuarioConsideraCorrecta = obtenerLaOpcionQueSeIndiqueVerdadera(respuestaDePreguntaDTO.getListaDeOpciones());
-
-        return correcta.getId().equals(queElUsuarioConsideraCorrecta.getId());
+        List<Opcion> listaDeOpciones = respuestaDePreguntaDTO.getListaDeOpciones();
+        validacionDeOpcionUnica(listaDeOpciones);
+        return listaDeOpciones.stream().allMatch(opIngresado -> verificarCoincidencias(opIngresado));
     }
 
-
-    private Opcion filtrarLaOpcionCorrecta(List<Opcion> lista) {
-        return lista.stream().filter(Opcion::getEsLaOpcionVerdadera).toList().get(0);
+    public Boolean verificarCoincidencias(Opcion opcion) {
+        return mapDeOpcionesConSuValidez.get(opcion.getId()).equals(opcion.getEsLaOpcionVerdadera());
     }
 
-    public Opcion obtenerLaOpcionQueSeIndiqueVerdadera(List<Opcion> lista) {
-        validacionDeOpcionUnica(lista);
-
-        return filtrarLaOpcionCorrecta(lista);
-
-    }
 
     public void setListaDeOpcionesDisponible(List<Opcion> lista) {
 
@@ -74,10 +79,7 @@ public class SeleccionUnica extends Pregunta {
     }
 
     public void agregarLaOpcionALaListaYAsignarLaIdDeLaOpcionCorrecta(Opcion opcion) {
-
         listaDeOpcionesDisponible.add(opcion);
-
-
     }
 
 

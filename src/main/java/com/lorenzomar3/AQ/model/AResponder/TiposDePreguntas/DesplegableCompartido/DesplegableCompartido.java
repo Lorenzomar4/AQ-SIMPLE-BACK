@@ -32,8 +32,6 @@ public class DesplegableCompartido extends Pregunta {
     }
 
 
-
-
     @PostLoad
     public void init() {
         listaDeOpciones.forEach(opcion -> {
@@ -58,7 +56,6 @@ public class DesplegableCompartido extends Pregunta {
 
         return verificarQueLasRespuestasIngresadasCoincidanConAsignadasALaPregunta;
     }
-
 
 
     @JsonView(View.JustToAnswer.class)
