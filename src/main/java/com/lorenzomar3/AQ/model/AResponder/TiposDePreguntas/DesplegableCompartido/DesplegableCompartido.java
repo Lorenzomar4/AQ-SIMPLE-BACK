@@ -3,6 +3,7 @@ package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableComparti
 import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.Verificador.Verificador;
 import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -22,8 +23,7 @@ public class DesplegableCompartido extends Pregunta {
     @JsonView(View.JustToAnswer.class)
     public List<OpcionDeDesplegableCompartido> listaDeOpciones;
 
-    @Transient
-    HashMap<String, String> mapPreguntaRespuesta = new HashMap<>();
+
 
     public DesplegableCompartido(String titulo, List<OpcionDeDesplegableCompartido> listaDeOpciones) {
         super(titulo);
@@ -33,26 +33,13 @@ public class DesplegableCompartido extends Pregunta {
 
     @PostLoad
     public void init() {
-        listaDeOpciones.forEach(opcion -> {
-                    mapPreguntaRespuesta.put(opcion.getPregunta(), opcion.getRespuestaCorrecta());
-                }
-        );
-
         Collections.shuffle(listaDeOpciones);
-
-
     }
 
     @Override
     public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
-
-        Boolean verificarQueLasRespuestasIngresadasCoincidanConAsignadasALaPregunta =
-
-                respuestaDePreguntaDTO.getListaDeOpcionesParaDesplegableCompartidos().stream()
-                        .allMatch(opcionElegida ->
-                                mapPreguntaRespuesta.get(opcionElegida.getPregunta())
-                                        .equals(opcionElegida.getRespuestaCorrecta()));
-        return verificarQueLasRespuestasIngresadasCoincidanConAsignadasALaPregunta;
+        Verificador<String ,OpcionDeDesplegableCompartido > verificador = new Verificador<>();
+        return verificador.coincidenciaTotal(listaDeOpciones,respuestaDePreguntaDTO.getListaDeOpcionesParaDesplegableCompartidos() );
     }
 
 

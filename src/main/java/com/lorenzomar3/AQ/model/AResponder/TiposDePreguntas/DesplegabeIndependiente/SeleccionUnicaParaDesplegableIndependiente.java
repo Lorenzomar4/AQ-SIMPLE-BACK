@@ -41,9 +41,6 @@ public class SeleccionUnicaParaDesplegableIndependiente implements IRespuestaOpc
     }
 
 
-
-
-
     @Override
     public Long getRespuestaCorrecta() {
         return listaDeOpcionesDisponible.stream().filter(Opcion::getRespuestaCorrecta).toList().get(0).getId();

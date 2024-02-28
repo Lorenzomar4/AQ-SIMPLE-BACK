@@ -2,12 +2,10 @@ package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegabeIndependi
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
-import com.lorenzomar3.AQ.model.AResponder.AsignadorDeTipoALasPreguntas;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
-import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.RespuestaDeDesplegableIndependiente;
-import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.SeleccionUnica;
+
 import com.lorenzomar3.AQ.model.View;
-import jakarta.annotation.PostConstruct;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

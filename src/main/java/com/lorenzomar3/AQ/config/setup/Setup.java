@@ -51,9 +51,11 @@ public class Setup implements ApplicationRunner {
 
     OpcionDeDesplegableCompartido opcionDeDesplegableCompartido4;
 
+    DesplegableCompartido desplegableCompartido;
+
     DesplegableIndependiente desplegableIndependiente;
 
-    DesplegableCompartido desplegableCompartido;
+
 
     SeleccionUnicaParaDesplegableIndependiente seleccionUnicaParaDesplegableInd1;
 

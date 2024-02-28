@@ -17,7 +17,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Opcion implements IRespuestaOpcion<Boolean> {
     @Id
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonView(View.JustToAnswer.class)
     Long id;
 
