@@ -49,12 +49,21 @@ public class Setup implements ApplicationRunner {
 
     OpcionDeDesplegableCompartido opcionDeDesplegableCompartido4;
 
-
-
+    DesplegableIndependiente desplegableIndependiente;
 
     DesplegableCompartido desplegableCompartido;
 
+    SeleccionUnica seleccionUnica2;
 
+    Opcion opA;
+    Opcion opB;
+    Opcion opC;
+
+    SeleccionUnica seleccionUnica3;
+
+    Opcion opD;
+    Opcion opE;
+    Opcion opF;
 
 
     @Autowired
@@ -82,17 +91,35 @@ public class Setup implements ApplicationRunner {
 
         opcionMultiple = new OpcionMultiple("Intel i7 10700", List.of(opcion1, opcion2, opcion3, opcion4));
 
-        opcionDeDesplegableCompartido1 = new OpcionDeDesplegableCompartido("Sao Pablo","Brasil");
-        opcionDeDesplegableCompartido2 = new OpcionDeDesplegableCompartido("Buenos Aires","Argentina");
-        opcionDeDesplegableCompartido3 = new OpcionDeDesplegableCompartido("Montevideo","Uruguay");
-        opcionDeDesplegableCompartido4 = new OpcionDeDesplegableCompartido("Lima","Peru");
-
-
+        opcionDeDesplegableCompartido1 = new OpcionDeDesplegableCompartido("Sao Pablo", "Brasil");
+        opcionDeDesplegableCompartido2 = new OpcionDeDesplegableCompartido("Buenos Aires", "Argentina");
+        opcionDeDesplegableCompartido3 = new OpcionDeDesplegableCompartido("Montevideo", "Uruguay");
+        opcionDeDesplegableCompartido4 = new OpcionDeDesplegableCompartido("Lima", "Peru");
 
 
         desplegableCompartido = new DesplegableCompartido("A que pais pertenecen cada una de estas provincias",
-                List.of(opcionDeDesplegableCompartido1,opcionDeDesplegableCompartido2,
-                        opcionDeDesplegableCompartido3,opcionDeDesplegableCompartido4));
+                List.of(opcionDeDesplegableCompartido1, opcionDeDesplegableCompartido2,
+                        opcionDeDesplegableCompartido3, opcionDeDesplegableCompartido4));
+
+
+        opA = new Opcion("1900", false);
+        opB = new Opcion("1816", true);
+        opC = new Opcion("1810", false);
+
+
+        opD = new Opcion("2007", true);
+        opE = new Opcion("2001", false);
+        opF = new Opcion("2003", false);
+
+
+        seleccionUnica2 = new SeleccionUnica("¿En que año se declaro la independencia?", List.of(opA, opB, opC));
+        seleccionUnica3 = new SeleccionUnica("En que año boca gano su sexta libertadores?", List.of(opD, opE, opF));
+
+        desplegableIndependiente =
+                new DesplegableIndependiente("Para cada pregunta seleccione una opcion que considere correcta",
+                        List.of(seleccionUnica2,seleccionUnica3)
+                );
+
 
         eym.agregarNuevoPreguntaOTema(fuerzaElectrica);
         eym.agregarNuevoPreguntaOTema(capacitores);
@@ -101,6 +128,7 @@ public class Setup implements ApplicationRunner {
         eym.agregarNuevoPreguntaOTema(seleccionUnica);
         eym.agregarNuevoPreguntaOTema(opcionMultiple);
         eym.agregarNuevoPreguntaOTema(desplegableCompartido);
+        eym.agregarNuevoPreguntaOTema(desplegableIndependiente);
 
     }
 

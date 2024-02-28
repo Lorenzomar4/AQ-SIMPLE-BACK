@@ -17,7 +17,7 @@ import java.util.List;
 public class Tema extends AResponder {
 
     @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "duenio")
+    @JoinColumn(name = "id_tema_duenio")
     public List<AResponder> listaDePreguntas = new ArrayList<>();
 
 

@@ -25,6 +25,7 @@ public class SeleccionUnica extends Pregunta<Long> {
     @JsonView(View.JustToAnswer.class)
     public List<Opcion> listaDeOpcionesDisponible = new ArrayList<>();
 
+
     public SeleccionUnica(String titulo, List<Opcion> listaDeOpcionesDisponible) {
         super(titulo);
         setListaDeOpcionesDisponible(listaDeOpcionesDisponible);

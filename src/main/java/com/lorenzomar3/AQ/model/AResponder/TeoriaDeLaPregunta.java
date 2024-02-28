@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 @Entity
 
-public class TeoriaDeLaPregunta  {
+public class TeoriaDeLaPregunta {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_pregunta")

@@ -28,8 +28,8 @@ public class AsignadorDeTipoALasPreguntas {
         mapAsignadorDeTipo.put(VerdaderoOFalso.class, TipoAResponder.VERDADERO_FALSO);
         mapAsignadorDeTipo.put(SeleccionUnica.class, TipoAResponder.SELECCION_UNICA);
         mapAsignadorDeTipo.put(OpcionMultiple.class, TipoAResponder.OPCION_MULTIPLE);
-        mapAsignadorDeTipo.put(DesplegableCompartido.class,TipoAResponder.DESPLEGABLE_COMPARTIDO);
-        mapAsignadorDeTipo.put(DesplegableIndependiente.class,TipoAResponder.DESPLEGABLE_COMPARTIDO);
+        mapAsignadorDeTipo.put(DesplegableCompartido.class, TipoAResponder.DESPLEGABLE_COMPARTIDO);
+        mapAsignadorDeTipo.put(DesplegableIndependiente.class, TipoAResponder.DESPLEGABLE_INDEPENDIENTE);
 
         return mapAsignadorDeTipo.get(tipo.getClass());
 

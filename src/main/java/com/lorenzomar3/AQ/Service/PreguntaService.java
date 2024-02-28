@@ -30,16 +30,18 @@ public class PreguntaService {
     @Autowired
     DesplegableCompartidoRepositorio desplegableCompartidoRepositorio;
 
+    @Autowired
+    DesplegableIndependienteRepository desplegableIndependienteRepository;
     HashMap<TipoAResponder, BasePreguntaRepositorio<?>> mapDeRepositorios = new HashMap<>();
 
     @PostConstruct
-    private void init(){
+    private void init() {
         mapDeRepositorios.put(TipoAResponder.PREGUNTA_SIMPLE, preguntaRepository);
         mapDeRepositorios.put(TipoAResponder.VERDADERO_FALSO, preguntaRepository);
         mapDeRepositorios.put(TipoAResponder.SELECCION_UNICA, seleccionUnicaRepository);
         mapDeRepositorios.put(TipoAResponder.OPCION_MULTIPLE, opcionMultipleRepository);
-        mapDeRepositorios.put(TipoAResponder.DESPLEGABLE_COMPARTIDO,desplegableCompartidoRepositorio);
-
+        mapDeRepositorios.put(TipoAResponder.DESPLEGABLE_COMPARTIDO, desplegableCompartidoRepositorio);
+        mapDeRepositorios.put(TipoAResponder.DESPLEGABLE_INDEPENDIENTE, desplegableIndependienteRepository);
     }
 
 

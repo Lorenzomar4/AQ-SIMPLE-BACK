@@ -15,13 +15,12 @@ import java.util.List;
 public class OpcionMultiple extends Pregunta<List<Long>> {
 
 
-
     public OpcionMultiple(String titulo, List<Opcion> listaDeOpciones) {
         super(titulo);
         this.listaDeOpciones = listaDeOpciones;
     }
 
-    @OneToMany(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "id_multiple_opcion")
     @JsonView(View.JustToAnswer.class)
     public List<Opcion> listaDeOpciones;
@@ -37,7 +36,6 @@ public class OpcionMultiple extends Pregunta<List<Long>> {
 
         return condicion1 && condicion2;
     }
-
 
 
     private List<Long> listaDeOpcionesValidas() {

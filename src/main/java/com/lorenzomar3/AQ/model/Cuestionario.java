@@ -30,7 +30,7 @@ public class Cuestionario {
 
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "duenio")
+    @JoinColumn(name = "id_cuestionario")
     List<AResponder> listaAResponder;
 
 
