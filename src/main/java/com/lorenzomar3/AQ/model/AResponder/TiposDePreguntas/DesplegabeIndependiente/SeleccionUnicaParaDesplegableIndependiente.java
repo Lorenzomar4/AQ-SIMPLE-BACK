@@ -30,7 +30,6 @@ public class SeleccionUnicaParaDesplegableIndependiente implements IPregunta<Lon
     String titulo;
 
 
-
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "id_desplegable_independiente")
     @JsonView(View.JustToAnswer.class)

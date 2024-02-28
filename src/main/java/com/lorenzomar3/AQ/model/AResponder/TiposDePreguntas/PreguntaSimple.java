@@ -1,12 +1,13 @@
 package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas;
 
+import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 import jakarta.persistence.Entity;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
-public class PreguntaSimple extends Pregunta<Boolean> {
+public class PreguntaSimple extends Pregunta<RespuestaDePreguntaDTO> {
 
 
     public String respuestaEstablecida;
@@ -18,7 +19,7 @@ public class PreguntaSimple extends Pregunta<Boolean> {
 
 
     @Override
-    public boolean laRespuestaEsCorrecta(Boolean respuesta) {
-        return respuesta;
+    public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
+        return respuestaDePreguntaDTO.getRespuestaBooleana();
     }
 }

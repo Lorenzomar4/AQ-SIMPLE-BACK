@@ -31,7 +31,7 @@ public class DesplegableIndependiente extends Pregunta<List<RespuestaDeDesplegab
     @Transient
     HashMap<Long, Long> preguntaConSuIdDeLaRespuestaCorrespondiente = new HashMap<>();
 
-    public DesplegableIndependiente(String titulo,  List<SeleccionUnicaParaDesplegableIndependiente> listaDePreguntasConOpcionUnicas) {
+    public DesplegableIndependiente(String titulo, List<SeleccionUnicaParaDesplegableIndependiente> listaDePreguntasConOpcionUnicas) {
         super(titulo);
         this.listaDePreguntasConOpcionUnicas = listaDePreguntasConOpcionUnicas;
 
@@ -44,7 +44,6 @@ public class DesplegableIndependiente extends Pregunta<List<RespuestaDeDesplegab
                 }
         );
     }
-
 
 
     @Override

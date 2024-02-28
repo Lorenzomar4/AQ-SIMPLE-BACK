@@ -1,6 +1,7 @@
 package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.AResponder.Opcion;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
@@ -17,7 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SeleccionUnica extends Pregunta<Long> {
+public class SeleccionUnica extends Pregunta<RespuestaDePreguntaDTO> {
 
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -33,22 +34,36 @@ public class SeleccionUnica extends Pregunta<Long> {
     }
 
     @Override
-    public boolean laRespuestaEsCorrecta(Long idRespuestaCorrecta) {
-        return idRespuestaCorrecta.equals(filtrarLaOpcionCorrecta());
+    public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
+        Opcion correcta = obtenerLaOpcionQueSeIndiqueVerdadera(listaDeOpcionesDisponible);
+        Opcion queElUsuarioConsideraCorrecta = obtenerLaOpcionQueSeIndiqueVerdadera(respuestaDePreguntaDTO.getListaDeOpciones());
+
+        return  correcta.getId().equals(queElUsuarioConsideraCorrecta.getId());
     }
 
-    public Long filtrarLaOpcionCorrecta() {
-        return listaDeOpcionesDisponible.stream().filter(Opcion::getEsLaOpcionVerdadera).toList().get(0).getId();
+
+    private Opcion filtrarLaOpcionCorrecta(List<Opcion> lista){
+        return lista.stream().filter(Opcion::getEsLaOpcionVerdadera).toList().get(0);
+    }
+
+    public Opcion obtenerLaOpcionQueSeIndiqueVerdadera(List<Opcion> lista){
+        validacionDeOpcionUnica(lista);
+
+        return filtrarLaOpcionCorrecta(lista);
+
     }
 
     public void setListaDeOpcionesDisponible(List<Opcion> lista) {
+
+        validacionDeOpcionUnica(lista);
+        lista.forEach(op -> agregarLaOpcionALaListaYAsignarLaIdDeLaOpcionCorrecta(op));
+
+    }
+
+    public void validacionDeOpcionUnica(List<Opcion> lista) {
         if (!existeUnaOpcionVerdaderaUnicamente(lista)) {
             throw new BussinesException("¡Asegurese de que haya solamente una opcion valida!");
         }
-
-
-        lista.forEach(op -> agregarLaOpcionALaListaYAsignarLaIdDeLaOpcionCorrecta(op));
-
     }
 
     private Boolean existeUnaOpcionVerdaderaUnicamente(List<Opcion> lista) {
