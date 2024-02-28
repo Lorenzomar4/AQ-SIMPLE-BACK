@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.Verificador.Verificador;
 import com.lorenzomar3.AQ.model.View;
 
 import jakarta.persistence.*;
@@ -11,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,39 +29,23 @@ public class DesplegableIndependiente extends Pregunta {
     List<SeleccionUnicaParaDesplegableIndependiente> listaDePreguntasConOpcionUnicas;
 
 
-    @Transient
-    HashMap<Long, Long> preguntaConSuIdDeLaRespuestaCorrespondiente = new HashMap<>();
+    @PostLoad
+    void init() {
+        Collections.shuffle(listaDePreguntasConOpcionUnicas);
+    }
 
     public DesplegableIndependiente(String titulo, List<SeleccionUnicaParaDesplegableIndependiente> listaDePreguntasConOpcionUnicas) {
         super(titulo);
         this.listaDePreguntasConOpcionUnicas = listaDePreguntasConOpcionUnicas;
-
-    }
-
-    @PostLoad
-    public void init() {
-        /*
-        listaDePreguntasConOpcionUnicas.forEach(pregunta -> {
-                    preguntaConSuIdDeLaRespuestaCorrespondiente.put(pregunta.getId(), pregunta.filtrarLaOpcionCorrecta());
-                }
-        );
-        *
-         */
     }
 
 
     @Override
     public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
+        Verificador<Long, SeleccionUnicaParaDesplegableIndependiente> verificador = new Verificador<>();
+        return verificador.coincidenciaTotal(listaDePreguntasConOpcionUnicas,
+                respuestaDePreguntaDTO.getListaDeSeleccionesUnicasParaDesplegableIndependiente());
 
-        List<SeleccionUnicaParaDesplegableIndependiente> lista = respuestaDePreguntaDTO
-                .getListaDeSeleccionesUnicasParaDesplegableIndependiente();
-
-        return lista.stream().allMatch(this::verificarCoincidecia);
-
-    }
-
-    public Boolean verificarCoincidecia(SeleccionUnicaParaDesplegableIndependiente seleccionUnica) {
-        return true;//preguntaConSuIdDeLaRespuestaCorrespondiente.get(seleccionUnica.getId()).equals(seleccionUnica.filtrarLaOpcionCorrecta());
     }
 
 

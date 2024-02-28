@@ -36,6 +36,10 @@ public class PreguntaController {
         Pregunta pregunta = preguntaService.obtenerPregunta(getQuestionDTO);
 
 
+
+
+
+
         return new ResponseEntity<>(pregunta, HttpStatus.OK);
 
     }

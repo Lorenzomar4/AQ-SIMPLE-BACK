@@ -24,6 +24,8 @@ public class Opcion implements IRespuestaOpcion<Boolean> {
     @JsonView(View.JustToAnswer.class)
     String respuestaCorrecta;
 
+
+
     public Boolean esLaOpcionVerdadera;
 
     public Opcion(String respuestaCorrecta, Boolean esLaOpcionVerdadera) {

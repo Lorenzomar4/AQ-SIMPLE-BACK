@@ -58,7 +58,7 @@ public class DesplegableCompartidoTest {
         desplegableCompartido =
                 new DesplegableCompartido("A que pais pertenecen cada una de estas provincias",
                         List.of(opcion1, opcion2,
-                        opcion3, opcion4));
+                                opcion3, opcion4));
 
         List<OpcionDeDesplegableCompartido>
                 listaDeOpcionesIngresadaPorElUsuario =
@@ -70,7 +70,6 @@ public class DesplegableCompartidoTest {
                         .builder()
                         .listaDeOpcionesParaDesplegableCompartidos(listaDeOpcionesIngresadaPorElUsuario)
                         .build();
-
 
     }
 
@@ -91,7 +90,6 @@ public class DesplegableCompartidoTest {
         Assertions.assertTrue(desplegableCompartido.laRespuestaEsCorrecta(desplegableCompartidoeRespuestaDelUsuario));
 
     }
-
 
 
 }
