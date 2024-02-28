@@ -7,7 +7,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -22,14 +21,13 @@ public class Opcion implements IRespuestaOpcion<Boolean> {
     Long id;
 
     @JsonView(View.JustToAnswer.class)
-    String respuestaCorrecta;
-
+    String opcion;
 
 
     public Boolean esLaOpcionVerdadera;
 
     public Opcion(String respuestaCorrecta, Boolean esLaOpcionVerdadera) {
-        this.respuestaCorrecta = respuestaCorrecta;
+        this.opcion = respuestaCorrecta;
         this.esLaOpcionVerdadera = esLaOpcionVerdadera;
     }
 
