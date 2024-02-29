@@ -35,6 +35,8 @@ public class DesplegableCompartido extends Pregunta {
         Collections.shuffle(listaDeOpciones);
     }
 
+
+    //T - value , G extend IRespuestaOpcion<?>
     @Override
     public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
         Verificador<String, OpcionDeDesplegableCompartido> verificador = new Verificador<>();

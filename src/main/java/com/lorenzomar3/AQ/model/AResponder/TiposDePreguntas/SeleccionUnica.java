@@ -3,8 +3,6 @@ package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.exception.BussinesException;
-import com.lorenzomar3.AQ.model.AResponder.Pregunta;
-import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.Verificador.Verificador;
 import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -13,38 +11,43 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-public class SeleccionUnica extends Pregunta {
-
+public class SeleccionUnica extends APreguntaVariasOpciones<Boolean,Opcion> {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_pregunta")
+    @JoinColumn()
     @JsonView(View.JustToAnswer.class)
-    public List<Opcion> listaDeOpcionesDisponible = new ArrayList<>();
+    public List<Opcion> listaDeOpcionesConSuRespuestaReal = new ArrayList<>();
+
 
     @PostLoad
     void init() {
-        Collections.shuffle(listaDeOpcionesDisponible);
+        Collections.shuffle(listaDeOpcionesConSuRespuestaReal);
     }
-
 
     public SeleccionUnica(String titulo, List<Opcion> listaDeOpcionesDisponible) {
         super(titulo);
-        setListaDeOpcionesDisponible(listaDeOpcionesDisponible);
-        this.listaDeOpcionesDisponible = listaDeOpcionesDisponible;
+        this.listaDeOpcionesConSuRespuestaReal = listaDeOpcionesDisponible;
     }
 
     @Override
-    public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
-        validacionDeOpcionUnica(respuestaDePreguntaDTO.getListaDeOpciones());
-        Verificador<Boolean, Opcion> verificador = new Verificador<>();
-        return verificador.coincidenciaTotal(listaDeOpcionesDisponible, respuestaDePreguntaDTO.getListaDeOpciones());
+    public void validacionDeDatosDTO(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
+
+    }
+
+    @Override
+    public List<Opcion> listaDeOpcionesConSuRespuestaReal() {
+        return listaDeOpcionesConSuRespuestaReal;
+    }
+
+    @Override
+    public List<Opcion> listaDeOpcionesConLaRespuestaDelUsuario(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
+        return respuestaDePreguntaDTO.getListaDeOpciones();
     }
 
 
@@ -69,7 +72,7 @@ public class SeleccionUnica extends Pregunta {
     }
 
     public void agregarLaOpcionALaListaYAsignarLaIdDeLaOpcionCorrecta(Opcion opcion) {
-        listaDeOpcionesDisponible.add(opcion);
+        listaDeOpcionesConSuRespuestaReal.add(opcion);
     }
 
 
