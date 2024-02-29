@@ -14,7 +14,7 @@ import java.util.Optional;
     public interface SeleccionUnicaRepository extends BasePreguntaRepositorio<SeleccionUnica>{
 
         @Override
-        @EntityGraph(attributePaths = {"listaDeTeoriaDeLaPregunta" ,"listaDeOpcionesConSuRespuestaReal"})
+        @EntityGraph(attributePaths = {"listaDeOpcionesConSuRespuestaReal"})
         Optional<SeleccionUnica> findById(Long id);
     }
 
