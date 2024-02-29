@@ -3,6 +3,7 @@ package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableComparti
 import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.IPreguntaVariasOpciones;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.Verificador.Verificador;
 import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.*;
@@ -16,7 +17,7 @@ import java.util.*;
 @Setter
 @Getter
 @NoArgsConstructor
-public class DesplegableCompartido extends Pregunta {
+public class DesplegableCompartido extends Pregunta implements IPreguntaVariasOpciones<String, OpcionDeDesplegableCompartido> {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_pregunta")
@@ -36,11 +37,24 @@ public class DesplegableCompartido extends Pregunta {
     }
 
 
-    //T - value , G extend IRespuestaOpcion<?>
-    @Override
     public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
         Verificador<String, OpcionDeDesplegableCompartido> verificador = new Verificador<>();
         return verificador.coincidenciaTotal(listaDeOpciones, respuestaDePreguntaDTO.getListaDeOpcionesParaDesplegableCompartidos());
+    }
+
+    @Override
+    public void validacionDeDatosDTO(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
+
+    }
+
+    @Override
+    public List<OpcionDeDesplegableCompartido> listaDeOpcionesConSuRespuestaReal() {
+        return listaDeOpciones;
+    }
+
+    @Override
+    public List<OpcionDeDesplegableCompartido> listaDeOpcionesConLaRespuestaDelUsuario(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
+        return respuestaDePreguntaDTO.getListaDeOpcionesParaDesplegableCompartidos();
     }
 
 

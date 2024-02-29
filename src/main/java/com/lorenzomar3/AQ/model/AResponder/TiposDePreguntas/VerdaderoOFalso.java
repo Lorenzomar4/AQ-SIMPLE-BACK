@@ -16,7 +16,7 @@ public class VerdaderoOFalso extends Pregunta {
         this.respuestaVerdadera = respuestaVerdadera;
     }
 
-    @Override
+
     public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
         return respuestaVerdadera == respuestaDePreguntaDTO.getRespuestaBooleana();
     }

@@ -18,7 +18,7 @@ public class PreguntaSimple extends Pregunta {
     }
 
 
-    @Override
+
     public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
         return respuestaDePreguntaDTO.getRespuestaBooleana();
     }

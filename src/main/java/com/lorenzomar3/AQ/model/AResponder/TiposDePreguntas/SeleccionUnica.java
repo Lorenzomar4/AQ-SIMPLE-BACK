@@ -3,6 +3,7 @@ package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.exception.BussinesException;
+import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -17,10 +18,10 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SeleccionUnica extends APreguntaVariasOpciones<Boolean,Opcion> {
+public class SeleccionUnica extends Pregunta implements IPreguntaVariasOpciones<Boolean, Opcion> {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn()
+    @JoinColumn(name = "id_seleccion_unica")
     @JsonView(View.JustToAnswer.class)
     public List<Opcion> listaDeOpcionesConSuRespuestaReal = new ArrayList<>();
 
@@ -30,13 +31,14 @@ public class SeleccionUnica extends APreguntaVariasOpciones<Boolean,Opcion> {
         Collections.shuffle(listaDeOpcionesConSuRespuestaReal);
     }
 
-    public SeleccionUnica(String titulo, List<Opcion> listaDeOpcionesDisponible) {
+    public SeleccionUnica(String titulo, List<Opcion> listaDeOpcionesConSuRespuestaReal) {
         super(titulo);
-        this.listaDeOpcionesConSuRespuestaReal = listaDeOpcionesDisponible;
+        this.listaDeOpcionesConSuRespuestaReal = listaDeOpcionesConSuRespuestaReal;
     }
 
     @Override
     public void validacionDeDatosDTO(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
+        validacionDeOpcionUnica(respuestaDePreguntaDTO.getListaDeOpciones());
 
     }
 

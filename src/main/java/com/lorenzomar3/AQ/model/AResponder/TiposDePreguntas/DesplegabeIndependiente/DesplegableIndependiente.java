@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.IPreguntaVariasOpciones;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.Verificador.Verificador;
 import com.lorenzomar3.AQ.model.View;
 
@@ -19,7 +20,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DesplegableIndependiente extends Pregunta {
+public class DesplegableIndependiente extends Pregunta implements IPreguntaVariasOpciones<Long, SeleccionUnicaParaDesplegableIndependiente> {
 
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -40,11 +41,18 @@ public class DesplegableIndependiente extends Pregunta {
 
 
     @Override
-    public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
-        Verificador<Long, SeleccionUnicaParaDesplegableIndependiente> verificador = new Verificador<>();
-        return verificador.coincidenciaTotal(listaDePreguntasConOpcionUnicas,
-                respuestaDePreguntaDTO.getListaDeSeleccionesUnicasParaDesplegableIndependiente());
+    public void validacionDeDatosDTO(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
 
+    }
+
+    @Override
+    public List<SeleccionUnicaParaDesplegableIndependiente> listaDeOpcionesConSuRespuestaReal() {
+        return listaDePreguntasConOpcionUnicas;
+    }
+
+    @Override
+    public List<SeleccionUnicaParaDesplegableIndependiente> listaDeOpcionesConLaRespuestaDelUsuario(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
+        return respuestaDePreguntaDTO.getListaDeSeleccionesUnicasParaDesplegableIndependiente();
     }
 
 }
