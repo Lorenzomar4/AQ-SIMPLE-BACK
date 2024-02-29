@@ -7,19 +7,13 @@ import com.lorenzomar3.AQ.model.TipoAResponder;
 
 import java.util.HashMap;
 
-public class AsignadorDeTipoALasPreguntas {
+public enum AsignadorDeTipoALasPreguntas {
 
-    private static AsignadorDeTipoALasPreguntas instance;
+    INSTANCE;
+
 
     public static AsignadorDeTipoALasPreguntas getInstance() {
-
-
-        if (instance == null) {
-            instance = new AsignadorDeTipoALasPreguntas();
-
-        }
-        return instance;
-
+        return INSTANCE;
     }
 
     public TipoAResponder asignarTipo(Pregunta tipo) {
@@ -34,8 +28,11 @@ public class AsignadorDeTipoALasPreguntas {
         mapAsignadorDeTipo.put(DesplegableIndependiente.class, TipoAResponder.DESPLEGABLE_INDEPENDIENTE);
 
         return mapAsignadorDeTipo.get(tipo.getClass());
-
     }
 
-
 }
+
+
+
+
+

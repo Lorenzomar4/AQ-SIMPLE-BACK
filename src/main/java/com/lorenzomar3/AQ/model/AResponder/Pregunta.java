@@ -28,11 +28,11 @@ public abstract class Pregunta extends AResponder implements IPregunta {
     @Column(length = 1500)
     @JsonView(View.JustToAnswer.class)
     public String imagenTitulo;
-/*
+
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "pregunaDuenia")
     public List<TeoriaDeLaPregunta> listaDeTeoriaDeLaPregunta;
 
- */
+
 
     public Pregunta(String titulo, String imagenTitulo) {
         super(titulo);
