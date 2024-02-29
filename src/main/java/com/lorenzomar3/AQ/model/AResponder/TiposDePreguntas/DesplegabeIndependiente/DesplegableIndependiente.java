@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 @Entity
@@ -47,6 +46,5 @@ public class DesplegableIndependiente extends Pregunta {
                 respuestaDePreguntaDTO.getListaDeSeleccionesUnicasParaDesplegableIndependiente());
 
     }
-
 
 }

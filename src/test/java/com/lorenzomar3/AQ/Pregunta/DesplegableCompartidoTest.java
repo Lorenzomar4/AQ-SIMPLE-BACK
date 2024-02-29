@@ -88,7 +88,6 @@ public class DesplegableCompartidoTest {
         opcion4FromUser.setRespuesta("Peru");
 
         Assertions.assertTrue(desplegableCompartido.laRespuestaEsCorrecta(desplegableCompartidoeRespuestaDelUsuario));
-
     }
 
 

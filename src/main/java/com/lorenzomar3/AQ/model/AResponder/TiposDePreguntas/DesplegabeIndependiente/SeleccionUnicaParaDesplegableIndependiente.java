@@ -7,6 +7,7 @@ import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 public class SeleccionUnicaParaDesplegableIndependiente implements IRespuestaOpcion<Long> {
 

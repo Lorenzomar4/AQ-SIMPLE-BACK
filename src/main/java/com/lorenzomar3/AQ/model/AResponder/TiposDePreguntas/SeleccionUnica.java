@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,6 +27,11 @@ public class SeleccionUnica extends Pregunta {
     @JoinColumn(name = "id_pregunta")
     @JsonView(View.JustToAnswer.class)
     public List<Opcion> listaDeOpcionesDisponible = new ArrayList<>();
+
+    @PostLoad
+    void init() {
+        Collections.shuffle(listaDeOpcionesDisponible);
+    }
 
 
     public SeleccionUnica(String titulo, List<Opcion> listaDeOpcionesDisponible) {

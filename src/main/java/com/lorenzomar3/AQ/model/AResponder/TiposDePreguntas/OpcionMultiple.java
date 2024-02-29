@@ -8,6 +8,7 @@ import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -31,6 +32,10 @@ public class OpcionMultiple extends Pregunta {
         super(titulo);
     }
 
+    @PostLoad
+    void init() {
+        Collections.shuffle(listaDeOpciones);
+    }
 
     @Override
     public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuesta) {

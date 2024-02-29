@@ -24,7 +24,6 @@ public class DesplegableCompartido extends Pregunta {
     public List<OpcionDeDesplegableCompartido> listaDeOpciones;
 
 
-
     public DesplegableCompartido(String titulo, List<OpcionDeDesplegableCompartido> listaDeOpciones) {
         super(titulo);
         this.listaDeOpciones = listaDeOpciones;
@@ -38,8 +37,8 @@ public class DesplegableCompartido extends Pregunta {
 
     @Override
     public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
-        Verificador<String ,OpcionDeDesplegableCompartido > verificador = new Verificador<>();
-        return verificador.coincidenciaTotal(listaDeOpciones,respuestaDePreguntaDTO.getListaDeOpcionesParaDesplegableCompartidos() );
+        Verificador<String, OpcionDeDesplegableCompartido> verificador = new Verificador<>();
+        return verificador.coincidenciaTotal(listaDeOpciones, respuestaDePreguntaDTO.getListaDeOpcionesParaDesplegableCompartidos());
     }
 
 

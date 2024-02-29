@@ -56,7 +56,6 @@ public class Setup implements ApplicationRunner {
     DesplegableIndependiente desplegableIndependiente;
 
 
-
     SeleccionUnicaParaDesplegableIndependiente seleccionUnicaParaDesplegableInd1;
 
     Opcion opA;

@@ -29,8 +29,7 @@ public class OpcionMultipleTest {
     @BeforeEach
     void init() {
 
-        List<Long> listaDeLongs = List.of(1L,2L,3L,4L);
-
+        List<Long> listaDeLongs = List.of(1L, 2L, 3L, 4L);
 
 
         opcion1 = new Opcion("es un proseador de decima generacio", true);
