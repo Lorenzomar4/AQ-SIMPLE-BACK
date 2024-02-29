@@ -29,7 +29,7 @@ public interface IPreguntaVariasOpciones<T, G extends IRespuestaOpcion<T>> exten
 
 }
 
-//T - value , G extend IRespuestaOpcion<T>
+
 
 //Alternativa con clase abstracta desechada
 

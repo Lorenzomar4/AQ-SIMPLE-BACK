@@ -1,7 +1,7 @@
 package com.lorenzomar3.AQ.Service;
 
 import com.lorenzomar3.AQ.Repository.PreguntaRepository.*;
-import com.lorenzomar3.AQ.dto.dto.ObtenerPreguntaDTO;
+import com.lorenzomar3.AQ.dto.newDto.ObtenerPreguntaDTO;
 import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 import com.lorenzomar3.AQ.model.TipoAResponder;
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class PreguntaService {

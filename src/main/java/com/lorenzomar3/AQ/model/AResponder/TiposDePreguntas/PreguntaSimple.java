@@ -17,8 +17,6 @@ public class PreguntaSimple extends Pregunta {
         this.respuestaEstablecida = respuestaEstablecida;
     }
 
-
-
     public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
         return respuestaDePreguntaDTO.getRespuestaBooleana();
     }
