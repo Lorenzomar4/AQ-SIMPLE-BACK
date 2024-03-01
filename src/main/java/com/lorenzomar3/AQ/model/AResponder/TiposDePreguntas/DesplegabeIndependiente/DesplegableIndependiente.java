@@ -13,8 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Getter
@@ -26,15 +25,15 @@ public class DesplegableIndependiente extends Pregunta implements IPreguntaVaria
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "id_pregunta_desplegable_ind")
 
-    List<SeleccionUnicaParaDesplegableIndependiente> listaDePreguntasConOpcionUnicas;
+    Set<SeleccionUnicaParaDesplegableIndependiente> listaDePreguntasConOpcionUnicas;
 
 
 
 
     public DesplegableIndependiente(String titulo, List<SeleccionUnicaParaDesplegableIndependiente> listaDePreguntasConOpcionUnicas) {
         super(titulo);
-        this.listaDePreguntasConOpcionUnicas = listaDePreguntasConOpcionUnicas;
-        System.out.println("TAMAÑO"+listaDePreguntasConOpcionUnicas.size());
+        this.listaDePreguntasConOpcionUnicas =  new HashSet<>(listaDePreguntasConOpcionUnicas);
+
     }
 
 
@@ -44,9 +43,8 @@ public class DesplegableIndependiente extends Pregunta implements IPreguntaVaria
     }
 
     @Override
-    @JsonView(View.JustToAnswer.class)
-    public List<SeleccionUnicaParaDesplegableIndependiente> listaDeOpcionesConSuRespuestaReal() {
-        return listaDePreguntasConOpcionUnicas;
+    public List<SeleccionUnicaParaDesplegableIndependiente> listaDeOpciones() {
+        return new ArrayList<>(this.listaDePreguntasConOpcionUnicas );
     }
 
     @Override

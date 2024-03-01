@@ -42,7 +42,7 @@ public class OpcionMultiple extends Pregunta implements IPreguntaVariasOpciones<
     }
 
     @Override
-    public List<Opcion> listaDeOpcionesConSuRespuestaReal() {
+    public List<Opcion> listaDeOpciones() {
         return listaDeOpcionesConSuRespuestaReal;
     }
 

@@ -1,10 +1,12 @@
 package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.model.AResponder.IPregunta;
 
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.Verificador.IRespuestaOpcion;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.Verificador.Verificador;
+import com.lorenzomar3.AQ.model.View;
 
 import java.util.List;
 
@@ -16,13 +18,15 @@ public interface IPreguntaVariasOpciones<T, G extends IRespuestaOpcion<T>> exten
 
         validacionDeDatosDTO(respuestaDePreguntaDTO);
         Verificador<T, G> verificador = new Verificador<>();
-        return verificador.coincidenciaTotal(listaDeOpcionesConSuRespuestaReal(), lista);
+        return verificador.coincidenciaTotal(listaDeOpciones(), lista);
     }
 
 
     void validacionDeDatosDTO(RespuestaDePreguntaDTO respuestaDePreguntaDTO);
 
-    List<G> listaDeOpcionesConSuRespuestaReal();
+
+    @JsonView(View.JustToAnswer.class)
+    List<G> listaDeOpciones();
 
     List<G> listaDeOpcionesConLaRespuestaDelUsuario(RespuestaDePreguntaDTO respuestaDePreguntaDTO);
 

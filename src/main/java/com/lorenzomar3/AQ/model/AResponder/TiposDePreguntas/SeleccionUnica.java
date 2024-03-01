@@ -22,7 +22,6 @@ public class SeleccionUnica extends Pregunta implements IPreguntaVariasOpciones<
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "id_seleccion_unica")
-    @JsonView(View.JustToAnswer.class)
     public List<Opcion> listaDeOpcionesConSuRespuestaReal = new ArrayList<>();
 
 
@@ -43,7 +42,7 @@ public class SeleccionUnica extends Pregunta implements IPreguntaVariasOpciones<
     }
 
     @Override
-    public List<Opcion> listaDeOpcionesConSuRespuestaReal() {
+    public List<Opcion> listaDeOpciones() {
         return listaDeOpcionesConSuRespuestaReal;
     }
 

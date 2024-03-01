@@ -48,7 +48,7 @@ public class DesplegableCompartido extends Pregunta implements IPreguntaVariasOp
     }
 
     @Override
-    public List<OpcionDeDesplegableCompartido> listaDeOpcionesConSuRespuestaReal() {
+    public List<OpcionDeDesplegableCompartido> listaDeOpciones() {
         return listaDeOpciones;
     }
 
