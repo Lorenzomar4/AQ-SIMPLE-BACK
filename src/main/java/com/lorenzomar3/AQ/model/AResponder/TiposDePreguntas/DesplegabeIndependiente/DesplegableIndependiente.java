@@ -24,7 +24,6 @@ public class DesplegableIndependiente extends Pregunta implements IPreguntaVaria
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "id_pregunta_desplegable_ind")
-
     Set<SeleccionUnicaParaDesplegableIndependiente> listaDePreguntasConOpcionUnicas;
 
 

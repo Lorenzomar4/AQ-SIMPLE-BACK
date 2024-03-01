@@ -21,7 +21,7 @@ public class DesplegableCompartido extends Pregunta implements IPreguntaVariasOp
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_pregunta")
-    @JsonView(View.JustToAnswer.class)
+
     public List<OpcionDeDesplegableCompartido> listaDeOpciones;
 
 

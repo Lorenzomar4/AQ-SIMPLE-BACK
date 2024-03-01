@@ -22,7 +22,6 @@ public class OpcionMultiple extends Pregunta implements IPreguntaVariasOpciones<
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "id_multiple_opcion")
-    @JsonView(View.JustToAnswer.class)
     public List<Opcion> listaDeOpcionesConSuRespuestaReal;
 
 

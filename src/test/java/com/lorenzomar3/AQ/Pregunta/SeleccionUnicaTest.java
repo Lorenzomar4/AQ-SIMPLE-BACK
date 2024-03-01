@@ -74,8 +74,8 @@ public class SeleccionUnicaTest {
     @Test
     void laRespuestaEnviadaPorElUsuarioEsValida() {
 
-        SeleccionUnicaOpcion2FromFrontend.setEsLaOpcionVerdadera(true);
-        SeleccionUnicaOpcion3FromFrontend.setEsLaOpcionVerdadera(false);
+        SeleccionUnicaOpcion2FromFrontend.setLaRespuestaEs(true);
+        SeleccionUnicaOpcion3FromFrontend.setLaRespuestaEs(false);
 
         Assertions.assertTrue(seleccionUnica.laRespuestaEsCorrecta(seleccionUnicaRespuesta));
 

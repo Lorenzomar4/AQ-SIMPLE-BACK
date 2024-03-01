@@ -80,9 +80,9 @@ public class OpcionMultipleTest {
     @Test
     void laRespuestaEnviadaPorElUsuarioEsValida() {
 
-        opcion1FromFrontend.setEsLaOpcionVerdadera(true);
-        opcion2FromFrontend.setEsLaOpcionVerdadera(false);
-        opcion3FromFrontend.setEsLaOpcionVerdadera(false);
+        opcion1FromFrontend.setLaRespuestaEs(true);
+        opcion2FromFrontend.setLaRespuestaEs(false);
+        opcion3FromFrontend.setLaRespuestaEs(false);
 
 
         Assertions.assertTrue(opcionMultiple.laRespuestaEsCorrecta(opcionMultipleRespuestaDelUsuario));

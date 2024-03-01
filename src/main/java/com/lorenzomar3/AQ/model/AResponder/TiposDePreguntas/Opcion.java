@@ -23,12 +23,12 @@ public class Opcion implements IRespuestaOpcion<Boolean> {
     @JsonView(View.JustToAnswer.class)
     String opcion;
 
+    @JsonView(View.Full.class)
+    public Boolean laRespuestaEs;
 
-    public Boolean esLaOpcionVerdadera;
-
-    public Opcion(String respuestaCorrecta, Boolean esLaOpcionVerdadera) {
+    public Opcion(String respuestaCorrecta, Boolean laRespuestaEs) {
         this.opcion = respuestaCorrecta;
-        this.esLaOpcionVerdadera = esLaOpcionVerdadera;
+        this.laRespuestaEs = laRespuestaEs;
     }
 
     @Override
@@ -38,6 +38,6 @@ public class Opcion implements IRespuestaOpcion<Boolean> {
 
     @Override
     public Boolean getRespuestaCorrecta() {
-        return esLaOpcionVerdadera;
+        return laRespuestaEs;
     }
 }

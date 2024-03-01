@@ -124,13 +124,13 @@ public class DesplegableIndependienteTest {
     @Test
     void laRespuestaEnviadaPorElUsuarioEsValida() {
 
-        opA1.setEsLaOpcionVerdadera(false ); //new Opcion("1900", false);
-        opB2.setEsLaOpcionVerdadera(true );
-        opC3.setEsLaOpcionVerdadera(false );
+        opA1.setLaRespuestaEs(false ); //new Opcion("1900", false);
+        opB2.setLaRespuestaEs(true );
+        opC3.setLaRespuestaEs(false );
 
-        opD1.setEsLaOpcionVerdadera(true );
-        opE2.setEsLaOpcionVerdadera(false );
-        opF3.setEsLaOpcionVerdadera(false );
+        opD1.setLaRespuestaEs(true );
+        opE2.setLaRespuestaEs(false );
+        opF3.setLaRespuestaEs(false );
 
         Assertions.assertTrue(desplegableIndependiente.laRespuestaEsCorrecta(respuestaDePreguntaDTO));
     }

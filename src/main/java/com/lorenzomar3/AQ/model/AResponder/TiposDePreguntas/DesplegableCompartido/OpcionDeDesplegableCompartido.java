@@ -25,6 +25,7 @@ public class OpcionDeDesplegableCompartido implements IRespuestaOpcion<String> {
     @JsonView(View.JustToAnswer.class)
     String pregunta;
 
+    @JsonView(View.Full.class)
     String respuesta;
 
 
