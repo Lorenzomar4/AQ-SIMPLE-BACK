@@ -16,8 +16,8 @@ public interface DesplegableIndependienteRepository extends BasePreguntaReposito
 
 
     @Override
-    @EntityGraph(attributePaths = {"listaDePreguntasConOpcionUnicas"})
-    @Query("SELECT p FROM Pregunta p LEFT JOIN FETCH p.listaDeTeoriaDeLaPregunta WHERE p.id = :preguntaId")
+    @EntityGraph(attributePaths = {"listaDePreguntasConOpcionUnicas.listaDeOpcionesDisponible"})
+    @Query("SELECT p FROM DesplegableIndependiente p LEFT JOIN FETCH p.listaDeTeoriaDeLaPregunta WHERE p.id = :preguntaId")
     Optional<DesplegableIndependiente> findByIdWithTeoriaDeLaPregunta(@Param("preguntaId") Long preguntaId);
 
 }

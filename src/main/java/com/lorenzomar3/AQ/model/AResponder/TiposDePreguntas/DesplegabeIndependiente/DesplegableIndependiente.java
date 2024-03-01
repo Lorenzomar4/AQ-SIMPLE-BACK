@@ -25,18 +25,16 @@ public class DesplegableIndependiente extends Pregunta implements IPreguntaVaria
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "id_pregunta_desplegable_ind")
-    @JsonView(View.JustToAnswer.class)
+
     List<SeleccionUnicaParaDesplegableIndependiente> listaDePreguntasConOpcionUnicas;
 
 
-    @PostLoad
-    void init() {
-        Collections.shuffle(listaDePreguntasConOpcionUnicas);
-    }
+
 
     public DesplegableIndependiente(String titulo, List<SeleccionUnicaParaDesplegableIndependiente> listaDePreguntasConOpcionUnicas) {
         super(titulo);
         this.listaDePreguntasConOpcionUnicas = listaDePreguntasConOpcionUnicas;
+        System.out.println("TAMAÑO"+listaDePreguntasConOpcionUnicas.size());
     }
 
 
@@ -46,6 +44,7 @@ public class DesplegableIndependiente extends Pregunta implements IPreguntaVaria
     }
 
     @Override
+    @JsonView(View.JustToAnswer.class)
     public List<SeleccionUnicaParaDesplegableIndependiente> listaDeOpcionesConSuRespuestaReal() {
         return listaDePreguntasConOpcionUnicas;
     }

@@ -18,6 +18,6 @@ public interface DesplegableCompartidoRepositorio  extends BasePreguntaRepositor
 
     @Override
     @EntityGraph(attributePaths = {"listaDeOpciones"})
-    @Query("SELECT p FROM Pregunta p LEFT JOIN FETCH p.listaDeTeoriaDeLaPregunta WHERE p.id = :preguntaId")
+    @Query("SELECT p FROM DesplegableCompartido p LEFT JOIN FETCH p.listaDeTeoriaDeLaPregunta WHERE p.id = :preguntaId")
     Optional<DesplegableCompartido> findByIdWithTeoriaDeLaPregunta(@Param("preguntaId") Long preguntaId);
 }

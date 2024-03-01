@@ -8,6 +8,7 @@ import com.lorenzomar3.AQ.model.View;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,6 +36,7 @@ public class PreguntaController {
 
     @JsonView(View.Full.class)
     @PostMapping("/getQuestionForAnswerFull")
+    @Transactional
     public ResponseEntity<Pregunta> getQuestionFull(@RequestBody ObtenerPreguntaDTO getQuestionDTO) {
         Pregunta pregunta = preguntaService.obtenerPreguntaFull(getQuestionDTO);
         return new ResponseEntity<>(pregunta, HttpStatus.OK);

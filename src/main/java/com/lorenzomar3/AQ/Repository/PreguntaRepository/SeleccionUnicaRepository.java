@@ -14,20 +14,19 @@ import java.util.Optional;
 
 
 @Repository
-    public interface SeleccionUnicaRepository extends BasePreguntaRepositorio<SeleccionUnica>{
+public interface SeleccionUnicaRepository extends BasePreguntaRepositorio<SeleccionUnica> {
 
-        @Override
-        @EntityGraph(attributePaths = {"listaDeOpcionesConSuRespuestaReal"})
-        Optional<SeleccionUnica> findById(Long id);
-
-
-
-        @Override
-        @EntityGraph(attributePaths = {"listaDeOpcionesConSuRespuestaReal"})
-        @Query("SELECT p FROM Pregunta p LEFT JOIN FETCH p.listaDeTeoriaDeLaPregunta WHERE p.id = :preguntaId")
-        Optional<SeleccionUnica> findByIdWithTeoriaDeLaPregunta(@Param("preguntaId") Long preguntaId);
+    @Override
+    @EntityGraph(attributePaths = {"listaDeOpcionesConSuRespuestaReal"})
+    Optional<SeleccionUnica> findById(Long id);
 
 
-    }
+    @Override
+    @EntityGraph(attributePaths = {"listaDeOpcionesConSuRespuestaReal"})
+    @Query("SELECT p FROM SeleccionUnica p LEFT JOIN FETCH p.listaDeTeoriaDeLaPregunta WHERE p.id = :preguntaId")
+    Optional<SeleccionUnica> findByIdWithTeoriaDeLaPregunta(@Param("preguntaId") Long preguntaId);
+
+
+}
 
 

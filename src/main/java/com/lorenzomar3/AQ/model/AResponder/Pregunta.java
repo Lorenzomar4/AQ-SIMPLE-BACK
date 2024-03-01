@@ -9,9 +9,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 
 @Entity
@@ -33,7 +31,7 @@ public abstract class Pregunta extends AResponder implements IPregunta {
 
     @JsonView(View.Full.class)
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "pregunaDuenia" , cascade = CascadeType.ALL)
-    public List<TeoriaDeLaPregunta> listaDeTeoriaDeLaPregunta = new ArrayList<>();
+    public Set<TeoriaDeLaPregunta> listaDeTeoriaDeLaPregunta = new HashSet<>();
 
 
 

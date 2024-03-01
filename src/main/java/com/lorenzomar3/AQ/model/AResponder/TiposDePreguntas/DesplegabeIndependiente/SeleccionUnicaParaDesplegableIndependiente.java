@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 //Version minimalista de SeleccionUnica para el DesplegableIndependiente . Esto tiene el objetivo de que la
@@ -35,11 +37,13 @@ public class SeleccionUnicaParaDesplegableIndependiente implements IRespuestaOpc
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "id_desplegable_independiente")
     @JsonView(View.JustToAnswer.class)
-    public List<Opcion> listaDeOpcionesDisponible = new ArrayList<>();
+    public Set<Opcion> listaDeOpcionesDisponible = new HashSet<>();
 
     public SeleccionUnicaParaDesplegableIndependiente(String titulo, List<Opcion> listaDeOpcionesDisponible) {
         this.titulo = titulo;
-        this.listaDeOpcionesDisponible = listaDeOpcionesDisponible;
+
+        listaDeOpcionesDisponible.forEach(op ->this.listaDeOpcionesDisponible.add(op));
+
     }
 
 

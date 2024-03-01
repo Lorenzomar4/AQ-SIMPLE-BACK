@@ -19,7 +19,7 @@ public interface OpcionMultipleRepository extends BasePreguntaRepositorio<Opcion
 
     @Override
     @EntityGraph(attributePaths = {"listaDeOpcionesConSuRespuestaReal"})
-    @Query("SELECT p FROM Pregunta p LEFT JOIN FETCH p.listaDeTeoriaDeLaPregunta WHERE p.id = :preguntaId")
+    @Query("SELECT p FROM OpcionMultiple p LEFT JOIN FETCH p.listaDeTeoriaDeLaPregunta WHERE p.id = :preguntaId")
     Optional<OpcionMultiple> findByIdWithTeoriaDeLaPregunta(@Param("preguntaId") Long preguntaId);
 
 
