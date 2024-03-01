@@ -51,4 +51,14 @@ public class PreguntaService {
     }
 
 
+    public Pregunta obtenerPreguntaFull(ObtenerPreguntaDTO getQuestionDTO) {
+        TipoAResponder tipo = getQuestionDTO.getTipoAResponder();
+        Long id = getQuestionDTO.getId();
+
+        return (Pregunta) mapDeRepositorios.get(tipo)
+                .findByIdWithTeoriaDeLaPregunta(id)
+                .orElseThrow(() -> new BussinesException("No se encuentra una pregunta con el tipo De id solicitadO"));
+    }
+
+
 }

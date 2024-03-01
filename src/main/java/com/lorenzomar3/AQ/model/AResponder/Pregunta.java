@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,8 +30,10 @@ public abstract class Pregunta extends AResponder implements IPregunta {
     @JsonView(View.JustToAnswer.class)
     public String imagenTitulo;
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "pregunaDuenia")
-    public List<TeoriaDeLaPregunta> listaDeTeoriaDeLaPregunta;
+
+    @JsonView(View.Full.class)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "pregunaDuenia" , cascade = CascadeType.ALL)
+    public List<TeoriaDeLaPregunta> listaDeTeoriaDeLaPregunta = new ArrayList<>();
 
 
 
@@ -68,6 +71,10 @@ public abstract class Pregunta extends AResponder implements IPregunta {
         tipo = AsignadorDeTipoALasPreguntas.getInstance().asignarTipo(this);
     }
 
+    public void agregarTeoria(TeoriaDeLaPregunta teoriaDeLaPregunta) {
+        listaDeTeoriaDeLaPregunta.add(teoriaDeLaPregunta);
+        teoriaDeLaPregunta.setPregunaDuenia(this);
+    }
 
 }
 

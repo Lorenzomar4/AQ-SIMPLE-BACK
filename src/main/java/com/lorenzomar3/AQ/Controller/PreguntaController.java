@@ -25,17 +25,18 @@ public class PreguntaController {
 
     @JsonView(View.JustToAnswer.class)
     @PostMapping("/getQuestionForAnswer")
-    public ResponseEntity<Pregunta> getQuestion(@RequestBody  ObtenerPreguntaDTO getQuestionDTO) {
-
-
+    public ResponseEntity<Pregunta> getQuestion(@RequestBody ObtenerPreguntaDTO getQuestionDTO) {
 
         Pregunta pregunta = preguntaService.obtenerPregunta(getQuestionDTO);
+        return new ResponseEntity<>(pregunta, HttpStatus.OK);
+
+    }
 
 
-
-
-
-
+    @JsonView(View.Full.class)
+    @PostMapping("/getQuestionForAnswerFull")
+    public ResponseEntity<Pregunta> getQuestionFull(@RequestBody ObtenerPreguntaDTO getQuestionDTO) {
+        Pregunta pregunta = preguntaService.obtenerPreguntaFull(getQuestionDTO);
         return new ResponseEntity<>(pregunta, HttpStatus.OK);
 
     }

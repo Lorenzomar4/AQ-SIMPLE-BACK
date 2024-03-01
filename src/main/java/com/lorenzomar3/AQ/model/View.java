@@ -4,10 +4,10 @@ public class View {
 
     public static class JustToAnswer {
     }
-    /*
-    public static class Internal extends Public {
+
+    public static class Full extends JustToAnswer {
     }
-    */
+
 
 
 

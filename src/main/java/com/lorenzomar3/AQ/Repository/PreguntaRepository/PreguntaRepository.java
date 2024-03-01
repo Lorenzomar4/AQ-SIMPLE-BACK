@@ -17,6 +17,8 @@ import java.util.Optional;
 public interface PreguntaRepository  extends BasePreguntaRepositorio<Pregunta> {
 
     @Override
-    @EntityGraph(attributePaths = {"listaDeTeoriaDeLaPregunta"})
     public Optional<Pregunta>  findById(Long id);
+
+
+
 }
