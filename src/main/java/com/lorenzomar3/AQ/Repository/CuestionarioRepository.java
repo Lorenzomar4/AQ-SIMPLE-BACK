@@ -1,6 +1,7 @@
 package com.lorenzomar3.AQ.Repository;
 
 import com.lorenzomar3.AQ.model.Cuestionario;
+import org.hibernate.annotations.Filter;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
@@ -12,7 +13,6 @@ import java.util.Optional;
 @Repository
 public interface CuestionarioRepository extends JpaRepository<Cuestionario, Long> {
      boolean existsById(Long id);
-
 
      Optional<Cuestionario> findById(Long id);
 

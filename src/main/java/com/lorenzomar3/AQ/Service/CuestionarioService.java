@@ -27,22 +27,23 @@ public class CuestionarioService {
     TemaRepository temaRepository;
 
     @Transactional(readOnly = true)
-    public List<Cuestionario> allCuestionario(){
+    public List<Cuestionario> allCuestionario() {
         return cuestionarioRepository.findAll();
-    };
+    }
+
+    ;
 
     @Transactional
-    public Cuestionario saveCuestionario(Cuestionario cuestionario){
+    public Cuestionario saveCuestionario(Cuestionario cuestionario) {
         return cuestionarioRepository.save(cuestionario);
     }
 
     @Transactional(readOnly = true)
-    public Cuestionario obtenerTodo(Long id){
+    public Cuestionario obtenerTodo(Long id) {
 
         Cuestionario c = cuestionarioRepository.findById(id).orElseThrow(() -> new BussinesException("No existe ese cuestionario"));
         return c;
     }
-
 
 
     @Transactional(readOnly = true)
@@ -71,7 +72,7 @@ public class CuestionarioService {
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Cuestionario actualizarCuestionario(Cuestionario unCuestionario){
+    public Cuestionario actualizarCuestionario(Cuestionario unCuestionario) {
 
         Cuestionario cuestionario = cuestionarioRepository.findById(unCuestionario.getId()).orElseThrow(() -> new BussinesException("El elemento no existe"));
 
@@ -79,15 +80,6 @@ public class CuestionarioService {
 
         return cuestionarioRepository.save(cuestionario);
     }
-
-
-
-
-
-
-
-
-
 
 
 }
