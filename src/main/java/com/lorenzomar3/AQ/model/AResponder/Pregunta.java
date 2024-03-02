@@ -29,8 +29,10 @@ public abstract class Pregunta extends AResponder implements IPregunta {
     public String imagenTitulo;
 
 
+
+
     @JsonView(View.Full.class)
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "pregunaDuenia" , cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pregunaDuenia" , cascade = CascadeType.ALL , orphanRemoval = true)
     public Set<TeoriaDeLaPregunta> listaDeTeoriaDeLaPregunta = new HashSet<>();
 
 

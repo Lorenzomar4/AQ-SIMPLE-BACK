@@ -3,6 +3,8 @@ package com.lorenzomar3.AQ.Controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.Service.PreguntaService;
 import com.lorenzomar3.AQ.dto.newDto.ObtenerPreguntaDTO;
+import com.lorenzomar3.AQ.dto.newDto.PostPreguntaDTO;
+import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 import com.lorenzomar3.AQ.model.View;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,18 @@ public class PreguntaController {
         return new ResponseEntity<>(pregunta, HttpStatus.OK);
 
     }
+
+
+    @JsonView(View.JustToAnswer.class)
+    @PostMapping("/createQuestion")
+    public ResponseEntity<AResponder> createQuestion(@RequestBody PostPreguntaDTO getQuestionDTO) {
+        AResponder pregunta = preguntaService.createaQuestion(getQuestionDTO);
+        return new ResponseEntity<>(pregunta,  HttpStatus.OK);
+
+    }
+
+
+
 
 
 }

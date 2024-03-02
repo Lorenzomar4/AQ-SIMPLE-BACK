@@ -22,24 +22,24 @@ public class DesplegableCompartido extends Pregunta implements IPreguntaVariasOp
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_pregunta")
 
-    public List<OpcionDeDesplegableCompartido> listaDeOpciones;
+    public List<OpcionDeDesplegableCompartido> listaDeOpcionDesplegableCompartido;
 
 
-    public DesplegableCompartido(String titulo, List<OpcionDeDesplegableCompartido> listaDeOpciones) {
+    public DesplegableCompartido(String titulo, List<OpcionDeDesplegableCompartido> listaDeOpcionDesplegableCompartido) {
         super(titulo);
-        this.listaDeOpciones = listaDeOpciones;
+        this.listaDeOpcionDesplegableCompartido = listaDeOpcionDesplegableCompartido;
     }
 
 
     @PostLoad
     public void init() {
-        Collections.shuffle(listaDeOpciones);
+        Collections.shuffle(listaDeOpcionDesplegableCompartido);
     }
 
 
     public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
         Verificador<String, OpcionDeDesplegableCompartido> verificador = new Verificador<>();
-        return verificador.coincidenciaTotal(listaDeOpciones, respuestaDePreguntaDTO.getListaDeOpcionesParaDesplegableCompartidos());
+        return verificador.coincidenciaTotal(listaDeOpcionDesplegableCompartido, respuestaDePreguntaDTO.getListaDeOpcionesParaDesplegableCompartidos());
     }
 
     @Override
@@ -49,7 +49,7 @@ public class DesplegableCompartido extends Pregunta implements IPreguntaVariasOp
 
     @Override
     public List<OpcionDeDesplegableCompartido> listaDeOpciones() {
-        return listaDeOpciones;
+        return listaDeOpcionDesplegableCompartido;
     }
 
     @Override
@@ -60,7 +60,7 @@ public class DesplegableCompartido extends Pregunta implements IPreguntaVariasOp
 
     @JsonView(View.JustToAnswer.class)
     public List<String> posiblesRespuestasParaCadaOpcion() {
-        List<String> posiblesRespuesta = new ArrayList<>(listaDeOpciones.stream().map(op -> op.getRespuestaCorrecta()).toList());
+        List<String> posiblesRespuesta = new ArrayList<>(listaDeOpcionDesplegableCompartido.stream().map(op -> op.getRespuestaCorrecta()).toList());
         Collections.shuffle(posiblesRespuesta);
         return posiblesRespuesta;
 

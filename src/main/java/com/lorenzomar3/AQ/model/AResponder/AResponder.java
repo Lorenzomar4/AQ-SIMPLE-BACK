@@ -29,6 +29,11 @@ public abstract class AResponder {
     public String titulo;
 
 
+    @Column(length = 10500)
+    @JsonView(View.JustToAnswer.class)
+    public String descripcion;
+
+
     @Temporal(TemporalType.TIMESTAMP)
     public LocalDateTime fechaDeCreacion = LocalDateTime.now();
 
