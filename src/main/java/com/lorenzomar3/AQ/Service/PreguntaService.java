@@ -49,6 +49,7 @@ public class PreguntaService {
 
     @Autowired
     AResponderRepository aResponderRepository;
+
     HashMap<TipoAResponder, BasePreguntaRepositorio<?>> mapDeRepositorios = new HashMap<>();
 
     @PostConstruct
@@ -81,7 +82,10 @@ public class PreguntaService {
 
     @Transactional
     public AResponder createaQuestion(PostPreguntaDTO preguntaDTO) {
-        AResponder pregunta = FabricaDePreguntas.getInstance().createWithDTO(preguntaDTO);
+
+        FabricaDePreguntas fabricaDePreguntas = new FabricaDePreguntas();
+
+        AResponder pregunta = fabricaDePreguntas.createWithDTO(preguntaDTO);
         JsonVisualizador.verJson(pregunta);
 
 

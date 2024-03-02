@@ -10,14 +10,18 @@ import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.SeleccionUnica;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.VerdaderoOFalso;
 import com.lorenzomar3.AQ.model.TipoAResponder;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class FabricaDePreguntas {
-    private static FabricaDePreguntas instance = null;
+@Component
 
-    final private static Map<TipoAResponder, Pregunta> mapTipoKeyPreguntaValue =
+public class FabricaDePreguntas {
+
+
+    Map<TipoAResponder, Pregunta> mapTipoKeyPreguntaValue =
             Map.of(
                     TipoAResponder.PREGUNTA_SIMPLE, obtenerClaseTipo(PreguntaSimple::new),
                     TipoAResponder.VERDADERO_FALSO, obtenerClaseTipo(VerdaderoOFalso::new),
@@ -28,19 +32,9 @@ public class FabricaDePreguntas {
             );
 
 
-    private FabricaDePreguntas() {
+    public FabricaDePreguntas() {
 
     }
-
-    public static FabricaDePreguntas getInstance() {
-
-        if (instance == null) {
-            instance = new FabricaDePreguntas();
-        }
-
-        return instance;
-    }
-
 
     private static Pregunta obtenerClaseTipo(Supplier<? extends Pregunta> supplier) {
         return supplier.get();
