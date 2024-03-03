@@ -1,12 +1,9 @@
 package com.lorenzomar3.AQ.config.setup;
 
-import com.lorenzomar3.AQ.Repository.CuestionarioRepository;
 import com.lorenzomar3.AQ.Repository.TemarioRepository;
-import com.lorenzomar3.AQ.Service.CuestionarioService;
 import com.lorenzomar3.AQ.model.AResponder.Temario.Temario;
 import com.lorenzomar3.AQ.model.AResponder.TeoriaDeLaPregunta;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.Opcion;
-import com.lorenzomar3.AQ.model.AResponder.Tema;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.*;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegabeIndependiente.DesplegableIndependiente;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegabeIndependiente.SeleccionUnicaParaDesplegableIndependiente;
@@ -78,8 +75,7 @@ public class Setup implements ApplicationRunner {
     TeoriaDeLaPregunta opcionMultipleTeoria;
     TeoriaDeLaPregunta paraSimple;
 
-    @Autowired
-    CuestionarioRepository cuestionarioRepository;
+
 
     public void datos() {
         Supplier<TeoriaDeLaPregunta> teoriaDeLaPreguntaSupplier = () -> new TeoriaDeLaPregunta("Prueba");
