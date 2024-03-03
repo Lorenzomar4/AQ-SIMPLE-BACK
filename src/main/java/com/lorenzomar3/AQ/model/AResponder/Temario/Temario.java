@@ -2,7 +2,7 @@ package com.lorenzomar3.AQ.model.AResponder.Temario;
 
 import com.lorenzomar3.AQ.dto.conversor.TemarioDTOConversor;
 import com.lorenzomar3.AQ.dto.newDto.AResponderItemListDTO;
-import com.lorenzomar3.AQ.dto.newDto.TemarioCuestionarioCardDTO;
+import com.lorenzomar3.AQ.dto.newDto.TemarioBasicDTO;
 import com.lorenzomar3.AQ.dto.newDto.TemarioCuestionarioWhitItemListDTO;
 import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.AResponder.AResponder;
@@ -56,7 +56,7 @@ public class Temario extends AResponder {
 
     public void agregarALaLista(AResponder aResponder) {
 
-        if (aResponder instanceof Tema && tipo.equals(TipoAResponder.SUBTEMA)) {
+        if (aResponder instanceof Temario && tipo.equals(TipoAResponder.SUBTEMA)) {
             throw new BussinesException("No se puede agregar un subtema a otro subtema");
         }
 
@@ -86,7 +86,7 @@ public class Temario extends AResponder {
     }
 
 
-    public TemarioCuestionarioCardDTO toTemarioCuestionarioCardDTO() {
+    public TemarioBasicDTO toTemarioCuestionarioCardDTO() {
         return TemarioDTOConversor.toTeamarioCuestionarioCardDTO(this);
     }
 

@@ -3,14 +3,11 @@ package com.lorenzomar3.AQ.Controller;
 
 import com.lorenzomar3.AQ.JsonVisualizador;
 import com.lorenzomar3.AQ.Service.TemarioService;
-import com.lorenzomar3.AQ.dto.conversor.CuestionarioDTOConversor;
 import com.lorenzomar3.AQ.dto.conversor.TemarioDTOConversor;
-import com.lorenzomar3.AQ.dto.newDto.CuestionarioDTO;
-import com.lorenzomar3.AQ.dto.newDto.CuestionarioWithListDTO;
-import com.lorenzomar3.AQ.dto.newDto.TemarioCuestionarioCardDTO;
+import com.lorenzomar3.AQ.dto.newDto.AResponderItemListDTO;
+import com.lorenzomar3.AQ.dto.newDto.TemarioBasicDTO;
 import com.lorenzomar3.AQ.dto.newDto.TemarioCuestionarioWhitItemListDTO;
 import com.lorenzomar3.AQ.model.AResponder.Temario.Temario;
-import com.lorenzomar3.AQ.model.Cuestionario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,34 +18,34 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = {"*"}, methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
-public class TemarioTipoCuestionarioController {
+public class TemarioController {
 
     @Autowired
     TemarioService temarioService;
 
     @GetMapping("/allCuestionario")
-    public ResponseEntity<List<TemarioCuestionarioCardDTO>> todosLosCuestionarios() {
+    public ResponseEntity<List<TemarioBasicDTO>> todosLosCuestionarios() {
 
-        List<TemarioCuestionarioCardDTO> temarioCuestionarioCardDTO = temarioService.obtenerTodosLosTemariosDeTipoCuestionario()
+        List<TemarioBasicDTO> temarioBasicDTO = temarioService.obtenerTodosLosTemariosDeTipoCuestionario()
                 .stream().map(Temario::toTemarioCuestionarioCardDTO).toList();
 
-        return new ResponseEntity<>(temarioCuestionarioCardDTO, HttpStatus.OK);
+        return new ResponseEntity<>(temarioBasicDTO, HttpStatus.OK);
     }
 
 
     @Transactional(readOnly = true)
-    @GetMapping("/fullQuestionarioById/{id}")
+    @GetMapping("/fullIssueById/{id}")
     public ResponseEntity<TemarioCuestionarioWhitItemListDTO> cuestionarioById(@PathVariable Long id) {
         TemarioCuestionarioWhitItemListDTO cuestionarioWithListDTO = temarioService.obtenerTodo(id).toTemarioCuestionarioWhitItemList();
         return new ResponseEntity<>(cuestionarioWithListDTO, HttpStatus.OK);
     }
 
 
-    @PostMapping("/questionnaireCreate")
-    public ResponseEntity<TemarioCuestionarioCardDTO> crearCuestionario(@RequestBody TemarioCuestionarioCardDTO temarioCuestionarioCardDTO) {
-        Temario temario = TemarioDTOConversor.fromJSON(temarioCuestionarioCardDTO);
+    @PostMapping("/issuequestionnaireCreate")
+    public ResponseEntity<TemarioBasicDTO> crearCuestionario(@RequestBody TemarioBasicDTO temarioBasicDTO) {
+        Temario temario = TemarioDTOConversor.fromJSON(temarioBasicDTO);
 
-        TemarioCuestionarioCardDTO TemarioCuestionarioGuardado =
+        TemarioBasicDTO TemarioCuestionarioGuardado =
                 temarioService.saveTemarioCuestionario(temario).toTemarioCuestionarioCardDTO();
 
         return new ResponseEntity<>(TemarioCuestionarioGuardado, HttpStatus.CREATED);
@@ -62,12 +59,19 @@ public class TemarioTipoCuestionarioController {
     }
 
 
-    @PutMapping("/editarCuestionario")
-    public ResponseEntity<TemarioCuestionarioCardDTO> editarCuestionario(@RequestBody TemarioCuestionarioCardDTO temarioCuestionarioCardDTO) {
-        JsonVisualizador.verJson(temarioCuestionarioCardDTO);
+    @PutMapping("/editIssue")
+    public ResponseEntity<TemarioBasicDTO> editarCuestionario(@RequestBody TemarioBasicDTO temarioBasicDTO) {
+        JsonVisualizador.verJson(temarioBasicDTO);
 
-        TemarioCuestionarioCardDTO c = temarioService.actualizarCuestionario(temarioCuestionarioCardDTO).toTemarioCuestionarioCardDTO();
+        TemarioBasicDTO c = temarioService.actualizarCuestionario(temarioBasicDTO).toTemarioCuestionarioCardDTO();
         return new ResponseEntity<>(c, HttpStatus.OK);
     }
+
+    @PostMapping("/createIssue")
+    public ResponseEntity<AResponderItemListDTO> crearTema(@RequestBody TemarioBasicDTO temarioBasicDTO) {
+        AResponderItemListDTO itemDTO = temarioService.crearNuevoTemarioHijo(temarioBasicDTO).toResponderItemListDTO();
+        return new ResponseEntity<>(itemDTO, HttpStatus.CREATED);
+    }
+
 
 }

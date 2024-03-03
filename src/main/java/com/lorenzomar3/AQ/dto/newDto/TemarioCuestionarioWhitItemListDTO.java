@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Setter
-public class TemarioCuestionarioWhitItemListDTO extends  TemarioCuestionarioCardDTO{
+public class TemarioCuestionarioWhitItemListDTO extends TemarioBasicDTO {
 
 
     public List<AResponderItemListDTO> itemList;

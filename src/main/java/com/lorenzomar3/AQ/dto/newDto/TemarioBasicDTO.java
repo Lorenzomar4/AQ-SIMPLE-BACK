@@ -2,12 +2,11 @@ package com.lorenzomar3.AQ.dto.newDto;
 
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
-public class TemarioCuestionarioCardDTO {
+public class TemarioBasicDTO {
 
     public Long id;
 
@@ -17,7 +16,10 @@ public class TemarioCuestionarioCardDTO {
 
     public LocalDateTime creationDate;
 
-    public TemarioCuestionarioCardDTO(Long id, String titulo, LocalDateTime fechaDeCreacion) {
+    //Puede llegar a ser nulo si estamos creando un Temario Padre, osea del tipo Cuestionario.
+    Long fatherid;
+
+    public TemarioBasicDTO(Long id, String titulo, LocalDateTime fechaDeCreacion) {
         this.id = id;
         this.name = titulo;
         this.creationDate = fechaDeCreacion;

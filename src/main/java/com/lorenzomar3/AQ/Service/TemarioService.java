@@ -1,7 +1,8 @@
 package com.lorenzomar3.AQ.Service;
 
 import com.lorenzomar3.AQ.Repository.TemarioRepository;
-import com.lorenzomar3.AQ.dto.newDto.TemarioCuestionarioCardDTO;
+import com.lorenzomar3.AQ.dto.conversor.TemarioDTOConversor;
+import com.lorenzomar3.AQ.dto.newDto.TemarioBasicDTO;
 import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.AResponder.Temario.Temario;
 import com.lorenzomar3.AQ.model.TipoAResponder;
@@ -47,7 +48,7 @@ public class TemarioService {
         temarioRepository.deleteById(id);
     }
 
-    public Temario actualizarCuestionario(TemarioCuestionarioCardDTO temarioDto) {
+    public Temario actualizarCuestionario(TemarioBasicDTO temarioDto) {
 
         final Temario temaBd = temarioRepository
                 .findByIdEssential(temarioDto.getId()).orElseThrow(() -> new BussinesException("Error , no existe este cuestionario"));
@@ -58,5 +59,21 @@ public class TemarioService {
         return temarioRepository.save(temaBd);
 
     }
+
+    @Transactional
+    public Temario crearNuevoTemarioHijo(TemarioBasicDTO temarioBasicDTO) {
+        Temario temarioPadre = temarioRepository
+                .findByIdEssential(temarioBasicDTO.getFatherid())
+                .orElseThrow(() -> new BussinesException("Error , no existe este cuestionario"));
+
+        Temario temarioHijo = TemarioDTOConversor.fromJSON(temarioBasicDTO);
+
+        temarioPadre.agregarALaLista(temarioHijo);
+
+       return  temarioRepository.save(temarioPadre);
+
+
+    }
+
 
 }
