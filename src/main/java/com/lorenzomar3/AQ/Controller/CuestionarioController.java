@@ -25,49 +25,13 @@ public class CuestionarioController {
     @Autowired
     CuestionarioService cuestionarioService;
 
-    @GetMapping("/allCuestionario")
-    public ResponseEntity<List<CuestionarioDTO>> todosLosCuestionarios() {
-        List<CuestionarioDTO> cuestionarioDTOList = cuestionarioService.allCuestionario()
-                .stream().map(Cuestionario::toDTO).toList();
-
-        return new ResponseEntity<>(cuestionarioDTOList, HttpStatus.OK);
-    }
-
-
-    @PostMapping("/questionnaireCreate")
-    public ResponseEntity<CuestionarioDTO> crearCuestionario(@RequestBody CuestionarioDTO cuestionarioDTO) {
-        Cuestionario cuestionario = CuestionarioDTOConversor.fromJSON(cuestionarioDTO);
-
-        CuestionarioDTO cuestionarioGuardado = cuestionarioService.saveCuestionario(cuestionario).toDTO();
-
-        return new ResponseEntity<>(cuestionarioGuardado, HttpStatus.CREATED);
-    }
-
-
-    @Transactional(readOnly = true)
-    @GetMapping("/fullQuestionarioById/{id}")
-    public ResponseEntity<CuestionarioWithListDTO> cuestionarioById(@PathVariable Long id) {
-        System.out.println("fullQuestionarioById");
-
-        CuestionarioWithListDTO cuestionarioWithListDTO = cuestionarioService.obtenerTodo(id).toDTOwhitItemList();
-
-        JsonVisualizador.verJson(cuestionarioWithListDTO);
-        return new ResponseEntity<>(cuestionarioWithListDTO, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        cuestionarioService.eliminarCuestionario(id);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
+    /*
     @PutMapping("/editarCuestionario")
     public ResponseEntity<CuestionarioDTO> editarCuestionario(@RequestBody CuestionarioDTO cuestionarioDTO) {
         Cuestionario cuestionario = CuestionarioDTOConversor.fromJSON(cuestionarioDTO);
         CuestionarioDTO c = cuestionarioService.actualizarCuestionario(cuestionario).toDTO();
         return new ResponseEntity<>(c, HttpStatus.OK);
-    }
+    }*/
 
 
 }

@@ -41,23 +41,23 @@ public class TemaService {
     }
 
     @Transactional
-    public void eliminarTema(Long id ){
+    public void eliminarTema(Long id) {
         temaRepository.deleteById(id);
     }
 
     @Transactional(readOnly = true)
-    public Tema obtenerTemaPorId(Long id){
+    public Tema obtenerTemaPorId(Long id) {
         Tema tema = getById(id);
         return tema;
     }
 
 
-    public Tema getById(Long id ){
-        return temaRepository.findById(id).orElseThrow( () -> new BussinesException("El tema no existe"));
+    public Tema getById(Long id) {
+        return temaRepository.findById(id).orElseThrow(() -> new BussinesException("El tema no existe"));
     }
 
     @Transactional
-    public Tema actualizarTema(TemaPostDTO temaDTO){
+    public Tema actualizarTema(TemaPostDTO temaDTO) {
         final Tema temaBd = getById(temaDTO.getId());
 
         temaBd.setTitulo(temaDTO.getName());
@@ -68,7 +68,7 @@ public class TemaService {
     }
 
     @Transactional
-    public void guardarSubTema(TemaPostDTO temaPostDTO){
+    public void guardarSubTema(TemaPostDTO temaPostDTO) {
         Tema temaPadre = getById(temaPostDTO.getFatherid());
         Tema subTema = new Tema();
         subTema.setTitulo(temaPostDTO.getName());

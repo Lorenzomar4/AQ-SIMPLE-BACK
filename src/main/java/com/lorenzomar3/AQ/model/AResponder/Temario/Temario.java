@@ -1,19 +1,20 @@
 package com.lorenzomar3.AQ.model.AResponder.Temario;
 
+import com.lorenzomar3.AQ.dto.conversor.TemarioDTOConversor;
+import com.lorenzomar3.AQ.dto.newDto.AResponderItemListDTO;
+import com.lorenzomar3.AQ.dto.newDto.TemarioCuestionarioCardDTO;
+import com.lorenzomar3.AQ.dto.newDto.TemarioCuestionarioWhitItemListDTO;
 import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import com.lorenzomar3.AQ.model.AResponder.Tema;
-import com.lorenzomar3.AQ.model.AResponder.TipoTemarioEnum;
 import com.lorenzomar3.AQ.model.TipoAResponder;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @Getter
@@ -82,5 +83,22 @@ public class Temario extends AResponder {
     @Override
     public void asignacionDeTipo() {
 
+    }
+
+
+    public TemarioCuestionarioCardDTO toTemarioCuestionarioCardDTO() {
+        return TemarioDTOConversor.toTeamarioCuestionarioCardDTO(this);
+    }
+
+    public TemarioCuestionarioWhitItemListDTO toTemarioCuestionarioWhitItemList() {
+        TemarioCuestionarioWhitItemListDTO temarioCuestionarioWhitItemListDTO =
+                new TemarioCuestionarioWhitItemListDTO(id, titulo, fechaDeCreacion);
+
+        List<AResponderItemListDTO> itemList = listaAResponder.stream().map(AResponder::toResponderItemListDTO).toList();
+
+        temarioCuestionarioWhitItemListDTO.setItemList(itemList);
+
+
+        return temarioCuestionarioWhitItemListDTO;
     }
 }

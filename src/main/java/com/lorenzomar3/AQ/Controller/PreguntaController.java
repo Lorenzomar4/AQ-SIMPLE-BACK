@@ -23,7 +23,6 @@ public class PreguntaController {
 
     @PostMapping("/nuevaPregunta")
     public void crearPreguntaNueva() {
-
     }
 
     @JsonView(View.JustToAnswer.class)
@@ -50,12 +49,9 @@ public class PreguntaController {
     @PostMapping("/createQuestion")
     public ResponseEntity<AResponder> createQuestion(@RequestBody PostPreguntaDTO getQuestionDTO) {
         AResponder pregunta = preguntaService.createaQuestion(getQuestionDTO);
-        return new ResponseEntity<>(pregunta,  HttpStatus.OK);
+        return new ResponseEntity<>(pregunta, HttpStatus.OK);
 
     }
-
-
-
 
 
 }

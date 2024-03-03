@@ -25,8 +25,6 @@ import java.util.List;
 public class Cuestionario extends AResponder {
 
 
-
-
     @Temporal(TemporalType.TIMESTAMP)
     LocalDateTime fechaDeCreacion;
 
