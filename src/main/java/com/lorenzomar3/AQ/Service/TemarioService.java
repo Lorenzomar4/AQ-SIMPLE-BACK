@@ -3,9 +3,7 @@ package com.lorenzomar3.AQ.Service;
 import com.lorenzomar3.AQ.Repository.TemarioRepository;
 import com.lorenzomar3.AQ.dto.newDto.TemarioCuestionarioCardDTO;
 import com.lorenzomar3.AQ.exception.BussinesException;
-import com.lorenzomar3.AQ.model.AResponder.Tema;
 import com.lorenzomar3.AQ.model.AResponder.Temario.Temario;
-import com.lorenzomar3.AQ.model.Cuestionario;
 import com.lorenzomar3.AQ.model.TipoAResponder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,7 +50,7 @@ public class TemarioService {
     public Temario actualizarCuestionario(TemarioCuestionarioCardDTO temarioDto) {
 
         final Temario temaBd = temarioRepository
-                .findByIdEscencial(temarioDto.getId()).orElseThrow(() -> new BussinesException("Error , no existe este cuestionario"));
+                .findByIdEssential(temarioDto.getId()).orElseThrow(() -> new BussinesException("Error , no existe este cuestionario"));
 
         temaBd.setTitulo(temarioDto.getName());
         temaBd.setUltimaActualizacion(LocalDateTime.now());

@@ -64,7 +64,7 @@ public class TemarioTipoCuestionarioController {
 
     @PutMapping("/editarCuestionario")
     public ResponseEntity<TemarioCuestionarioCardDTO> editarCuestionario(@RequestBody TemarioCuestionarioCardDTO temarioCuestionarioCardDTO) {
-       JsonVisualizador.verJson(temarioCuestionarioCardDTO);
+        JsonVisualizador.verJson(temarioCuestionarioCardDTO);
 
         TemarioCuestionarioCardDTO c = temarioService.actualizarCuestionario(temarioCuestionarioCardDTO).toTemarioCuestionarioCardDTO();
         return new ResponseEntity<>(c, HttpStatus.OK);
