@@ -50,6 +50,11 @@ public abstract class AResponder {
         this.titulo = titulo;
     }
 
+    public AResponder(String titulo, TipoAResponder tipo) {
+        this.titulo = titulo;
+        this.tipo = tipo;
+    }
+
     public AResponder() {
 
     }

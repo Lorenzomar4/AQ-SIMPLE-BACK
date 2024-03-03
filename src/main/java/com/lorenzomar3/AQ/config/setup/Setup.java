@@ -1,7 +1,9 @@
 package com.lorenzomar3.AQ.config.setup;
 
 import com.lorenzomar3.AQ.Repository.CuestionarioRepository;
+import com.lorenzomar3.AQ.Repository.TemarioRepository;
 import com.lorenzomar3.AQ.Service.CuestionarioService;
+import com.lorenzomar3.AQ.model.AResponder.Temario.Temario;
 import com.lorenzomar3.AQ.model.AResponder.TeoriaDeLaPregunta;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.Opcion;
 import com.lorenzomar3.AQ.model.AResponder.Tema;
@@ -11,6 +13,7 @@ import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegabeIndependie
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableCompartido.DesplegableCompartido;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableCompartido.OpcionDeDesplegableCompartido;
 import com.lorenzomar3.AQ.model.Cuestionario;
+import com.lorenzomar3.AQ.model.TipoAResponder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -23,14 +26,14 @@ import java.util.function.Supplier;
 public class Setup implements ApplicationRunner {
 
     @Autowired
-    CuestionarioService cuestionarioService;
+    TemarioRepository temarioRepository;
 
 
-    public Cuestionario eym;
+    public Temario eym;
 
     public Cuestionario matematicaDiscreta;
-    public Tema fuerzaElectrica;
-    public Tema capacitores;
+    public Temario fuerzaElectrica;
+    public Temario capacitores;
 
     public PreguntaSimple preguntaSimple;
 
@@ -73,7 +76,7 @@ public class Setup implements ApplicationRunner {
     TeoriaDeLaPregunta seleccionUnicaTeoria;
 
     TeoriaDeLaPregunta opcionMultipleTeoria;
-    TeoriaDeLaPregunta  paraSimple;
+    TeoriaDeLaPregunta paraSimple;
 
     @Autowired
     CuestionarioRepository cuestionarioRepository;
@@ -81,9 +84,10 @@ public class Setup implements ApplicationRunner {
     public void datos() {
         Supplier<TeoriaDeLaPregunta> teoriaDeLaPreguntaSupplier = () -> new TeoriaDeLaPregunta("Prueba");
 
-        eym = new Cuestionario("Electricidad y Magnetismo");
-        capacitores = new Tema("Capacitores");
-        fuerzaElectrica = new Tema("Campo electrico");
+        eym = new Temario("Electricidad y magnetismo", TipoAResponder.CUESTIONARIO);
+
+        capacitores = new Temario("Capacitores");
+        fuerzaElectrica = new Temario("Campo electrico");
         preguntaSimple = new PreguntaSimple("¿Como estuvo tu dia hoy?", "Bien dentro de todo");
 
         paraSimple = new TeoriaDeLaPregunta("No tiene sentido agregar teoria aqui ,ya que solo se esta realizando pruebas");
@@ -155,14 +159,14 @@ public class Setup implements ApplicationRunner {
         desplegableIndependiente.agregarTeoria(teoriaDeLaPreguntaSupplier.get());
 
 
-        eym.agregarNuevoPreguntaOTema(fuerzaElectrica);
-        eym.agregarNuevoPreguntaOTema(capacitores);
-        eym.agregarNuevoPreguntaOTema(preguntaSimple);
-        eym.agregarNuevoPreguntaOTema(preguntaVF);
-        eym.agregarNuevoPreguntaOTema(seleccionUnica);
-        eym.agregarNuevoPreguntaOTema(opcionMultiple);
-        eym.agregarNuevoPreguntaOTema(desplegableCompartido);
-        eym.agregarNuevoPreguntaOTema(desplegableIndependiente);
+        eym.agregarALaLista(fuerzaElectrica);
+        eym.agregarALaLista(capacitores);
+        eym.agregarALaLista(preguntaSimple);
+        eym.agregarALaLista(preguntaVF);
+        eym.agregarALaLista(seleccionUnica);
+        eym.agregarALaLista(opcionMultiple);
+        eym.agregarALaLista(desplegableCompartido);
+        eym.agregarALaLista(desplegableIndependiente);
 
     }
 
@@ -171,17 +175,15 @@ public class Setup implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
 
 
-            datos();
-            guardarCuestionario();
-
-
+        datos();
+        guardarCuestionario();
 
 
     }
 
     public void guardarCuestionario() {
+        temarioRepository.save(eym);
 
-        cuestionarioService.saveCuestionario(eym);
 
     }
 

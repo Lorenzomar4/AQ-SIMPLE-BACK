@@ -19,7 +19,7 @@ import java.util.Map;
 @Getter
 @Setter
 @NoArgsConstructor
-@Builder
+
 public class Temario extends AResponder {
 
 
@@ -31,15 +31,13 @@ public class Temario extends AResponder {
     TipoDeTemario tipoDeTemario;
 
 
-    public Temario(String titulo, List<AResponder> listaAResponder, TipoDeTemario tipoDeTemario) {
-        super(titulo);
-        this.listaAResponder = listaAResponder;
-        this.tipoDeTemario = tipoDeTemario;
+    public Temario(String titulo, TipoAResponder tipo) {
+        super(titulo, tipo);
+        init();
     }
 
-    public Temario(List<AResponder> listaAResponder, TipoDeTemario tipoDeTemario) {
-        this.listaAResponder = listaAResponder;
-        this.tipoDeTemario = tipoDeTemario;
+    public Temario(String titulo) {
+        super(titulo);
     }
 
     @PostLoad
