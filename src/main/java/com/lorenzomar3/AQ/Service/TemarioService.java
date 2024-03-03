@@ -52,7 +52,7 @@ public class TemarioService {
     public Temario actualizarCuestionario(TemarioCuestionarioCardDTO temarioDto) {
 
         final Temario temaBd = temarioRepository
-                .findById(temarioDto.getId()).orElseThrow(() -> new BussinesException("Error , no existe este cuestionario"));
+                .findByIdEscencial(temarioDto.getId()).orElseThrow(() -> new BussinesException("Error , no existe este cuestionario"));
 
         temaBd.setTitulo(temarioDto.getName());
         temaBd.setUltimaActualizacion(LocalDateTime.now());
@@ -61,16 +61,4 @@ public class TemarioService {
 
     }
 
-    /*
-        @Transactional
-    public Tema actualizarTema(TemaPostDTO temaDTO) {
-        final Tema temaBd = getById(temaDTO.getId());
-
-        temaBd.setTitulo(temaDTO.getName());
-        temaBd.setUltimaActualizacion(LocalDateTime.now());
-
-        return temaRepository.save(temaBd);
-
-    }
-     */
 }
