@@ -2,9 +2,7 @@ package com.lorenzomar3.AQ.model.AResponder;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.ITemaPregunta;
-import com.lorenzomar3.AQ.model.TipoAResponder;
 import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.*;
 import lombok.Getter;

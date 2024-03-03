@@ -1,6 +1,6 @@
 package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas;
 
-import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
+import com.lorenzomar3.AQ.dto.newDto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 import jakarta.persistence.Entity;
 import lombok.NoArgsConstructor;

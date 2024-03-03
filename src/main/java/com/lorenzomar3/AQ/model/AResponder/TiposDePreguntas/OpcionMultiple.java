@@ -1,9 +1,7 @@
 package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
+import com.lorenzomar3.AQ.dto.newDto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
-import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 

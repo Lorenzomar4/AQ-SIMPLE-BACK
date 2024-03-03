@@ -1,10 +1,8 @@
 package com.lorenzomar3.AQ.model.AResponder.Temario;
 
-import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import com.lorenzomar3.AQ.model.AResponder.AsignadorDeTipoALasPreguntas;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
-import com.lorenzomar3.AQ.model.AResponder.Tema;
 import com.lorenzomar3.AQ.model.TipoAResponder;
 
 public abstract class TipoDeTemario {

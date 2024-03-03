@@ -9,7 +9,6 @@ import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegabeIndependie
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegabeIndependiente.SeleccionUnicaParaDesplegableIndependiente;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableCompartido.DesplegableCompartido;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableCompartido.OpcionDeDesplegableCompartido;
-import com.lorenzomar3.AQ.model.Cuestionario;
 import com.lorenzomar3.AQ.model.TipoAResponder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -28,7 +27,7 @@ public class Setup implements ApplicationRunner {
 
     public Temario eym;
 
-    public Cuestionario matematicaDiscreta;
+
     public Temario fuerzaElectrica;
     public Temario capacitores;
 

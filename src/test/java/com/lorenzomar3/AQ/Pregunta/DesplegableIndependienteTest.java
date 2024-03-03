@@ -1,6 +1,6 @@
 package com.lorenzomar3.AQ.Pregunta;
 
-import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
+import com.lorenzomar3.AQ.dto.newDto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegabeIndependiente.DesplegableIndependiente;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegabeIndependiente.SeleccionUnicaParaDesplegableIndependiente;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.Opcion;

@@ -6,7 +6,6 @@ import com.lorenzomar3.AQ.dto.newDto.TemarioBasicDTO;
 import com.lorenzomar3.AQ.dto.newDto.TemarioCuestionarioWhitItemListDTO;
 import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.AResponder.AResponder;
-import com.lorenzomar3.AQ.model.AResponder.Tema;
 import com.lorenzomar3.AQ.model.TipoAResponder;
 import jakarta.persistence.*;
 import lombok.Getter;

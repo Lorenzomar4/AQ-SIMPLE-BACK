@@ -1,9 +1,6 @@
 package com.lorenzomar3.AQ.Repository.PreguntaRepository;
 
-import com.lorenzomar3.AQ.Repository.PreguntaRepository.BasePreguntaRepositorio;
-import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegabeIndependiente.DesplegableIndependiente;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.OpcionMultiple;
-import com.lorenzomar3.AQ.model.Cuestionario;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

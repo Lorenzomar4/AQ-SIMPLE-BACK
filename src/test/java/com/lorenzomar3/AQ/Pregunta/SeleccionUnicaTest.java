@@ -1,6 +1,6 @@
 package com.lorenzomar3.AQ.Pregunta;
 
-import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
+import com.lorenzomar3.AQ.dto.newDto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
