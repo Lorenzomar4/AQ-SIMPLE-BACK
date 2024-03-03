@@ -45,6 +45,7 @@ public abstract class AResponder {
     @Enumerated(EnumType.STRING)
     public TipoAResponder tipo;
 
+
     public AResponder(String titulo) {
         this.titulo = titulo;
     }
@@ -59,7 +60,7 @@ public abstract class AResponder {
 
     public abstract Integer numeroDePreguntas();
 
-    public abstract void asignarTipoSiSeAgregaDesdeCuestionario();
+    public abstract void asignacionDeTipo();
 
 
     public AResponderItemListDTO toResponderItemListDTO() {

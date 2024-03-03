@@ -3,6 +3,7 @@ package com.lorenzomar3.AQ.model.AResponder;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.dto.dto.RespuestaDePreguntaDTO;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.ITemaPregunta;
 import com.lorenzomar3.AQ.model.TipoAResponder;
 import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.*;
@@ -18,7 +19,7 @@ import java.util.*;
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 
-public abstract class Pregunta extends AResponder implements IPregunta {
+public abstract class Pregunta extends AResponder implements IPregunta, ITemaPregunta {
 
 
     @JsonView(View.JustToAnswer.class)
@@ -29,12 +30,9 @@ public abstract class Pregunta extends AResponder implements IPregunta {
     public String imagenTitulo;
 
 
-
-
     @JsonView(View.Full.class)
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pregunaDuenia" , cascade = CascadeType.ALL , orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pregunaDuenia", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<TeoriaDeLaPregunta> listaDeTeoriaDeLaPregunta = new HashSet<>();
-
 
 
     public Pregunta(String titulo, String imagenTitulo) {
@@ -66,7 +64,7 @@ public abstract class Pregunta extends AResponder implements IPregunta {
     }
 
     @Override
-    public void asignarTipoSiSeAgregaDesdeCuestionario() {
+    public void asignacionDeTipo() {
 
         tipo = AsignadorDeTipoALasPreguntas.getInstance().asignarTipo(this);
     }
@@ -75,6 +73,7 @@ public abstract class Pregunta extends AResponder implements IPregunta {
         listaDeTeoriaDeLaPregunta.add(teoriaDeLaPregunta);
         teoriaDeLaPregunta.setPregunaDuenia(this);
     }
+
 
 }
 

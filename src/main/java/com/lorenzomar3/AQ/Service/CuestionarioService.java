@@ -54,7 +54,7 @@ public class CuestionarioService {
     @Transactional
     public Cuestionario crearCuestionario(CuestionarioSimpleDTO cuestionario) {
         Cuestionario cuestionarioBD = new Cuestionario();
-        cuestionarioBD.setNombreCuestionario(cuestionario.getName());
+        cuestionarioBD.setTitulo(cuestionario.getName());
 
         cuestionarioRepository.save(cuestionarioBD);
         cuestionarioBD = cuestionarioRepository.
@@ -76,7 +76,7 @@ public class CuestionarioService {
 
         Cuestionario cuestionario = cuestionarioRepository.findById(unCuestionario.getId()).orElseThrow(() -> new BussinesException("El elemento no existe"));
 
-        cuestionario.setNombreCuestionario(unCuestionario.getNombreCuestionario());
+        cuestionario.setTitulo(unCuestionario.getTitulo());
 
         return cuestionarioRepository.save(cuestionario);
     }

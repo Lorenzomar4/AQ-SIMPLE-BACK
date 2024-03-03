@@ -3,13 +3,12 @@ package com.lorenzomar3.AQ.dto.conversor;
 import com.lorenzomar3.AQ.dto.newDto.CuestionarioDTO;
 import com.lorenzomar3.AQ.model.Cuestionario;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class CuestionarioDTOConversor {
 
     public static CuestionarioDTO toDTO(Cuestionario cuestionario) {
-        return new CuestionarioDTO(cuestionario.getId(), cuestionario.getNombreCuestionario(), cuestionario.getFechaDeCreacion());
+        return new CuestionarioDTO(cuestionario.getId(), cuestionario.getTitulo(), cuestionario.getFechaDeCreacion());
     }
 
     public static  Cuestionario fromJSON(CuestionarioDTO cuestionarioDTO) {

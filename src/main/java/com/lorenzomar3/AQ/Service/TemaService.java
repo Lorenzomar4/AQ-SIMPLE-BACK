@@ -73,8 +73,7 @@ public class TemaService {
         Tema subTema = new Tema();
         subTema.setTitulo(temaPostDTO.getName());
 
-
-        temaPadre.agregarPreguntaOTema(subTema);
+        temaPadre.agregarNuevoPreguntaOTema(subTema);
 
         temaRepository.save(temaPadre);
         JsonVisualizador.verJson(subTema);

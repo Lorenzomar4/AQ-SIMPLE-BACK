@@ -53,7 +53,6 @@ public class SeleccionUnica extends Pregunta implements IPreguntaVariasOpciones<
 
 
     public void setListaDeOpcionesDisponible(List<Opcion> lista) {
-
         validacionDeOpcionUnica(lista);
         lista.forEach(op -> agregarLaOpcionALaListaYAsignarLaIdDeLaOpcionCorrecta(op));
 

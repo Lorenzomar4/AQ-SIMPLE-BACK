@@ -12,7 +12,7 @@ public class CuestionarioWhitListDTOConversor {
         List<AResponderItemListDTO> itemListDTO =
                 cuestionario.getListaAResponder().stream().map(item -> item.toResponderItemListDTO()).toList();
         
-        return new CuestionarioWithListDTO(cuestionario.getId(),cuestionario.getNombreCuestionario(),
+        return new CuestionarioWithListDTO(cuestionario.getId(),cuestionario.getTitulo(),
                 cuestionario.getFechaDeCreacion() ,itemListDTO);
 
     }
