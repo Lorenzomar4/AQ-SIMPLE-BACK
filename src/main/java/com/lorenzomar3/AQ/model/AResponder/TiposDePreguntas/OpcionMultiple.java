@@ -3,12 +3,16 @@ package com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas;
 import com.lorenzomar3.AQ.dto.newDto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Collections;
 import java.util.List;
 
 @Entity
+@Setter
+@Getter
 @NoArgsConstructor
 public class OpcionMultiple extends Pregunta implements IPreguntaVariasOpciones<Boolean, Opcion> {
 
