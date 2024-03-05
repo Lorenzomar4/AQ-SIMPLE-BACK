@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.Service.PreguntaService;
 import com.lorenzomar3.AQ.dto.newDto.ObtenerPreguntaDTO;
 import com.lorenzomar3.AQ.dto.newDto.PostPreguntaDTO;
+import com.lorenzomar3.AQ.dto.newDto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 import com.lorenzomar3.AQ.model.View;
@@ -29,7 +30,6 @@ public class PreguntaController {
         return new ResponseEntity<>(pregunta, HttpStatus.OK);
 
     }
-
 
     @JsonView(View.Full.class)
     @PostMapping("/getQuestionForAnswerFull")
@@ -62,6 +62,11 @@ public class PreguntaController {
         Pregunta pregunta = preguntaService.updateQuestion(getQuestionDTO);
         return new ResponseEntity<>(pregunta, HttpStatus.OK);
 
+    }
+
+    @PostMapping("/verifyRequest")
+    public ResponseEntity<Boolean> verifyRequestForUser(@RequestBody RespuestaDePreguntaDTO respuestaDelusuario) {
+        return new ResponseEntity<>(preguntaService.verifyResponse(respuestaDelusuario), HttpStatus.OK);
     }
 
 

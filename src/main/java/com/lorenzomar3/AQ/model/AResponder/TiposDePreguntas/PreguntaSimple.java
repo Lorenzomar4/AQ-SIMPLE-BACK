@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PreguntaSimple extends Pregunta {
 
-
+    public Boolean respuestaPrecisa=false;
     public String respuestaEstablecida;
 
     public PreguntaSimple(String titulo, String respuestaEstablecida) {
@@ -18,6 +18,8 @@ public class PreguntaSimple extends Pregunta {
     }
 
     public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
-        return respuestaDePreguntaDTO.getRespuestaBooleana();
+        String respuestaDelUsuario = respuestaDePreguntaDTO.getRespuestaInput();
+
+        return  respuestaPrecisa ?  respuestaDelUsuario.equals(respuestaEstablecida) : respuestaDePreguntaDTO.getRespuestaBooleana();
     }
 }

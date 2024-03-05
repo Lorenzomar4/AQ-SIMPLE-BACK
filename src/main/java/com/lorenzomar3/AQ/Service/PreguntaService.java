@@ -6,6 +6,7 @@ import com.lorenzomar3.AQ.Repository.PreguntaRepository.*;
 import com.lorenzomar3.AQ.Repository.TemarioRepository;
 import com.lorenzomar3.AQ.dto.newDto.ObtenerPreguntaDTO;
 import com.lorenzomar3.AQ.dto.newDto.PostPreguntaDTO;
+import com.lorenzomar3.AQ.dto.newDto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import com.lorenzomar3.AQ.model.AResponder.FabricaDePreguntas;
@@ -60,13 +61,11 @@ public class PreguntaService {
     }
 
 
-    public Pregunta obtenerPregunta(Long idPregunta , TipoAResponder tipo) {
+    public Pregunta obtenerPregunta(Long idPregunta, TipoAResponder tipo) {
 
         return (Pregunta) mapDeRepositorios.get(tipo).findById(idPregunta).orElseThrow(
                 () -> new BussinesException("No se encuentra una pregunta con el tipo De id solicitadO"));
     }
-
-
 
 
     public Pregunta obtenerPreguntaFull(ObtenerPreguntaDTO getQuestionDTO) {
@@ -96,16 +95,25 @@ public class PreguntaService {
     }
 
     @Transactional
-    public void delete(Long id){
+    public void delete(Long id) {
         preguntaRepository.deleteById(id);
     }
 
 
     @Transactional
-    public Pregunta updateQuestion(PostPreguntaDTO preguntaDTO){
-        Pregunta pregunta = obtenerPregunta(preguntaDTO.getId(),preguntaDTO.getTipo());
-        BeanUtils.copyProperties(preguntaDTO ,pregunta);
+    public Pregunta updateQuestion(PostPreguntaDTO preguntaDTO) {
+        Pregunta pregunta = obtenerPregunta(preguntaDTO.getId(), preguntaDTO.getTipo());
+        BeanUtils.copyProperties(preguntaDTO, pregunta);
         return preguntaRepository.save(pregunta);
+    }
+
+    @Transactional(readOnly = true)
+    public Boolean verifyResponse(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
+        JsonVisualizador.verJson(respuestaDePreguntaDTO);
+        Pregunta pregunta = obtenerPregunta(respuestaDePreguntaDTO.getIdPregunta(), respuestaDePreguntaDTO.getTipoDePregunta());
+
+        return pregunta.laRespuestaEsCorrecta(respuestaDePreguntaDTO);
+
     }
 }
 
