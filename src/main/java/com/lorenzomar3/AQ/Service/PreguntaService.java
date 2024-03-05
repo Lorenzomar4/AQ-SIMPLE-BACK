@@ -91,6 +91,11 @@ public class PreguntaService {
 
         return pregunta;
     }
+
+    @Transactional
+    public void delete(Long id){
+        preguntaRepository.deleteById(id);
+    }
 }
 
 

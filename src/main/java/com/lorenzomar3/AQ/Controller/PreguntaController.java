@@ -50,4 +50,11 @@ public class PreguntaController {
     }
 
 
+    @DeleteMapping("/questionDelete/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        preguntaService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
 }
