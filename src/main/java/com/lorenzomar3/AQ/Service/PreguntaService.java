@@ -3,28 +3,21 @@ package com.lorenzomar3.AQ.Service;
 import com.lorenzomar3.AQ.JsonVisualizador;
 import com.lorenzomar3.AQ.Repository.AResponderRepository;
 import com.lorenzomar3.AQ.Repository.PreguntaRepository.*;
+import com.lorenzomar3.AQ.Repository.TemarioRepository;
 import com.lorenzomar3.AQ.dto.newDto.ObtenerPreguntaDTO;
 import com.lorenzomar3.AQ.dto.newDto.PostPreguntaDTO;
 import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import com.lorenzomar3.AQ.model.AResponder.FabricaDePreguntas;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
-import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegabeIndependiente.DesplegableIndependiente;
-import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableCompartido.DesplegableCompartido;
-import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.OpcionMultiple;
-import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.PreguntaSimple;
-import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.SeleccionUnica;
-import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.VerdaderoOFalso;
+import com.lorenzomar3.AQ.model.AResponder.Temario.Temario;
 import com.lorenzomar3.AQ.model.TipoAResponder;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Supplier;
 
 @Service
 public class PreguntaService {
@@ -49,6 +42,9 @@ public class PreguntaService {
 
     @Autowired
     AResponderRepository aResponderRepository;
+
+    @Autowired
+    TemarioRepository temarioRepository;
 
     HashMap<TipoAResponder, BasePreguntaRepositorio<?>> mapDeRepositorios = new HashMap<>();
 
@@ -83,13 +79,17 @@ public class PreguntaService {
     @Transactional
     public AResponder createaQuestion(PostPreguntaDTO preguntaDTO) {
 
+        Temario temario = temarioRepository.findById(preguntaDTO.getIdTemarioPerteneciente())
+                .orElseThrow(() -> new BussinesException("No existe ese cuestionario"));
+
         FabricaDePreguntas fabricaDePreguntas = new FabricaDePreguntas();
+        AResponder pregunta = fabricaDePreguntas.fromJSON(preguntaDTO);
 
-        AResponder pregunta = fabricaDePreguntas.createWithDTO(preguntaDTO);
-        JsonVisualizador.verJson(pregunta);
+        temario.agregarALaLista(pregunta);
 
+        temarioRepository.save(temario);
 
-        return aResponderRepository.save(pregunta);
+        return pregunta;
     }
 }
 

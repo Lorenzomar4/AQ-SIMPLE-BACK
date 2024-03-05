@@ -49,13 +49,6 @@ public class SeleccionUnica extends Pregunta implements IPreguntaVariasOpciones<
         return respuestaDePreguntaDTO.getListaDeOpciones();
     }
 
-
-    public void setListaDeOpcionesDisponible(List<Opcion> lista) {
-        validacionDeOpcionUnica(lista);
-        lista.forEach(op -> agregarLaOpcionALaListaYAsignarLaIdDeLaOpcionCorrecta(op));
-
-    }
-
     public void validacionDeOpcionUnica(List<Opcion> lista) {
         if (!existeUnaOpcionVerdaderaUnicamente(lista)) {
             throw new BussinesException("¡Asegurese de que haya solamente una opcion valida!");

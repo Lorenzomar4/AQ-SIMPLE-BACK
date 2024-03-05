@@ -21,10 +21,6 @@ public class PreguntaController {
     PreguntaService preguntaService;
 
 
-    @PostMapping("/nuevaPregunta")
-    public void crearPreguntaNueva() {
-    }
-
     @JsonView(View.JustToAnswer.class)
     @PostMapping("/getQuestionForAnswer")
     public ResponseEntity<Pregunta> getQuestion(@RequestBody ObtenerPreguntaDTO getQuestionDTO) {

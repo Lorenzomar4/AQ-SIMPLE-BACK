@@ -10,7 +10,6 @@ import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.SeleccionUnica;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.VerdaderoOFalso;
 import com.lorenzomar3.AQ.model.TipoAResponder;
 import org.springframework.beans.BeanUtils;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -41,9 +40,15 @@ public class FabricaDePreguntas {
 
     }
 
-    public AResponder createWithDTO(PostPreguntaDTO preguntaDTO) {
+    public AResponder fromJSON(PostPreguntaDTO preguntaDTO) {
         AResponder pregunta = mapTipoKeyPreguntaValue.get(preguntaDTO.getTipo());
         BeanUtils.copyProperties(preguntaDTO, pregunta);
+
+        if(pregunta.getTipo().equals(TipoAResponder.OPCION_MULTIPLE)){
+            OpcionMultiple opcionMultiple = (OpcionMultiple) pregunta;
+
+        }
+
         return pregunta;
     }
 

@@ -1,5 +1,6 @@
 package com.lorenzomar3.AQ.dto.newDto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.lorenzomar3.AQ.model.AResponder.TeoriaDeLaPregunta;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegabeIndependiente.SeleccionUnicaParaDesplegableIndependiente;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableCompartido.OpcionDeDesplegableCompartido;
@@ -18,6 +19,7 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class PostPreguntaDTO {
 
     Long id;
@@ -25,6 +27,8 @@ public class PostPreguntaDTO {
 
     String descripcion;
     TipoAResponder tipo;
+
+    Long idTemarioPerteneciente;
 
     //para preguntaVF
     Boolean respuestaVerdadera;
@@ -44,12 +48,15 @@ public class PostPreguntaDTO {
     //Para desplegable independiente
     List<SeleccionUnicaParaDesplegableIndependiente> listaDeOpcionDesplegableIndependiente;
 
-
-    public PostPreguntaDTO(Long id, String titulo, String descripcion, TipoAResponder tipo, Boolean respuestaVerdadera, String respuestaEstablecida, List<TeoriaDeLaPregunta> listaDeTeoriaDeLaPregunta, List<Opcion> listaDeOpcionesConSuRespuestaReal, List<OpcionDeDesplegableCompartido> listaDeOpcionDesplegableCompartido, List<SeleccionUnicaParaDesplegableIndependiente> listaDeOpcionDesplegableIndependiente) {
+    public PostPreguntaDTO(Long id, String titulo, String descripcion, TipoAResponder tipo, Long idTemarioPerteneciente,
+                           Boolean respuestaVerdadera, String respuestaEstablecida, List<TeoriaDeLaPregunta> listaDeTeoriaDeLaPregunta,
+                           List<Opcion> listaDeOpcionesConSuRespuestaReal, List<OpcionDeDesplegableCompartido> listaDeOpcionDesplegableCompartido,
+                           List<SeleccionUnicaParaDesplegableIndependiente> listaDeOpcionDesplegableIndependiente) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.tipo = tipo;
+        this.idTemarioPerteneciente = idTemarioPerteneciente;
         this.respuestaVerdadera = respuestaVerdadera;
         this.respuestaEstablecida = respuestaEstablecida;
         this.listaDeTeoriaDeLaPregunta = listaDeTeoriaDeLaPregunta;
