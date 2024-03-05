@@ -13,6 +13,7 @@ import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 import com.lorenzomar3.AQ.model.AResponder.Temario.Temario;
 import com.lorenzomar3.AQ.model.TipoAResponder;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,11 +60,13 @@ public class PreguntaService {
     }
 
 
-    public Pregunta obtenerPregunta(ObtenerPreguntaDTO getQuestionDTO) {
+    public Pregunta obtenerPregunta(Long idPregunta , TipoAResponder tipo) {
 
-        return (Pregunta) mapDeRepositorios.get(getQuestionDTO.getTipoAResponder()).findById(getQuestionDTO.getId()).orElseThrow(
+        return (Pregunta) mapDeRepositorios.get(tipo).findById(idPregunta).orElseThrow(
                 () -> new BussinesException("No se encuentra una pregunta con el tipo De id solicitadO"));
     }
+
+
 
 
     public Pregunta obtenerPreguntaFull(ObtenerPreguntaDTO getQuestionDTO) {
@@ -95,6 +98,14 @@ public class PreguntaService {
     @Transactional
     public void delete(Long id){
         preguntaRepository.deleteById(id);
+    }
+
+
+    @Transactional
+    public Pregunta updateQuestion(PostPreguntaDTO preguntaDTO){
+        Pregunta pregunta = obtenerPregunta(preguntaDTO.getId(),preguntaDTO.getTipo());
+        BeanUtils.copyProperties(preguntaDTO ,pregunta);
+        return preguntaRepository.save(pregunta);
     }
 }
 

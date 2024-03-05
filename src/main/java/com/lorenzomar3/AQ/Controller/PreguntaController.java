@@ -25,7 +25,7 @@ public class PreguntaController {
     @PostMapping("/getQuestionForAnswer")
     public ResponseEntity<Pregunta> getQuestion(@RequestBody ObtenerPreguntaDTO getQuestionDTO) {
 
-        Pregunta pregunta = preguntaService.obtenerPregunta(getQuestionDTO);
+        Pregunta pregunta = preguntaService.obtenerPregunta(getQuestionDTO.getId(), getQuestionDTO.getTipoAResponder());
         return new ResponseEntity<>(pregunta, HttpStatus.OK);
 
     }
@@ -37,7 +37,6 @@ public class PreguntaController {
     public ResponseEntity<Pregunta> getQuestionFull(@RequestBody ObtenerPreguntaDTO getQuestionDTO) {
         Pregunta pregunta = preguntaService.obtenerPreguntaFull(getQuestionDTO);
         return new ResponseEntity<>(pregunta, HttpStatus.OK);
-
     }
 
 
@@ -54,6 +53,15 @@ public class PreguntaController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         preguntaService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @JsonView(View.JustToAnswer.class)
+    @PutMapping("/editQuestion")
+    public ResponseEntity<Pregunta> updateQuestion(@RequestBody PostPreguntaDTO getQuestionDTO) {
+
+        Pregunta pregunta = preguntaService.updateQuestion(getQuestionDTO);
+        return new ResponseEntity<>(pregunta, HttpStatus.OK);
+
     }
 
 

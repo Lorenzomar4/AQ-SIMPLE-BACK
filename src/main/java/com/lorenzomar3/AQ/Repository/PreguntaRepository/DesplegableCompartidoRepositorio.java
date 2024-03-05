@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface DesplegableCompartidoRepositorio  extends BasePreguntaRepositorio<DesplegableCompartido> {
+public interface DesplegableCompartidoRepositorio extends BasePreguntaRepositorio<DesplegableCompartido> {
 
     @Override
     @EntityGraph(attributePaths = {"listaDeOpciones"})
