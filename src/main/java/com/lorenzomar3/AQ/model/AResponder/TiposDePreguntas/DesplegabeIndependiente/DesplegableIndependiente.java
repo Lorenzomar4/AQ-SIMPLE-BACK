@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -21,15 +22,20 @@ public class DesplegableIndependiente extends Pregunta implements IPreguntaVaria
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "id_pregunta_desplegable_ind")
-    Set<SeleccionUnicaParaDesplegableIndependiente> listaDePreguntasConOpcionUnicas;
+    List<SeleccionUnicaParaDesplegableIndependiente> listaDeOpcionDesplegableIndependiente = new ArrayList<>();
 
 
+    @PostLoad
+    void init() {
+        //Por alguna razon se traen los elementos de esta lista de manera duplicada desde la base de datos a pesar de que alli
+        // Ejemplo con numeros [1,2,1,2] . Esto claramente yo no quiero asi que con esto logro la unicidad [1,2]
+        listaDeOpcionDesplegableIndependiente = listaDeOpcionDesplegableIndependiente.stream().distinct().toList();
+    }
 
 
-    public DesplegableIndependiente(String titulo, List<SeleccionUnicaParaDesplegableIndependiente> listaDePreguntasConOpcionUnicas) {
+    public DesplegableIndependiente(String titulo, List<SeleccionUnicaParaDesplegableIndependiente> listaDeOpcionDesplegableIndependiente) {
         super(titulo);
-        this.listaDePreguntasConOpcionUnicas =  new HashSet<>(listaDePreguntasConOpcionUnicas);
-
+        this.listaDeOpcionDesplegableIndependiente = listaDeOpcionDesplegableIndependiente;
     }
 
 
@@ -40,7 +46,7 @@ public class DesplegableIndependiente extends Pregunta implements IPreguntaVaria
 
     @Override
     public List<SeleccionUnicaParaDesplegableIndependiente> listaDeOpciones() {
-        return new ArrayList<>(this.listaDePreguntasConOpcionUnicas );
+        return new ArrayList<>(this.listaDeOpcionDesplegableIndependiente);
     }
 
     @Override

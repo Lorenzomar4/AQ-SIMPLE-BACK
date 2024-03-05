@@ -11,12 +11,12 @@ import java.util.Optional;
 public interface DesplegableIndependienteRepository extends BasePreguntaRepositorio<DesplegableIndependiente> {
 
     @Override
-    @EntityGraph(attributePaths = {"listaDePreguntasConOpcionUnicas.listaDeOpcionesDisponible"})
+    @EntityGraph(attributePaths = {"listaDeOpcionDesplegableIndependiente.listaDeOpcionesDisponible"})
     Optional<DesplegableIndependiente> findById(Long id);
 
 
     @Override
-    @EntityGraph(attributePaths = {"listaDePreguntasConOpcionUnicas.listaDeOpcionesDisponible"})
+    @EntityGraph(attributePaths = {"listaDeOpcionDesplegableIndependiente.listaDeOpcionesDisponible"})
     @Query("SELECT p FROM DesplegableIndependiente p LEFT JOIN FETCH p.listaDeTeoriaDeLaPregunta WHERE p.id = :preguntaId")
     Optional<DesplegableIndependiente> findByIdWithTeoriaDeLaPregunta(@Param("preguntaId") Long preguntaId);
 
