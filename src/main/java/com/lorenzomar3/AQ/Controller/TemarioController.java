@@ -2,12 +2,17 @@ package com.lorenzomar3.AQ.Controller;
 
 
 import com.lorenzomar3.AQ.JsonVisualizador;
+import com.lorenzomar3.AQ.Service.PreguntaService;
 import com.lorenzomar3.AQ.Service.TemarioService;
 import com.lorenzomar3.AQ.dto.conversor.TemarioDTOConversor;
 import com.lorenzomar3.AQ.dto.newDto.AResponderItemListDTO;
+import com.lorenzomar3.AQ.dto.newDto.ObtenerPreguntaDTO;
 import com.lorenzomar3.AQ.dto.newDto.TemarioBasicDTO;
 import com.lorenzomar3.AQ.dto.newDto.TemarioCuestionarioWhitItemListDTO;
+import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.AResponder.Temario.Temario;
+import com.lorenzomar3.AQ.model.TipoAResponder;
+import jdk.jfr.Description;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +27,9 @@ public class TemarioController {
 
     @Autowired
     TemarioService temarioService;
+
+    @Autowired
+    PreguntaService preguntaService;
 
     @GetMapping("/allCuestionario")
     public ResponseEntity<List<TemarioBasicDTO>> todosLosCuestionarios() {
@@ -68,9 +76,22 @@ public class TemarioController {
     }
 
     @PostMapping("/createIssue")
+
     public ResponseEntity<AResponderItemListDTO> crearTema(@RequestBody TemarioBasicDTO temarioBasicDTO) {
         AResponderItemListDTO itemDTO = temarioService.crearNuevoTemarioHijo(temarioBasicDTO).toResponderItemListDTO();
         return new ResponseEntity<>(itemDTO, HttpStatus.CREATED);
+    }
+
+
+    @GetMapping("/getAllQuestionIdsToAnswer/{id}")
+    @Description("Descripcion pendiente")
+    @Transactional
+    public ResponseEntity<List<Long>> obtenerIdsPreguntas(@PathVariable Long id) {
+        List<Long> aRetornar;
+        aRetornar = temarioService.obtenerTodosLosIdsDePreguntas(id);
+        return new ResponseEntity<>(aRetornar, HttpStatus.OK);
+
+
     }
 
 

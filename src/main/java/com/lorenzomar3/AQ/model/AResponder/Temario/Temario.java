@@ -14,6 +14,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -33,7 +34,6 @@ public class Temario extends AResponder {
 
     public Temario(String titulo, TipoAResponder tipo) {
         super(titulo, tipo);
-        init();
     }
 
     public Temario(String titulo) {
@@ -41,25 +41,31 @@ public class Temario extends AResponder {
     }
 
     @PostLoad
-    void init() {
+    public void init() {
 
         if (tipo.equals(TipoAResponder.CUESTIONARIO)) {
             tipoDeTemario = TipoCuestionario.getInstance();
-        } else if (tipo.equals(TipoAResponder.TEMA)) {
+        }else {
             tipoDeTemario = TipoTema.getInstance();
-        } else {
-            tipoDeTemario = null;
         }
 
     }
 
     public void agregarALaLista(AResponder aResponder) {
 
+        TipoAResponder elTipoAsignable;
+
         if (aResponder instanceof Temario && tipo.equals(TipoAResponder.SUBTEMA)) {
             throw new BussinesException("No se puede agregar un subtema a otro subtema");
         }
 
-        aResponder.setTipo(tipoDeTemario.retornarElTipoParaLaPreguntaOTemario(aResponder));
+        elTipoAsignable = tipoDeTemario.retornarElTipoParaLaPreguntaOTemario(aResponder);
+
+
+
+        aResponder.setTipo(elTipoAsignable);
+
+        System.out.println("tipo asignado : "+aResponder.getTipo());
 
         listaAResponder.add(aResponder);
     }
@@ -82,6 +88,11 @@ public class Temario extends AResponder {
     @Override
     public void asignacionDeTipo() {
 
+    }
+
+    @Override
+    public List<Long> obtenerListaDeIdentificadoresDePreguntas() {
+        return listaAResponder.stream().flatMap(elem -> elem.obtenerListaDeIdentificadoresDePreguntas().stream()).toList();
     }
 
 

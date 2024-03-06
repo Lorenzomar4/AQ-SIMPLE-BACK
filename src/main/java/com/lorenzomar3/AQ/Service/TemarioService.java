@@ -2,6 +2,7 @@ package com.lorenzomar3.AQ.Service;
 
 import com.lorenzomar3.AQ.Repository.TemarioRepository;
 import com.lorenzomar3.AQ.dto.conversor.TemarioDTOConversor;
+import com.lorenzomar3.AQ.dto.newDto.ObtenerPreguntaDTO;
 import com.lorenzomar3.AQ.dto.newDto.TemarioBasicDTO;
 import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.AResponder.Temario.Temario;
@@ -70,9 +71,18 @@ public class TemarioService {
 
         temarioPadre.agregarALaLista(temarioHijo);
 
-       return  temarioRepository.save(temarioPadre);
+        return temarioRepository.save(temarioPadre);
+
+    }
 
 
+    //Buscar en un futuro otra forma de hacerlo! Pensar en queys de JPQL ,HQL O nativas. Incluso en metodos provistos por spring data
+    //Ver por supuesto si vale la pena realizar el cambio.
+    @Transactional(readOnly = true)
+    public List<Long> obtenerTodosLosIdsDePreguntas(Long id) {
+        Temario tema = temarioRepository.findById(id).orElseThrow(() ->
+                new BussinesException("Error no existe un temario con ese id"));
+        return tema.obtenerListaDeIdentificadoresDePreguntas();
     }
 
 

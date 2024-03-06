@@ -1,5 +1,6 @@
 package com.lorenzomar3.AQ.config.setup;
 
+import com.lorenzomar3.AQ.JsonVisualizador;
 import com.lorenzomar3.AQ.Repository.TemarioRepository;
 import com.lorenzomar3.AQ.model.AResponder.Temario.Temario;
 import com.lorenzomar3.AQ.model.AResponder.TeoriaDeLaPregunta;
@@ -28,7 +29,7 @@ public class Setup implements ApplicationRunner {
     public Temario eym;
 
 
-    public Temario fuerzaElectrica;
+    public Temario campoElectrico;
     public Temario capacitores;
 
     public PreguntaSimple preguntaSimple;
@@ -72,8 +73,9 @@ public class Setup implements ApplicationRunner {
     TeoriaDeLaPregunta seleccionUnicaTeoria;
 
     TeoriaDeLaPregunta opcionMultipleTeoria;
-    TeoriaDeLaPregunta paraSimple;
 
+    Temario subtemario;
+    TeoriaDeLaPregunta paraSimple;
 
 
     public void datos() {
@@ -82,7 +84,7 @@ public class Setup implements ApplicationRunner {
         eym = new Temario("Electricidad y magnetismo", TipoAResponder.CUESTIONARIO);
 
         capacitores = new Temario("Capacitores");
-        fuerzaElectrica = new Temario("Campo electrico");
+        campoElectrico = new Temario("Campo electrico");
         preguntaSimple = new PreguntaSimple("¿Como estuvo tu dia hoy?", "Bien dentro de todo");
 
         paraSimple = new TeoriaDeLaPregunta("No tiene sentido agregar teoria aqui ,ya que solo se esta realizando pruebas");
@@ -142,6 +144,9 @@ public class Setup implements ApplicationRunner {
         opE = new Opcion("2001", false);
         opF = new Opcion("2003", false);
 
+        subtemario = new Temario("Sub temario");
+
+
 
         seleccionUnicaParaDesplegableInd1 = new SeleccionUnicaParaDesplegableIndependiente("¿En que año se declaro la independencia?", List.of(opA, opB, opC));
         seleccionUnicaParaDesplegableInd2 = new SeleccionUnicaParaDesplegableIndependiente("En que año boca gano su sexta libertadores?", List.of(opD, opE, opF));
@@ -152,9 +157,9 @@ public class Setup implements ApplicationRunner {
                 );
 
         desplegableIndependiente.agregarTeoria(teoriaDeLaPreguntaSupplier.get());
+        eym.init();
 
-
-        eym.agregarALaLista(fuerzaElectrica);
+        eym.agregarALaLista(campoElectrico);
         eym.agregarALaLista(capacitores);
         eym.agregarALaLista(preguntaSimple);
         eym.agregarALaLista(preguntaVF);
@@ -162,7 +167,10 @@ public class Setup implements ApplicationRunner {
         eym.agregarALaLista(opcionMultiple);
         eym.agregarALaLista(desplegableCompartido);
         eym.agregarALaLista(desplegableIndependiente);
-
+        campoElectrico.init();
+        campoElectrico.agregarALaLista(subtemario);
+        subtemario.init();
+        subtemario.agregarALaLista( new VerdaderoOFalso("¿Riquelme se retiro en boca?", false));
     }
 
 

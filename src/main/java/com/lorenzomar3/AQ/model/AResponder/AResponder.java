@@ -67,6 +67,8 @@ public abstract class AResponder {
 
     public abstract void asignacionDeTipo();
 
+    public abstract List<Long> obtenerListaDeIdentificadoresDePreguntas();
+
 
     public AResponderItemListDTO toResponderItemListDTO() {
         return AResponseItemDTOConversor.toDTO(this);

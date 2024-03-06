@@ -72,6 +72,11 @@ public abstract class Pregunta extends AResponder implements IPregunta, ITemaPre
         teoriaDeLaPregunta.setPregunaDuenia(this);
     }
 
+    @Override
+    public List<Long> obtenerListaDeIdentificadoresDePreguntas() {
+        return Collections.singletonList(this.id);
+    }
+
 
 }
 
