@@ -113,10 +113,9 @@ public class PreguntaService {
         JsonVisualizador.verJson(respuestaDePreguntaDTO);
         Pregunta pregunta = obtenerPregunta(respuestaDePreguntaDTO.getIdPregunta(), respuestaDePreguntaDTO.getTipoDePregunta());
 
-        return pregunta.laRespuestaEsCorrecta(respuestaDePreguntaDTO);
+        return pregunta.verificarSiLaRespuestaEsCorrectaYAsignarCriticos(respuestaDePreguntaDTO);
 
     }
-
 
 
 }

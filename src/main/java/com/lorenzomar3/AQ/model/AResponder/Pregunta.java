@@ -2,11 +2,13 @@ package com.lorenzomar3.AQ.model.AResponder;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.lorenzomar3.AQ.dto.newDto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.ITemaPregunta;
 import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.http.ResponseEntity;
 
 import java.util.*;
 
@@ -75,6 +77,24 @@ public abstract class Pregunta extends AResponder implements IPregunta, ITemaPre
     @Override
     public List<Long> obtenerListaDeIdentificadoresDePreguntas() {
         return Collections.singletonList(this.id);
+    }
+
+    private void conteoDeCritico(boolean respuesta) {
+        if (!respuesta) {
+            intentosParaQueDejeDeSerCriticoDisponible = 3;
+        } else {
+            if (intentosParaQueDejeDeSerCriticoDisponible != 0) {
+                intentosParaQueDejeDeSerCriticoDisponible--;
+            }
+        }
+
+    }
+
+
+    public Boolean verificarSiLaRespuestaEsCorrectaYAsignarCriticos(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
+        boolean respuesta = laRespuestaEsCorrecta(respuestaDePreguntaDTO);
+        conteoDeCritico(respuesta);
+        return laRespuestaEsCorrecta(respuestaDePreguntaDTO);
     }
 
 
