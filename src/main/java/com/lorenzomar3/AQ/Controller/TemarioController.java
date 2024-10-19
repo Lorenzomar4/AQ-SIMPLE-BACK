@@ -18,12 +18,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletWebRequest;
 
 import java.util.List;
 
 @RestController
 @CrossOrigin(origins = {"*"}, methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
 public class TemarioController {
+
+    private static final Logger logger = LoggerFactory.getLogger(TemarioController.class);
+
 
     @Autowired
     TemarioService temarioService;
@@ -36,6 +43,12 @@ public class TemarioController {
 
         List<TemarioBasicDTO> temarioBasicDTO = temarioService.obtenerTodosLosTemariosDeTipoCuestionario()
                 .stream().map(Temario::toTemarioCuestionarioCardDTO).toList();
+
+
+        String className = this.getClass().getSimpleName();
+
+        logger.debug("Clase: {} - Endpoint: {}", className, "/allCuestionario");
+
 
         return new ResponseEntity<>(temarioBasicDTO, HttpStatus.OK);
     }
