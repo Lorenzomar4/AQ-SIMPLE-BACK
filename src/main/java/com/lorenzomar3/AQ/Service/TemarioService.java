@@ -8,6 +8,7 @@ import com.lorenzomar3.AQ.dto.newDto.TemarioBasicDTO;
 import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.AResponder.Temario.Temario;
 import com.lorenzomar3.AQ.model.TipoAResponder;
+import com.lorenzomar3.AQ.projections.QuestionnaireItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,6 +92,8 @@ public class TemarioService {
                 new BussinesException("Error no existe un temario con ese id"));
         return tema.obtenerListaDeIdentificadoresDePreguntas();
     }
+
+
 
 
 }

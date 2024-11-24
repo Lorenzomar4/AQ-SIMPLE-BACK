@@ -12,6 +12,7 @@ import com.lorenzomar3.AQ.dto.newDto.TemarioCuestionarioWhitItemListDTO;
 import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.AResponder.Temario.Temario;
 import com.lorenzomar3.AQ.model.TipoAResponder;
+import com.lorenzomar3.AQ.projections.QuestionnaireItem;
 import jdk.jfr.Description;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,10 +55,16 @@ public class TemarioController {
     @Transactional(readOnly = true)
     @GetMapping("/fullIssueById/{id}")
     public ResponseEntity<TemarioCuestionarioWhitItemListDTO> cuestionarioById(@PathVariable Long id) {
-        logger.debug("Clase: {} - Endpoint: {}", this.getClass().getSimpleName(), "/fullIssueById/" + id.toString());
+        logger.info("Contenido del temario de id : " + id + "  endpoint : /fullIssueById/" + id);
 
         TemarioCuestionarioWhitItemListDTO cuestionarioWithListDTO = temarioService.obtenerTodo(id).toTemarioCuestionarioWhitItemList();
         return new ResponseEntity<>(cuestionarioWithListDTO, HttpStatus.OK);
+    }
+
+    @Transactional
+    @GetMapping("/QuestionnaireItems/{id}")
+    public ResponseEntity<List<QuestionnaireItem>> getTopicContent(@PathVariable Long id) {
+        return new ResponseEntity<>(preguntaService.getQuestionnaireItem(id), HttpStatus.OK);
     }
 
 
