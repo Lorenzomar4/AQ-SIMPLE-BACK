@@ -44,10 +44,7 @@ public class TemarioController {
         List<TemarioBasicDTO> temarioBasicDTO = temarioService.obtenerTodosLosTemariosDeTipoCuestionario()
                 .stream().map(Temario::toTemarioCuestionarioCardDTO).toList();
 
-
-        String className = this.getClass().getSimpleName();
-
-        logger.debug("Clase: {} - Endpoint: {}", className, "/allCuestionario");
+        logger.debug("Endpoint: {}", "/allCuestionario");
 
 
         return new ResponseEntity<>(temarioBasicDTO, HttpStatus.OK);
@@ -57,6 +54,8 @@ public class TemarioController {
     @Transactional(readOnly = true)
     @GetMapping("/fullIssueById/{id}")
     public ResponseEntity<TemarioCuestionarioWhitItemListDTO> cuestionarioById(@PathVariable Long id) {
+        logger.debug("Clase: {} - Endpoint: {}", this.getClass().getSimpleName(), "/fullIssueById/" + id.toString());
+
         TemarioCuestionarioWhitItemListDTO cuestionarioWithListDTO = temarioService.obtenerTodo(id).toTemarioCuestionarioWhitItemList();
         return new ResponseEntity<>(cuestionarioWithListDTO, HttpStatus.OK);
     }
