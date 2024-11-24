@@ -5,6 +5,7 @@ import com.lorenzomar3.AQ.JsonVisualizador;
 import com.lorenzomar3.AQ.Repository.AResponderRepository;
 import com.lorenzomar3.AQ.Repository.PreguntaRepository.*;
 import com.lorenzomar3.AQ.Repository.TemarioRepository;
+import com.lorenzomar3.AQ.dto.newDto.IssueWhitItemsDTO;
 import com.lorenzomar3.AQ.dto.newDto.ObtenerPreguntaDTO;
 import com.lorenzomar3.AQ.dto.newDto.PostPreguntaDTO;
 import com.lorenzomar3.AQ.dto.newDto.RespuestaDePreguntaDTO;
@@ -14,6 +15,7 @@ import com.lorenzomar3.AQ.model.AResponder.FabricaDePreguntas;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 import com.lorenzomar3.AQ.model.AResponder.Temario.Temario;
 import com.lorenzomar3.AQ.model.TipoAResponder;
+import com.lorenzomar3.AQ.projections.IssueOrQuestionnaireProjection;
 import com.lorenzomar3.AQ.projections.QuestionnaireItem;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
@@ -23,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +36,7 @@ public class PreguntaService {
     public PreguntaService() {
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(TemarioController.class);
+    private static final Logger logger = LoggerFactory.getLogger(PreguntaService.class);
 
     @Autowired
     PreguntaRepository preguntaRepository;
@@ -126,16 +129,26 @@ public class PreguntaService {
 
 
     @Transactional(readOnly = true)
-    public List<QuestionnaireItem> getIssueItems(Long id) {
+    public IssueWhitItemsDTO getIssueItems(Long id) {
+        logger.info("Se trae al cuestionario/tema padre");
+        IssueOrQuestionnaireProjection temario = temarioRepository.findByIdBasic(id)
+                .orElseThrow(() -> new BussinesException("No existe ese cuestionario"));
+
+        Long idd = temario.getId();
+        List<QuestionnaireItem> itemList;
         try {
-            return aResponderRepository.getIssueItems(id);
+            logger.info("Se trae todo el contenido perteneciente al cuestionario/tema con id" + id);
+            itemList = aResponderRepository.getIssueItems(id);
         } catch (Exception e) {
             logger.error(e.getMessage());
-            return Collections.emptyList();
+            itemList = Collections.emptyList();
         }
+
+        IssueWhitItemsDTO issueWhitItemsDTO = new IssueWhitItemsDTO(id, temario.getName(), temario.getCreationDate(), temario.getFatherId(), itemList);
+
+
+        return issueWhitItemsDTO;
     }
-
-
 
 
 }

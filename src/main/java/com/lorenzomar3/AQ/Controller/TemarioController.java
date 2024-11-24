@@ -6,6 +6,7 @@ import com.lorenzomar3.AQ.Service.PreguntaService;
 import com.lorenzomar3.AQ.Service.TemarioService;
 import com.lorenzomar3.AQ.dto.conversor.TemarioDTOConversor;
 import com.lorenzomar3.AQ.dto.newDto.AResponderItemListDTO;
+import com.lorenzomar3.AQ.dto.newDto.IssueWhitItemsDTO;
 import com.lorenzomar3.AQ.dto.newDto.TemarioBasicDTO;
 import com.lorenzomar3.AQ.dto.newDto.TemarioCuestionarioWhitItemListDTO;
 import com.lorenzomar3.AQ.model.AResponder.Temario.Temario;
@@ -57,8 +58,8 @@ public class TemarioController {
     }
 
     @Transactional
-    @GetMapping("/issueItems/{id}")
-    public ResponseEntity<List<QuestionnaireItem>> getTopicContent(@PathVariable Long id) {
+    @GetMapping("/issueWhitItems/{id}")
+    public ResponseEntity<IssueWhitItemsDTO> getTopicContent(@PathVariable Long id) {
         return new ResponseEntity<>(preguntaService.getIssueItems(id), HttpStatus.OK);
     }
 
