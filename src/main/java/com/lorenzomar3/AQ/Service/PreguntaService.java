@@ -8,7 +8,6 @@ import com.lorenzomar3.AQ.Repository.TemarioRepository;
 import com.lorenzomar3.AQ.dto.newDto.ObtenerPreguntaDTO;
 import com.lorenzomar3.AQ.dto.newDto.PostPreguntaDTO;
 import com.lorenzomar3.AQ.dto.newDto.RespuestaDePreguntaDTO;
-import com.lorenzomar3.AQ.dto.newDto.TemarioBasicDTO;
 import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import com.lorenzomar3.AQ.model.AResponder.FabricaDePreguntas;
@@ -24,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +32,7 @@ public class PreguntaService {
 
     public PreguntaService() {
     }
+
     private static final Logger logger = LoggerFactory.getLogger(TemarioController.class);
 
     @Autowired
@@ -127,14 +126,16 @@ public class PreguntaService {
 
 
     @Transactional(readOnly = true)
-    public List<QuestionnaireItem> getQuestionnaireItem(Long id) {
-        try{
-            return aResponderRepository.getQuestionnaireItem(id);
-        }catch(Exception e){
+    public List<QuestionnaireItem> getIssueItems(Long id) {
+        try {
+            return aResponderRepository.getIssueItems(id);
+        } catch (Exception e) {
             logger.error(e.getMessage());
             return Collections.emptyList();
         }
     }
+
+
 
 
 }

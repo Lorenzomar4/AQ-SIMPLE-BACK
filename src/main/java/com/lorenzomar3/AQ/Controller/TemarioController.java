@@ -6,12 +6,9 @@ import com.lorenzomar3.AQ.Service.PreguntaService;
 import com.lorenzomar3.AQ.Service.TemarioService;
 import com.lorenzomar3.AQ.dto.conversor.TemarioDTOConversor;
 import com.lorenzomar3.AQ.dto.newDto.AResponderItemListDTO;
-import com.lorenzomar3.AQ.dto.newDto.ObtenerPreguntaDTO;
 import com.lorenzomar3.AQ.dto.newDto.TemarioBasicDTO;
 import com.lorenzomar3.AQ.dto.newDto.TemarioCuestionarioWhitItemListDTO;
-import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.AResponder.Temario.Temario;
-import com.lorenzomar3.AQ.model.TipoAResponder;
 import com.lorenzomar3.AQ.projections.QuestionnaireItem;
 import jdk.jfr.Description;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletWebRequest;
 
 import java.util.List;
 
@@ -62,9 +57,9 @@ public class TemarioController {
     }
 
     @Transactional
-    @GetMapping("/QuestionnaireItems/{id}")
+    @GetMapping("/issueItems/{id}")
     public ResponseEntity<List<QuestionnaireItem>> getTopicContent(@PathVariable Long id) {
-        return new ResponseEntity<>(preguntaService.getQuestionnaireItem(id), HttpStatus.OK);
+        return new ResponseEntity<>(preguntaService.getIssueItems(id), HttpStatus.OK);
     }
 
 

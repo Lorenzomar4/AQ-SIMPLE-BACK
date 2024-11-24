@@ -1,5 +1,7 @@
 package com.lorenzomar3.AQ.projections;
 
+import com.lorenzomar3.AQ.model.TipoAResponder;
+
 import java.time.LocalDateTime;
 
 public interface QuestionnaireItem {
@@ -7,6 +9,10 @@ public interface QuestionnaireItem {
 
     String getName();
 
+    TipoAResponder getType();
+
     LocalDateTime getCreationDate();
+
+    Boolean getIsCritic();
 
 }
