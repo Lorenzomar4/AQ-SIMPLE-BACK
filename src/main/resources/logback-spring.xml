@@ -3,16 +3,17 @@
     <!-- Appender de Consola -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <!-- Log con Endpoint solo si el MDC tiene la clave 'endpoint' -->
-            <pattern>%date{ISO8601} - %level - %logger{20} - %M - %file:%line - %msg - Endpoint: %X{endpoint}%n</pattern>
+            <!-- Log con una sola línea para atributos y salto de línea para el resto -->
+            <pattern>%date{ISO8601} - %level - %logger{20} - %M - %file:%line - %msg%n</pattern>
         </encoder>
     </appender>
 
     <!-- Appender de Archivo -->
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>logs/application.log</file>
+        <file>application.log</file>  <!-- Ruta al archivo de log sin carpeta -->
         <encoder>
-            <pattern>%date{ISO8601} - %level - %logger{20} - %M - %file:%line - %msg - Endpoint: %X{endpoint}%n</pattern>
+            <!-- Log con una sola línea para atributos y salto de línea para el resto -->
+            <pattern>%date{ISO8601} - %level - %logger{20} - %M - %file:%line - %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -21,11 +22,5 @@
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="FILE" />
     </root>
-
-    <!-- Configuración para los controladores -->
-    <logger name="com.example.controller" level="INFO">
-        <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="FILE"/>
-    </logger>
 
 </configuration>

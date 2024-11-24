@@ -44,7 +44,7 @@ public class TemarioController {
         List<TemarioBasicDTO> temarioBasicDTO = temarioService.obtenerTodosLosTemariosDeTipoCuestionario()
                 .stream().map(Temario::toTemarioCuestionarioCardDTO).toList();
 
-        logger.debug("Endpoint: {}", "/allCuestionario");
+        logger.info("Endpoint: {}", "/allCuestionario");
 
 
         return new ResponseEntity<>(temarioBasicDTO, HttpStatus.OK);
