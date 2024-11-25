@@ -40,24 +40,27 @@ public class TemarioService {
     }
 
 
-    @Transactional(readOnly = true)
-    public Temario obtenerTodo(Long id) {
-        return temarioRepository.findById(id).orElseThrow(() -> new BussinesException("Error ,no existe este cuestionario"));
-    }
+
 
 
     @Transactional
     public Temario saveTemarioCuestionario(Temario temario) {
+        logger.info("saveTemarioCuestionario");
+
         temario.setTipo(TipoAResponder.CUESTIONARIO);
         return temarioRepository.save(temario);
     }
 
     @Transactional
     public void eliminarCuestionario(Long id) {
+        logger.info("eliminarCuestionario");
+
         temarioRepository.deleteById(id);
     }
 
     public Temario actualizarCuestionario(TemarioBasicDTO temarioDto) {
+        logger.info("actualizarCuestionario");
+
 
         final Temario temaBd = temarioRepository
                 .findByIdEssential(temarioDto.getId()).orElseThrow(() -> new BussinesException("Error , no existe este cuestionario"));
@@ -71,6 +74,8 @@ public class TemarioService {
 
     @Transactional
     public Temario crearNuevoTemarioHijo(TemarioBasicDTO temarioBasicDTO) {
+        logger.info("crearNuevoTemarioHijo");
+
         Temario temarioPadre = temarioRepository
                 .findByIdEssential(temarioBasicDTO.getFatherid())
                 .orElseThrow(() -> new BussinesException("Error , no existe este cuestionario"));
@@ -88,6 +93,8 @@ public class TemarioService {
     //Ver por supuesto si vale la pena realizar el cambio.
     @Transactional(readOnly = true)
     public List<Long> obtenerTodosLosIdsDePreguntas(Long id) {
+        logger.info("obtenerTodosLosIdsDePreguntas");
+
         Temario tema = temarioRepository.findById(id).orElseThrow(() ->
                 new BussinesException("Error no existe un temario con ese id"));
         return tema.obtenerListaDeIdentificadoresDePreguntas();

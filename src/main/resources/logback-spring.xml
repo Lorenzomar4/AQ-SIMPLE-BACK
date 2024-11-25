@@ -1,10 +1,9 @@
 <configuration>
 
-    <!-- Appender de Consola -->
+    <!-- Appender de Consola con Colores -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <!-- Log con una sola línea para atributos y salto de línea para el resto -->
-            <pattern>%date{ISO8601} - %level - %logger{20} - %M - %file:%line - %msg%n</pattern>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%highlight(%date{ISO8601} - %level - %logger{20} - %M - %file:%line - %msg%n)</pattern>
         </encoder>
     </appender>
 
@@ -12,7 +11,6 @@
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <file>application.log</file>  <!-- Ruta al archivo de log sin carpeta -->
         <encoder>
-            <!-- Log con una sola línea para atributos y salto de línea para el resto -->
             <pattern>%date{ISO8601} - %level - %logger{20} - %M - %file:%line - %msg%n</pattern>
         </encoder>
     </appender>

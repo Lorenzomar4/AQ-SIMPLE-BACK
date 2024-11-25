@@ -48,24 +48,20 @@ public class TemarioController {
     }
 
 
-    @Transactional(readOnly = true)
-    @GetMapping("/fullIssueById/{id}")
-    public ResponseEntity<TemarioCuestionarioWhitItemListDTO> cuestionarioById(@PathVariable Long id) {
-        logger.info("Contenido del temario de id : " + id + "  endpoint : /fullIssueById/" + id);
-
-        TemarioCuestionarioWhitItemListDTO cuestionarioWithListDTO = temarioService.obtenerTodo(id).toTemarioCuestionarioWhitItemList();
-        return new ResponseEntity<>(cuestionarioWithListDTO, HttpStatus.OK);
-    }
-
     @Transactional
     @GetMapping("/issueWhitItems/{id}")
     public ResponseEntity<IssueWhitItemsDTO> getTopicContent(@PathVariable Long id) {
+        logger.info("Contenido del temario de id : " + id + "  endpoint : /issueWhitItems/" + id);
+
         return new ResponseEntity<>(preguntaService.getIssueItems(id), HttpStatus.OK);
     }
 
 
     @PostMapping("/issuequestionnaireCreate")
     public ResponseEntity<TemarioBasicDTO> crearCuestionario(@RequestBody TemarioBasicDTO temarioBasicDTO) {
+
+        logger.info("Creacion de tema/cuestionario endpoint : /issuequestionnaireCreate/");
+
         Temario temario = TemarioDTOConversor.fromJSON(temarioBasicDTO);
 
         TemarioBasicDTO TemarioCuestionarioGuardado =
@@ -77,6 +73,9 @@ public class TemarioController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+
+        logger.info("eliminacion de temario /delete/" + id);
+
         temarioService.eliminarCuestionario(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -84,6 +83,8 @@ public class TemarioController {
 
     @PutMapping("/editIssue")
     public ResponseEntity<TemarioBasicDTO> editarCuestionario(@RequestBody TemarioBasicDTO temarioBasicDTO) {
+        logger.info("/editIssue/");
+
         JsonVisualizador.verJson(temarioBasicDTO);
 
         TemarioBasicDTO c = temarioService.actualizarCuestionario(temarioBasicDTO).toTemarioCuestionarioCardDTO();
@@ -93,6 +94,8 @@ public class TemarioController {
     @PostMapping("/createIssue")
 
     public ResponseEntity<AResponderItemListDTO> crearTema(@RequestBody TemarioBasicDTO temarioBasicDTO) {
+        logger.info("Creacion de issue", "/createIssue");
+
         AResponderItemListDTO itemDTO = temarioService.crearNuevoTemarioHijo(temarioBasicDTO).toResponderItemListDTO();
         return new ResponseEntity<>(itemDTO, HttpStatus.CREATED);
     }
@@ -102,6 +105,8 @@ public class TemarioController {
     @Description("Descripcion pendiente")
     @Transactional
     public ResponseEntity<List<Long>> obtenerIdsPreguntas(@PathVariable Long id) {
+        logger.info("/getAllQuestionIdsToAnswer/" + id);
+
         List<Long> aRetornar;
         aRetornar = temarioService.obtenerTodosLosIdsDePreguntas(id);
         return new ResponseEntity<>(aRetornar, HttpStatus.OK);

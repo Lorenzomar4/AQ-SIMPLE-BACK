@@ -73,13 +73,15 @@ public class PreguntaService {
 
 
     public Pregunta obtenerPregunta(Long idPregunta, TipoAResponder tipo) {
-
+        logger.info("obtenerPregunta");
         return (Pregunta) mapDeRepositorios.get(tipo).findById(idPregunta).orElseThrow(
                 () -> new BussinesException("No se encuentra una pregunta con el tipo De id solicitadO"));
     }
 
 
     public Pregunta obtenerPreguntaFull(ObtenerPreguntaDTO getQuestionDTO) {
+        logger.info("obtenerPreguntaFull");
+
         TipoAResponder tipo = getQuestionDTO.getTipoAResponder();
         Long id = getQuestionDTO.getId();
 
@@ -91,6 +93,8 @@ public class PreguntaService {
 
     @Transactional
     public AResponder createaQuestion(PostPreguntaDTO preguntaDTO) {
+        logger.info("createaQuestion");
+
 
         Temario temario = temarioRepository.findById(preguntaDTO.getIdTemarioPerteneciente())
                 .orElseThrow(() -> new BussinesException("No existe ese cuestionario"));
@@ -107,12 +111,15 @@ public class PreguntaService {
 
     @Transactional
     public void delete(Long id) {
+        logger.info("delete");
+
         preguntaRepository.deleteById(id);
     }
 
 
     @Transactional
     public Pregunta updateQuestion(PostPreguntaDTO preguntaDTO) {
+        logger.info("updateQuestion");
         Pregunta pregunta = obtenerPregunta(preguntaDTO.getId(), preguntaDTO.getTipo());
         BeanUtils.copyProperties(preguntaDTO, pregunta);
         return preguntaRepository.save(pregunta);
@@ -120,6 +127,8 @@ public class PreguntaService {
 
     @Transactional(readOnly = true)
     public Boolean verifyResponse(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
+        logger.info("verifyResponse");
+
         JsonVisualizador.verJson(respuestaDePreguntaDTO);
         Pregunta pregunta = obtenerPregunta(respuestaDePreguntaDTO.getIdPregunta(), respuestaDePreguntaDTO.getTipoDePregunta());
 
