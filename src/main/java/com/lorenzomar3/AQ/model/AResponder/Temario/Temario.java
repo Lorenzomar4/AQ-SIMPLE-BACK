@@ -68,6 +68,9 @@ public class Temario extends AResponder {
         System.out.println("tipo asignado : "+aResponder.getTipo());
 
         listaAResponder.add(aResponder);
+
+        System.out.println("LLEGO ACA ");
+
     }
 
     @Override

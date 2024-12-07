@@ -32,10 +32,6 @@ public interface TemarioRepository extends JpaRepository<Temario, Long> {
     Optional<IssueOrQuestionnaireProjection> findByIdBasic(@Param("id") Long id);
 
 
-    @Query("""
-            SELECT T.id ,T.titulo as name , T.fechaDeCreacion  as creationDate , T.idDuenio as fatherId 
-            from Temario T WHERE T.id = :id
-            """)
-    Optional<IssueOrQuestionnaireProjection> findByIdBasic2(@Param("id") Long id);
+
 
 }

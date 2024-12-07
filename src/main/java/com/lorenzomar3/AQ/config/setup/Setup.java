@@ -28,6 +28,9 @@ public class Setup implements ApplicationRunner {
 
     public Temario eym;
 
+    public Temario caso;
+
+
 
     public Temario campoElectrico;
     public Temario capacitores;
@@ -80,27 +83,18 @@ public class Setup implements ApplicationRunner {
 
     public void datos() {
         Supplier<TeoriaDeLaPregunta> teoriaDeLaPreguntaSupplier = () -> new TeoriaDeLaPregunta("Prueba");
-
         eym = new Temario("Electricidad y magnetismo", TipoAResponder.CUESTIONARIO);
-
         capacitores = new Temario("Capacitores");
         campoElectrico = new Temario("Campo electrico");
         preguntaSimple = new PreguntaSimple("¿Como estuvo tu dia hoy?", "Bien dentro de todo");
-
         paraSimple = new TeoriaDeLaPregunta("No tiene sentido agregar teoria aqui ,ya que solo se esta realizando pruebas");
-
         preguntaSimple.agregarTeoria(paraSimple);
-
-
         preguntaVF = new VerdaderoOFalso("¿El planeta es redondo?", true);
-
         SeleccionUnicaOpcion1 = new Opcion("River Plate", false);
         SeleccionUnicaOpcion2 = new Opcion("Boca Juniors", true);
         SeleccionUnicaOpcion3 = new Opcion("Independiente", false);
         List<Opcion> listaDeOpciones = List.of(SeleccionUnicaOpcion1, SeleccionUnicaOpcion2, SeleccionUnicaOpcion3);
-
         seleccionUnica = new SeleccionUnica("¿En que equipo Jugo Palermo?", listaDeOpciones);
-
 
         seleccionUnicaTeoria = new TeoriaDeLaPregunta("Martin Palermo jugo  en el club atletico boca junior" +
                 " convirtiendose en uno de los maximos idolos de la historia del club conviertiendo un total de 236 goles");
@@ -119,7 +113,9 @@ public class Setup implements ApplicationRunner {
                 " tiene 8 nucles y es comparable con un procesador" +
                 "5600x y 5800x de amd ryzen ");
 
+
         opcionMultiple.agregarTeoria(opcionMultipleTeoria);
+
 
         opcionDeDesplegableCompartido1 = new OpcionDeDesplegableCompartido("Sao Pablo", "Brasil");
         opcionDeDesplegableCompartido2 = new OpcionDeDesplegableCompartido("Buenos Aires", "Argentina");
@@ -131,9 +127,7 @@ public class Setup implements ApplicationRunner {
                 List.of(opcionDeDesplegableCompartido1, opcionDeDesplegableCompartido2,
                         opcionDeDesplegableCompartido3, opcionDeDesplegableCompartido4));
 
-
-        desplegableCompartido.agregarTeoria(teoriaDeLaPreguntaSupplier.get());
-
+        //        desplegableCompartido.agregarTeoria(teoriaDeLaPreguntaSupplier.get());
 
         opA = new Opcion("1900", false);
         opB = new Opcion("1816", true);
@@ -144,23 +138,23 @@ public class Setup implements ApplicationRunner {
         opE = new Opcion("2001", false);
         opF = new Opcion("2003", false);
 
-        subtemario = new Temario("Sub temario");
-
-
+        //        subtemario = new Temario("Sub temario");
 
         seleccionUnicaParaDesplegableInd1 = new SeleccionUnicaParaDesplegableIndependiente("¿En que año se declaro la independencia?", List.of(opA, opB, opC));
         seleccionUnicaParaDesplegableInd2 = new SeleccionUnicaParaDesplegableIndependiente("En que año boca gano su sexta libertadores?", List.of(opD, opE, opF));
+
 
         desplegableIndependiente =
                 new DesplegableIndependiente("Para cada pregunta seleccione una opcion que considere correcta",
                         List.of(seleccionUnicaParaDesplegableInd1, seleccionUnicaParaDesplegableInd2)
                 );
+        /*
+
 
         desplegableIndependiente.agregarTeoria(teoriaDeLaPreguntaSupplier.get());
         eym.init();
 
-        eym.agregarALaLista(campoElectrico);
-        eym.agregarALaLista(capacitores);
+
         eym.agregarALaLista(preguntaSimple);
         eym.agregarALaLista(preguntaVF);
         eym.agregarALaLista(seleccionUnica);
@@ -171,6 +165,21 @@ public class Setup implements ApplicationRunner {
         campoElectrico.agregarALaLista(subtemario);
         subtemario.init();
         subtemario.agregarALaLista( new VerdaderoOFalso("¿Riquelme se retiro en boca?", false));
+        */
+        eym.init();
+
+        eym.agregarALaLista(campoElectrico);
+        eym.agregarALaLista(capacitores);
+        eym.agregarALaLista(preguntaSimple);
+        eym.agregarALaLista(preguntaVF);
+        eym.agregarALaLista(seleccionUnica);
+        eym.agregarALaLista(opcionMultiple);
+        eym.agregarALaLista(desplegableCompartido);
+
+
+        //FIX PENDIENTE
+        //eym.agregarALaLista(desplegableIndependiente);
+
     }
 
 
@@ -186,6 +195,7 @@ public class Setup implements ApplicationRunner {
 
     public void guardarCuestionario() {
         temarioRepository.save(eym);
+        //temarioRepository.save(caso);
 
 
     }

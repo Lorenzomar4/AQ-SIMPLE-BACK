@@ -38,10 +38,7 @@ public class TemarioService {
 
         return temarioRepository.findTemarioByTipo(TipoAResponder.CUESTIONARIO);
     }
-
-
-
-
+    
 
     @Transactional
     public Temario saveTemarioCuestionario(Temario temario) {
