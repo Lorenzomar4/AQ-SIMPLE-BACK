@@ -5667,3 +5667,97 @@ java.lang.UnsupportedOperationException: null
 2024-12-07 19:13:07,491 - INFO - o.s.o.j.LocalContainerEntityManagerFactoryBean - destroy - AbstractEntityManagerFactoryBean.java:650 - Closing JPA EntityManagerFactory for persistence unit 'default'
 2024-12-07 19:13:07,551 - INFO - c.z.h.HikariDataSource - close - HikariDataSource.java:350 - HikariPool-1 - Shutdown initiated...
 2024-12-07 19:13:07,553 - INFO - c.z.h.HikariDataSource - close - HikariDataSource.java:352 - HikariPool-1 - Shutdown completed.
+2024-12-08 00:50:39,271 - INFO - c.l.AQ.AqApplication - logStarting - StartupInfoLogger.java:51 - Starting AqApplication using Java 17.0.12 with PID 9440 (C:\DEV\AQ-SIMPLE-BACK\target\classes started by Lorenzo in C:\DEV\AQ-SIMPLE-BACK)
+2024-12-08 00:50:39,273 - DEBUG - c.l.AQ.AqApplication - logStarting - StartupInfoLogger.java:52 - Running with Spring Boot v3.1.5, Spring v6.0.13
+2024-12-08 00:50:39,273 - INFO - c.l.AQ.AqApplication - logStartupProfileInfo - SpringApplication.java:638 - No active profile set, falling back to 1 default profile: "default"
+2024-12-08 00:50:39,748 - INFO - o.s.d.r.c.RepositoryConfigurationDelegate - multipleStoresDetected - RepositoryConfigurationDelegate.java:291 - Multiple Spring Data modules found, entering strict repository configuration mode
+2024-12-08 00:50:39,749 - INFO - o.s.d.r.c.RepositoryConfigurationDelegate - registerRepositoriesIn - RepositoryConfigurationDelegate.java:138 - Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+2024-12-08 00:50:39,785 - INFO - o.s.d.r.c.RepositoryConfigurationExtensionSupport - isStrictRepositoryCandidate - RepositoryConfigurationExtensionSupport.java:320 - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.lorenzomar3.AQ.Repository.AResponderRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-12-08 00:50:39,788 - INFO - o.s.d.r.c.RepositoryConfigurationExtensionSupport - isStrictRepositoryCandidate - RepositoryConfigurationExtensionSupport.java:320 - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.lorenzomar3.AQ.Repository.PreguntaRepository.DesplegableCompartidoRepositorio; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-12-08 00:50:39,790 - INFO - o.s.d.r.c.RepositoryConfigurationExtensionSupport - isStrictRepositoryCandidate - RepositoryConfigurationExtensionSupport.java:320 - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.lorenzomar3.AQ.Repository.PreguntaRepository.DesplegableIndependienteRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-12-08 00:50:39,791 - INFO - o.s.d.r.c.RepositoryConfigurationExtensionSupport - isStrictRepositoryCandidate - RepositoryConfigurationExtensionSupport.java:320 - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.lorenzomar3.AQ.Repository.PreguntaRepository.OpcionMultipleRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-12-08 00:50:39,792 - INFO - o.s.d.r.c.RepositoryConfigurationExtensionSupport - isStrictRepositoryCandidate - RepositoryConfigurationExtensionSupport.java:320 - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.lorenzomar3.AQ.Repository.PreguntaRepository.PreguntaRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-12-08 00:50:39,793 - INFO - o.s.d.r.c.RepositoryConfigurationExtensionSupport - isStrictRepositoryCandidate - RepositoryConfigurationExtensionSupport.java:320 - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.lorenzomar3.AQ.Repository.PreguntaRepository.SeleccionUnicaRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-12-08 00:50:39,794 - INFO - o.s.d.r.c.RepositoryConfigurationExtensionSupport - isStrictRepositoryCandidate - RepositoryConfigurationExtensionSupport.java:320 - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.lorenzomar3.AQ.Repository.TemarioRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-12-08 00:50:39,795 - INFO - o.s.d.r.c.RepositoryConfigurationDelegate - registerRepositoriesIn - RepositoryConfigurationDelegate.java:208 - Finished Spring Data repository scanning in 42 ms. Found 0 JDBC repository interfaces.
+2024-12-08 00:50:39,802 - INFO - o.s.d.r.c.RepositoryConfigurationDelegate - multipleStoresDetected - RepositoryConfigurationDelegate.java:291 - Multiple Spring Data modules found, entering strict repository configuration mode
+2024-12-08 00:50:39,803 - INFO - o.s.d.r.c.RepositoryConfigurationDelegate - registerRepositoriesIn - RepositoryConfigurationDelegate.java:138 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-12-08 00:50:39,831 - INFO - o.s.d.r.c.RepositoryConfigurationDelegate - registerRepositoriesIn - RepositoryConfigurationDelegate.java:208 - Finished Spring Data repository scanning in 25 ms. Found 7 JPA repository interfaces.
+2024-12-08 00:50:40,467 - INFO - o.s.b.w.e.t.TomcatWebServer - initialize - TomcatWebServer.java:108 - Tomcat initialized with port(s): 8080 (http)
+2024-12-08 00:50:40,473 - INFO - o.a.c.h.Http11NioProtocol - log - DirectJDKLog.java:173 - Initializing ProtocolHandler ["http-nio-8080"]
+2024-12-08 00:50:40,475 - INFO - o.a.c.c.StandardService - log - DirectJDKLog.java:173 - Starting service [Tomcat]
+2024-12-08 00:50:40,476 - INFO - o.a.c.c.StandardEngine - log - DirectJDKLog.java:173 - Starting Servlet engine: [Apache Tomcat/10.1.15]
+2024-12-08 00:50:40,590 - INFO - o.a.c.c.C.[.[.[/] - log - DirectJDKLog.java:173 - Initializing Spring embedded WebApplicationContext
+2024-12-08 00:50:40,592 - INFO - o.s.b.w.s.c.ServletWebServerApplicationContext - prepareWebApplicationContext - ServletWebServerApplicationContext.java:291 - Root WebApplicationContext: initialization completed in 1259 ms
+2024-12-08 00:50:40,836 - INFO - o.h.j.i.u.LogHelper - logPersistenceUnitInformation - LogHelper.java:31 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-12-08 00:50:40,882 - INFO - o.hibernate.Version - logVersion - Version.java:44 - HHH000412: Hibernate ORM core version 6.2.13.Final
+2024-12-08 00:50:40,884 - INFO - o.h.cfg.Environment - <clinit> - Environment.java:191 - HHH000406: Using bytecode reflection optimizer
+2024-12-08 00:50:41,064 - INFO - o.s.o.j.p.SpringPersistenceUnitInfo - addTransformer - SpringPersistenceUnitInfo.java:87 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-12-08 00:50:41,083 - INFO - c.z.h.HikariDataSource - getConnection - HikariDataSource.java:110 - HikariPool-1 - Starting...
+2024-12-08 00:50:41,254 - INFO - c.z.h.p.HikariPool - checkFailFast - HikariPool.java:565 - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@64440065
+2024-12-08 00:50:41,256 - INFO - c.z.h.HikariDataSource - getConnection - HikariDataSource.java:123 - HikariPool-1 - Start completed.
+2024-12-08 00:50:42,259 - INFO - o.h.e.t.j.p.i.JtaPlatformInitiator - initiateService - JtaPlatformInitiator.java:55 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-12-08 00:50:42,273 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,273 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - relation "aresponder" does not exist, skipping
+2024-12-08 00:50:42,274 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,275 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - relation "desplegable_compartido" does not exist, skipping
+2024-12-08 00:50:42,275 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,276 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - relation "desplegable_independiente" does not exist, skipping
+2024-12-08 00:50:42,276 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,276 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - relation "opcion" does not exist, skipping
+2024-12-08 00:50:42,277 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,277 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - relation "opcion" does not exist, skipping
+2024-12-08 00:50:42,278 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,278 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - relation "opcion" does not exist, skipping
+2024-12-08 00:50:42,279 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,279 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - relation "opcion_de_desplegable_compartido" does not exist, skipping
+2024-12-08 00:50:42,280 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,280 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - relation "opcion_multiple" does not exist, skipping
+2024-12-08 00:50:42,281 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,282 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - relation "pregunta" does not exist, skipping
+2024-12-08 00:50:42,282 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,282 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - relation "pregunta_simple" does not exist, skipping
+2024-12-08 00:50:42,283 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,283 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - relation "seleccion_unica" does not exist, skipping
+2024-12-08 00:50:42,284 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,284 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - relation "seleccion_unica_para_desplegable_independiente" does not exist, skipping
+2024-12-08 00:50:42,285 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,285 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - relation "temario" does not exist, skipping
+2024-12-08 00:50:42,286 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,286 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - relation "teoria_de_la_pregunta" does not exist, skipping
+2024-12-08 00:50:42,287 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,287 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - relation "verdaderoofalso" does not exist, skipping
+2024-12-08 00:50:42,288 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,288 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - table "aresponder" does not exist, skipping
+2024-12-08 00:50:42,289 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,289 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - table "desplegable_compartido" does not exist, skipping
+2024-12-08 00:50:42,290 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,290 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - table "desplegable_independiente" does not exist, skipping
+2024-12-08 00:50:42,290 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,291 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - table "opcion" does not exist, skipping
+2024-12-08 00:50:42,291 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,291 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - table "opcion_de_desplegable_compartido" does not exist, skipping
+2024-12-08 00:50:42,292 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,292 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - table "opcion_multiple" does not exist, skipping
+2024-12-08 00:50:42,293 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,293 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - table "pregunta" does not exist, skipping
+2024-12-08 00:50:42,294 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,294 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - table "pregunta_simple" does not exist, skipping
+2024-12-08 00:50:42,295 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,295 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - table "seleccion_unica" does not exist, skipping
+2024-12-08 00:50:42,296 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,296 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - table "seleccion_unica_para_desplegable_independiente" does not exist, skipping
+2024-12-08 00:50:42,297 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,297 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - table "temario" does not exist, skipping
+2024-12-08 00:50:42,297 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,298 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - table "teoria_de_la_pregunta" does not exist, skipping
+2024-12-08 00:50:42,298 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:238 - SQL Warning Code: 0, SQLState: 00000
+2024-12-08 00:50:42,299 - WARN - o.h.e.j.s.SqlExceptionHelper - logWarning - SqlExceptionHelper.java:239 - table "verdaderoofalso" does not exist, skipping
+2024-12-08 00:50:43,001 - INFO - o.s.o.j.LocalContainerEntityManagerFactoryBean - buildNativeEntityManagerFactory - AbstractEntityManagerFactoryBean.java:437 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-12-08 00:50:43,324 - INFO - o.s.d.j.r.q.QueryEnhancerFactory - <clinit> - QueryEnhancerFactory.java:47 - Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-12-08 00:50:44,778 - INFO - o.a.c.h.Http11NioProtocol - log - DirectJDKLog.java:173 - Starting ProtocolHandler ["http-nio-8080"]
+2024-12-08 00:50:44,824 - INFO - o.s.b.w.e.t.TomcatWebServer - start - TomcatWebServer.java:220 - Tomcat started on port(s): 8080 (http) with context path ''
+2024-12-08 00:50:44,837 - INFO - c.l.AQ.AqApplication - logStarted - StartupInfoLogger.java:57 - Started AqApplication in 5.897 seconds (process running for 6.166)
+2024-12-08 00:53:18,874 - INFO - o.s.o.j.LocalContainerEntityManagerFactoryBean - destroy - AbstractEntityManagerFactoryBean.java:650 - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-12-08 00:53:18,941 - INFO - c.z.h.HikariDataSource - close - HikariDataSource.java:350 - HikariPool-1 - Shutdown initiated...
+2024-12-08 00:53:18,943 - INFO - c.z.h.HikariDataSource - close - HikariDataSource.java:352 - HikariPool-1 - Shutdown completed.

@@ -5,10 +5,7 @@ import com.lorenzomar3.AQ.JsonVisualizador;
 import com.lorenzomar3.AQ.Repository.AResponderRepository;
 import com.lorenzomar3.AQ.Repository.PreguntaRepository.*;
 import com.lorenzomar3.AQ.Repository.TemarioRepository;
-import com.lorenzomar3.AQ.dto.newDto.IssueWhitItemsDTO;
-import com.lorenzomar3.AQ.dto.newDto.ObtenerPreguntaDTO;
-import com.lorenzomar3.AQ.dto.newDto.PostPreguntaDTO;
-import com.lorenzomar3.AQ.dto.newDto.RespuestaDePreguntaDTO;
+import com.lorenzomar3.AQ.dto.newDto.*;
 import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import com.lorenzomar3.AQ.model.AResponder.FabricaDePreguntas;
@@ -92,7 +89,7 @@ public class PreguntaService {
 
 
     @Transactional
-    public AResponder createaQuestion(PostPreguntaDTO preguntaDTO) {
+    public CreateQuestionResponseDTO createaQuestion(PostPreguntaDTO preguntaDTO) {
         logger.info("createaQuestion");
 
 
@@ -106,7 +103,13 @@ public class PreguntaService {
 
         temarioRepository.save(temario);
 
-        return pregunta;
+        CreateQuestionResponseDTO createQuestionResponseDTO = new CreateQuestionResponseDTO();
+        createQuestionResponseDTO.setIdFather(temario.getId());
+        createQuestionResponseDTO.setQuestionType(temario.getTipo());
+
+
+
+        return createQuestionResponseDTO;
     }
 
     @Transactional
