@@ -46,7 +46,6 @@ public class PreguntaController {
     }
 
 
-    @JsonView(View.JustToAnswer.class)
     @PostMapping("/createQuestion")
     public ResponseEntity<CreateQuestionResponseDTO> createQuestion(@RequestBody PostPreguntaDTO getQuestionDTO) {
         logger.info("creacion de un cuestionario : endpoint /createQuestion ");

@@ -107,8 +107,6 @@ public class PreguntaService {
         createQuestionResponseDTO.setIdFather(temario.getId());
         createQuestionResponseDTO.setQuestionType(temario.getTipo());
 
-
-
         return createQuestionResponseDTO;
     }
 
