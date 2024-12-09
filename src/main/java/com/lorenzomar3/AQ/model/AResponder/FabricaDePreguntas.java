@@ -44,6 +44,9 @@ public class FabricaDePreguntas {
         AResponder pregunta = mapTipoKeyPreguntaValue.get(preguntaDTO.getTipo());
         BeanUtils.copyProperties(preguntaDTO, pregunta);
 
+
+
+
         if(pregunta.getTipo().equals(TipoAResponder.OPCION_MULTIPLE)){
             OpcionMultiple opcionMultiple = (OpcionMultiple) pregunta;
 

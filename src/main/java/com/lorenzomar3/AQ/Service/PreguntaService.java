@@ -54,13 +54,16 @@ public class PreguntaService {
     AResponderRepository aResponderRepository;
 
     @Autowired
+    PreguntaSimpleRepository preguntaSimpleRepository;
+
+    @Autowired
     TemarioRepository temarioRepository;
 
     HashMap<TipoAResponder, BasePreguntaRepositorio<?>> mapDeRepositorios = new HashMap<>();
 
     @PostConstruct
     private void init() {
-        mapDeRepositorios.put(TipoAResponder.PREGUNTA_SIMPLE, preguntaRepository);
+        mapDeRepositorios.put(TipoAResponder.PREGUNTA_SIMPLE, preguntaSimpleRepository);
         mapDeRepositorios.put(TipoAResponder.VERDADERO_FALSO, preguntaRepository);
         mapDeRepositorios.put(TipoAResponder.SELECCION_UNICA, seleccionUnicaRepository);
         mapDeRepositorios.put(TipoAResponder.OPCION_MULTIPLE, opcionMultipleRepository);

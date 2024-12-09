@@ -1,4 +1,6 @@
 package com.lorenzomar3.AQ.Repository.PreguntaRepository;
 
-public class PreguntaSimpleRepository {
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.PreguntaSimple;
+
+public interface PreguntaSimpleRepository extends  BasePreguntaRepositorio<PreguntaSimple> {
 }
