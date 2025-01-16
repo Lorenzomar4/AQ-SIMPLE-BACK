@@ -28,7 +28,7 @@ public interface TemarioRepository extends JpaRepository<Temario, Long> {
     //@Query("SELECT T from Temario T JOIN AResponder AR ON AR.id = T.id WHERE AR.tipo = :tipo")
     List<Temario> findTemarioByTipo(@Param("tipo") TipoAResponder tipoAResponder);
 
-    @Query("SELECT T.id ,T.titulo as name , T.fechaDeCreacion  as creationDate , T.idDuenio as fatherId from Temario T WHERE T.id = :id")
+    @Query("SELECT T.id ,T.titulo as name , T.fechaDeCreacion  as creationDate , T.idDuenio as fatherId ,  T.tipo as type from Temario T WHERE T.id = :id")
     Optional<IssueOrQuestionnaireProjection> findByIdBasic(@Param("id") Long id);
 
 

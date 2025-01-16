@@ -13,4 +13,6 @@ public interface IssueOrQuestionnaireProjection {
 
     Long getFatherId();
 
+    String getType();
+
 }

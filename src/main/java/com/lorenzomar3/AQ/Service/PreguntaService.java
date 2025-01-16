@@ -157,7 +157,7 @@ public class PreguntaService {
             itemList = Collections.emptyList();
         }
 
-        IssueWhitItemsDTO issueWhitItemsDTO = new IssueWhitItemsDTO(id, temario.getName(), temario.getCreationDate(), temario.getFatherId(), itemList);
+        IssueWhitItemsDTO issueWhitItemsDTO = new IssueWhitItemsDTO(id, temario.getName(), temario.getCreationDate(), temario.getFatherId(), itemList ,temario.getType() );
 
 
         return issueWhitItemsDTO;

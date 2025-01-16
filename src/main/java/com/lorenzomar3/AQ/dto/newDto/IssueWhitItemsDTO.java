@@ -16,12 +16,14 @@ public class IssueWhitItemsDTO {
     private LocalDateTime creationDate;
     private Long fatherid;
     private List<QuestionnaireItem> itemList;
+    private String type;
 
-    public IssueWhitItemsDTO(Long id, String name, LocalDateTime creationDate, Long fatherid , List<QuestionnaireItem> itemList) {
+    public IssueWhitItemsDTO(Long id, String name, LocalDateTime creationDate, Long fatherid , List<QuestionnaireItem> itemList , String type) {
         this.id = id;
         this.name = name;
         this.creationDate = creationDate;
         this.fatherid = fatherid;
         this.itemList = itemList;
+        this.type = type;
     }
 }
