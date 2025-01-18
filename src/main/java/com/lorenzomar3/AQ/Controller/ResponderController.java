@@ -7,6 +7,8 @@ import com.lorenzomar3.AQ.dto.newDto.ObtenerPreguntaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -23,9 +25,15 @@ public class ResponderController {
 
     //Beta
     @PostMapping("/questionIdList")
-    public List<Long> obtenerListaDeIdsDePreguntas(@RequestBody  ObtenerPreguntaDTO obtenerPreguntaDTO) {
+    public List<Long> obtenerListaDeIdsDePreguntas(@RequestBody ObtenerPreguntaDTO obtenerPreguntaDTO) {
 
-        return responderService.obtenerIdsDePreguntasDeManeraAleatoria(obtenerPreguntaDTO);
+        List<Long> listaDeIds = responderService.obtenerIdsDePreguntasDeManeraAleatoria(obtenerPreguntaDTO);
+
+        List<Long> listaMutable = new ArrayList<>(listaDeIds);
+
+        Collections.shuffle(listaMutable);
+
+        return listaMutable;
 
     }
 
