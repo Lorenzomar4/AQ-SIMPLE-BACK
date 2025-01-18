@@ -163,6 +163,11 @@ public class PreguntaService {
         return issueWhitItemsDTO;
     }
 
+    @Transactional
+    List<Long> obtenerTodosLosIdsDePreguntas(ObtenerPreguntaDTO obtenerPreguntaDTO){
+        Pregunta pregunta = obtenerPregunta(obtenerPreguntaDTO.getId(),obtenerPreguntaDTO.getTipoAResponder());
+        return pregunta.obtenerListaDeIdentificadoresDePreguntas();
+    }
 
 }
 
