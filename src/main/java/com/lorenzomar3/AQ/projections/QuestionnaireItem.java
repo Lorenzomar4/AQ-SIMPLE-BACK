@@ -15,4 +15,6 @@ public interface QuestionnaireItem {
 
     Boolean getIsCritic();
 
+    Integer getNumberOfQuestions();
+
 }

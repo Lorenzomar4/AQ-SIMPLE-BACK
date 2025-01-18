@@ -147,7 +147,6 @@ public class PreguntaService {
         IssueOrQuestionnaireProjection temario = temarioRepository.findByIdBasic(id)
                 .orElseThrow(() -> new BussinesException("No existe ese cuestionario"));
 
-        Long idd = temario.getId();
         List<QuestionnaireItem> itemList;
         try {
             logger.info("Se trae todo el contenido perteneciente al cuestionario/tema con id" + id);
@@ -157,15 +156,15 @@ public class PreguntaService {
             itemList = Collections.emptyList();
         }
 
-        IssueWhitItemsDTO issueWhitItemsDTO = new IssueWhitItemsDTO(id, temario.getName(), temario.getCreationDate(), temario.getFatherId(), itemList ,temario.getType() );
+        IssueWhitItemsDTO issueWhitItemsDTO = new IssueWhitItemsDTO(id, temario.getName(), temario.getCreationDate(), temario.getFatherId(), itemList, temario.getType());
 
 
         return issueWhitItemsDTO;
     }
 
     @Transactional
-    List<Long> obtenerTodosLosIdsDePreguntas(ObtenerPreguntaDTO obtenerPreguntaDTO){
-        Pregunta pregunta = obtenerPregunta(obtenerPreguntaDTO.getId(),obtenerPreguntaDTO.getTipoAResponder());
+    List<Long> obtenerTodosLosIdsDePreguntas(ObtenerPreguntaDTO obtenerPreguntaDTO) {
+        Pregunta pregunta = obtenerPregunta(obtenerPreguntaDTO.getId(), obtenerPreguntaDTO.getTipoAResponder());
         return pregunta.obtenerListaDeIdentificadoresDePreguntas();
     }
 
