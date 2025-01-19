@@ -130,8 +130,6 @@ public class PreguntaService {
     }
 
 
-
-
     @Transactional(readOnly = true)
     public IssueWhitItemsDTO getIssueItems(Long id) {
         logger.info("Se trae al cuestionario/tema padre");
@@ -140,15 +138,21 @@ public class PreguntaService {
 
 
         List<QuestionnaireItem> itemList;
+        Boolean isCriticTheActualIssue = false;
         try {
             logger.info("Se trae todo el contenido perteneciente al cuestionario/tema con id" + id);
             itemList = aResponderRepository.getIssueItems(id);
+            isCriticTheActualIssue = itemList.stream().filter(ele -> ele.getId().equals(id)).findFirst().get().getIsCritic();
+            itemList.removeIf(ele -> ele.getId().equals(id));
         } catch (Exception e) {
             logger.error(e.getMessage());
             itemList = Collections.emptyList();
         }
 
-        IssueWhitItemsDTO issueWhitItemsDTO = new IssueWhitItemsDTO(id, temario.getName(), temario.getCreationDate(), temario.getFatherId(), itemList, temario.getType());
+
+        IssueWhitItemsDTO issueWhitItemsDTO = new IssueWhitItemsDTO(id, temario.getName(),
+                temario.getCreationDate(),
+                temario.getFatherId(), itemList, temario.getType(), isCriticTheActualIssue);
 
 
         return issueWhitItemsDTO;
@@ -164,13 +168,12 @@ public class PreguntaService {
     public Boolean verifyResponse(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
         logger.info("verifyResponse");
 
-       // JsonVisualizador.verJson(respuestaDePreguntaDTO);
+        // JsonVisualizador.verJson(respuestaDePreguntaDTO);
         Pregunta pregunta = obtenerPregunta(respuestaDePreguntaDTO.getIdPregunta(), respuestaDePreguntaDTO.getTipoDePregunta());
 
         return pregunta.verificarSiLaRespuestaEsCorrectaYAsignarCriticos(respuestaDePreguntaDTO);
 
     }
-
 
 
 }
