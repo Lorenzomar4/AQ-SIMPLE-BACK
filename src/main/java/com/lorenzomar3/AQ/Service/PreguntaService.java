@@ -138,6 +138,7 @@ public class PreguntaService {
         IssueOrQuestionnaireProjection temario = temarioRepository.findByIdBasic(id)
                 .orElseThrow(() -> new BussinesException("No existe ese cuestionario"));
 
+
         List<QuestionnaireItem> itemList;
         try {
             logger.info("Se trae todo el contenido perteneciente al cuestionario/tema con id" + id);
@@ -169,6 +170,7 @@ public class PreguntaService {
         return pregunta.verificarSiLaRespuestaEsCorrectaYAsignarCriticos(respuestaDePreguntaDTO);
 
     }
+
 
 
 }
