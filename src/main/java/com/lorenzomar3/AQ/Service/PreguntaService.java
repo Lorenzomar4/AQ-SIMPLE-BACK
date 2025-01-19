@@ -129,16 +129,7 @@ public class PreguntaService {
         return preguntaRepository.save(pregunta);
     }
 
-    @Transactional(readOnly = true)
-    public Boolean verifyResponse(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
-        logger.info("verifyResponse");
 
-        JsonVisualizador.verJson(respuestaDePreguntaDTO);
-        Pregunta pregunta = obtenerPregunta(respuestaDePreguntaDTO.getIdPregunta(), respuestaDePreguntaDTO.getTipoDePregunta());
-
-        return pregunta.verificarSiLaRespuestaEsCorrectaYAsignarCriticos(respuestaDePreguntaDTO);
-
-    }
 
 
     @Transactional(readOnly = true)
@@ -167,6 +158,18 @@ public class PreguntaService {
         Pregunta pregunta = obtenerPregunta(obtenerPreguntaDTO.getId(), obtenerPreguntaDTO.getTipoAResponder());
         return pregunta.obtenerListaDeIdentificadoresDePreguntas();
     }
+
+    @Transactional(readOnly = true)
+    public Boolean verifyResponse(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
+        logger.info("verifyResponse");
+
+       // JsonVisualizador.verJson(respuestaDePreguntaDTO);
+        Pregunta pregunta = obtenerPregunta(respuestaDePreguntaDTO.getIdPregunta(), respuestaDePreguntaDTO.getTipoDePregunta());
+
+        return pregunta.verificarSiLaRespuestaEsCorrectaYAsignarCriticos(respuestaDePreguntaDTO);
+
+    }
+
 
 }
 

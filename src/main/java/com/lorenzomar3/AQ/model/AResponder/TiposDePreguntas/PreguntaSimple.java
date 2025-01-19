@@ -25,9 +25,20 @@ public class PreguntaSimple extends Pregunta {
         this.respuestaEstablecida = respuestaEstablecida;
     }
 
+    @Override
+    public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuesta) {
+
+
+
+        return respuesta.getRespuestaBooleana();
+    }
+    //Usar en un futuro
+    /*
     public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
         String respuestaDelUsuario = respuestaDePreguntaDTO.getRespuestaInput();
 
         return  respuestaPrecisa ?  respuestaDelUsuario.equals(respuestaEstablecida) : respuestaDePreguntaDTO.getRespuestaBooleana();
     }
+    */
+
 }

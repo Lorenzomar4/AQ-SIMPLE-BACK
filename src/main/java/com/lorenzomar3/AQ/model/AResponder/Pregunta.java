@@ -93,7 +93,7 @@ public abstract class Pregunta extends AResponder implements IPregunta, ITemaPre
     public Boolean verificarSiLaRespuestaEsCorrectaYAsignarCriticos(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
         boolean respuesta = laRespuestaEsCorrecta(respuestaDePreguntaDTO);
         conteoDeCritico(respuesta);
-        return laRespuestaEsCorrecta(respuestaDePreguntaDTO);
+        return respuesta;
     }
 
 

@@ -22,7 +22,7 @@ public interface AResponderRepository extends JpaRepository<AResponder, Long> {
                            END              AS isCritic,
                        CASE
                            WHEN ar.tipo != 'TEMA' AND ar.tipo != 'SUBTEMA' THEN 0
-                           ELSE (select count(*) from aresponder where id_del_duenio = ar.id) 
+                           ELSE (select count(*) from aresponder  ar2 where id_del_duenio = ar.id and ar2.tipo not in ('TEMA','SUBTEMA') )
                            END              AS numberOfQuestions
                 FROM aresponder ar
                          LEFT JOIN pregunta p ON ar.id = p.id
