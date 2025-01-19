@@ -164,14 +164,16 @@ public class PreguntaService {
         return pregunta.obtenerListaDeIdentificadoresDePreguntas();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Boolean verifyResponse(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
-        logger.info("verifyResponse");
 
-        // JsonVisualizador.verJson(respuestaDePreguntaDTO);
-        Pregunta pregunta = obtenerPregunta(respuestaDePreguntaDTO.getIdPregunta(), respuestaDePreguntaDTO.getTipoDePregunta());
+        Pregunta preguntaAResponder = obtenerPregunta(respuestaDePreguntaDTO.getIdPregunta() ,respuestaDePreguntaDTO.getTipoDePregunta());
 
-        return pregunta.verificarSiLaRespuestaEsCorrectaYAsignarCriticos(respuestaDePreguntaDTO);
+        preguntaAResponder.verificarSiLaRespuestaEsCorrectaYAsignarCriticos(respuestaDePreguntaDTO);
+
+        preguntaRepository.save(preguntaAResponder);
+
+        return respuestaDePreguntaDTO.getRespuestaBooleana();
 
     }
 
