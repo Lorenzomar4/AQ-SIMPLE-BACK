@@ -37,5 +37,11 @@ public class ResponderController {
 
     }
 
+    @GetMapping("/getCriticsIdsForQuestion/{id}")
+    public List<Long> obtenerIdsCriticos(@PathVariable Long id) {
+        return responderService.obtenerCriticosDeManeraAleatoria(id);
+
+    }
+
 
 }

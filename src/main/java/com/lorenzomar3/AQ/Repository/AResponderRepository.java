@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface AResponderRepository extends JpaRepository<AResponder, Long> {
@@ -101,7 +102,33 @@ public interface AResponderRepository extends JpaRepository<AResponder, Long> {
             
             
             """, nativeQuery = true)
-    public List<QuestionnaireItem> getIssueItems(@Param("id") Long id); //En un futuro analizar la subconsulta y buscar alternativas mas rapidas
+    List<QuestionnaireItem> getIssueItems(@Param("id") Long id); //En un futuro analizar la subconsulta y buscar alternativas mas rapidas
+
+
+    //Analizar.
+    @Query(value = """
+               WITH RECURSIVE TODO_EL_CONTENIDO_DEL_TEMA AS (SELECT ID,
+                                                                    id_del_duenio,
+                                                                    titulo,
+                                                                    fecha_de_creacion,
+                                                                    tipo,
+                                                                    1 as nivel
+                                                             FROM aresponder
+                                                             WHERE id = :id
+                                                             UNION ALL
+                                                             SELECT ar.ID,
+                                                                    ar.id_del_duenio,
+                                                                    ar.titulo,
+                                                                    ar.fecha_de_creacion,
+                                                                    ar.tipo,
+                                                                    nivel + 1
+                                                             FROM aresponder ar
+                                                                      INNER JOIN
+                                                                  TODO_EL_CONTENIDO_DEL_TEMA sp ON sp.id = ar.id_del_duenio)
+               select TCT.ID
+               from TODO_EL_CONTENIDO_DEL_TEMA  TCT join pregunta pre on pre.id = TCT.id WHERE PRE.intentos_para_que_deje_de_ser_critico_disponible >0
+            """, nativeQuery = true)
+    ArrayList<Long> getCriticsIdsForQuestion(@Param("id") Long id);
 
 
 }
