@@ -5,6 +5,7 @@ import com.lorenzomar3.AQ.dto.newDto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Lob;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,6 +19,8 @@ public class PreguntaSimple extends Pregunta {
     public Boolean respuestaPrecisa=false;
     @JsonView(View.Full.class)
 
+
+    @Lob
     public String respuestaEstablecida;
 
     public PreguntaSimple(String titulo, String respuestaEstablecida) {

@@ -29,7 +29,7 @@ public abstract class AResponder {
     public String titulo;
 
 
-    @Column(length = 10500)
+    @Lob
     @JsonView(View.JustToAnswer.class)
     public String descripcion;
 

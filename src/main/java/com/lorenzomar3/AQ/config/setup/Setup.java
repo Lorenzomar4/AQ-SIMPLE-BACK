@@ -187,8 +187,8 @@ public class Setup implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
 
 
-        datos();
-        guardarCuestionario();
+       // datos();
+       // guardarCuestionario();
 
 
     }
