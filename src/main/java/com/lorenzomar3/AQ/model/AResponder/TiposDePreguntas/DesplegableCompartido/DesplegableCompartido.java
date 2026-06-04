@@ -39,7 +39,7 @@ public class DesplegableCompartido extends Pregunta implements IPreguntaVariasOp
 
     public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
         Verificador<String, OpcionDeDesplegableCompartido> verificador = new Verificador<>();
-        return verificador.coincidenciaTotal(listaDeOpcionDesplegableCompartido, respuestaDePreguntaDTO.getListaDeOpcionesParaDesplegableCompartidos());
+        return verificador.coincidenciaTotal(listaDeOpcionDesplegableCompartido, respuestaDePreguntaDTO.listaDeOpcionesParaDesplegableCompartidos());
     }
 
     @Override
@@ -54,7 +54,7 @@ public class DesplegableCompartido extends Pregunta implements IPreguntaVariasOp
 
     @Override
     public List<OpcionDeDesplegableCompartido> listaDeOpcionesConLaRespuestaDelUsuario(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
-        return respuestaDePreguntaDTO.getListaDeOpcionesParaDesplegableCompartidos();
+        return respuestaDePreguntaDTO.listaDeOpcionesParaDesplegableCompartidos();
     }
 
 

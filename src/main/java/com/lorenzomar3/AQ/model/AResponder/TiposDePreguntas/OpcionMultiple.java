@@ -49,7 +49,7 @@ public class OpcionMultiple extends Pregunta implements IPreguntaVariasOpciones<
 
     @Override
     public List<Opcion> listaDeOpcionesConLaRespuestaDelUsuario(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
-        return respuestaDePreguntaDTO.getListaDeOpciones();
+        return respuestaDePreguntaDTO.listaDeOpciones();
     }
 
 

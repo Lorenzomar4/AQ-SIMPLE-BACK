@@ -18,6 +18,6 @@ public class VerdaderoOFalso extends Pregunta {
 
 
     public boolean laRespuestaEsCorrecta(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
-        return respuestaVerdadera == respuestaDePreguntaDTO.getRespuestaBooleana();
+        return respuestaVerdadera == respuestaDePreguntaDTO.respuestaBooleana();
     }
 }

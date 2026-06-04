@@ -24,7 +24,7 @@ public abstract class AResponder {
     @JsonView(View.JustToAnswer.class)
     public Long id;
 
-    @Column(length = 10500)
+    @Column(columnDefinition = "text")
     @JsonView(View.JustToAnswer.class)
     public String titulo;
 

@@ -51,7 +51,7 @@ public class DesplegableIndependiente extends Pregunta implements IPreguntaVaria
 
     @Override
     public List<SeleccionUnicaParaDesplegableIndependiente> listaDeOpcionesConLaRespuestaDelUsuario(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
-        return respuestaDePreguntaDTO.getListaDeSeleccionesUnicasParaDesplegableIndependiente();
+        return respuestaDePreguntaDTO.listaDeSeleccionesUnicasParaDesplegableIndependiente();
     }
 
 }

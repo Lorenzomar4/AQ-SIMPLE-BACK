@@ -3,10 +3,13 @@ package com.lorenzomar3.AQ.Service;
 import com.lorenzomar3.AQ.Controller.TemarioController;
 import com.lorenzomar3.AQ.Repository.TemarioRepository;
 import com.lorenzomar3.AQ.dto.conversor.TemarioDTOConversor;
+import com.lorenzomar3.AQ.dto.newDto.InverseIssueCreateDTO;
 import com.lorenzomar3.AQ.dto.newDto.ObtenerPreguntaDTO;
 import com.lorenzomar3.AQ.dto.newDto.TemarioBasicDTO;
 import com.lorenzomar3.AQ.exception.BussinesException;
+import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import com.lorenzomar3.AQ.model.AResponder.Temario.Temario;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.PreguntaSimple;
 import com.lorenzomar3.AQ.model.TipoAResponder;
 import com.lorenzomar3.AQ.projections.QuestionnaireItem;
 import org.slf4j.Logger;
@@ -17,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TemarioService {
@@ -30,39 +34,38 @@ public class TemarioService {
         this.temarioRepository = temarioRepository;
     }
 
+    @Autowired
+    public PreguntaService preguntaService;
+
 
     @Transactional(readOnly = true)
     public List<Temario> obtenerTodosLosTemariosDeTipoCuestionario() {
 
-        logger.info("Servicio para obtencion de temarios de tipo:"+TipoAResponder.CUESTIONARIO);
-
+        logger.debug("Obteniendo todos los temarios tipo={}", TipoAResponder.CUESTIONARIO);
         return temarioRepository.findTemarioByTipo(TipoAResponder.CUESTIONARIO);
     }
-    
+
 
     @Transactional
     public Temario saveTemarioCuestionario(Temario temario) {
-        logger.info("saveTemarioCuestionario");
-
+        logger.info("Guardando cuestionario titulo={}", temario.getTitulo());
         temario.setTipo(TipoAResponder.CUESTIONARIO);
         return temarioRepository.save(temario);
     }
 
     @Transactional
     public void eliminarCuestionario(Long id) {
-        logger.info("eliminarCuestionario");
-
+        logger.info("Eliminando cuestionario id={}", id);
         temarioRepository.deleteById(id);
     }
 
     public Temario actualizarCuestionario(TemarioBasicDTO temarioDto) {
-        logger.info("actualizarCuestionario");
-
+        logger.info("Actualizando cuestionario id={}, nuevoNombre={}", temarioDto.id(), temarioDto.name());
 
         final Temario temaBd = temarioRepository
-                .findByIdEssential(temarioDto.getId()).orElseThrow(() -> new BussinesException("Error , no existe este cuestionario"));
+                .findByIdEssential(temarioDto.id()).orElseThrow(() -> new BussinesException("Error , no existe este cuestionario"));
 
-        temaBd.setTitulo(temarioDto.getName());
+        temaBd.setTitulo(temarioDto.name());
         temaBd.setUltimaActualizacion(LocalDateTime.now());
 
         return temarioRepository.save(temaBd);
@@ -71,10 +74,10 @@ public class TemarioService {
 
     @Transactional
     public Temario crearNuevoTemarioHijo(TemarioBasicDTO temarioBasicDTO) {
-        logger.info("crearNuevoTemarioHijo");
+        logger.info("Creando temario hijo en padre={}", temarioBasicDTO.fatherid());
 
         Temario temarioPadre = temarioRepository
-                .findByIdEssential(temarioBasicDTO.getFatherid())
+                .findByIdEssential(temarioBasicDTO.fatherid())
                 .orElseThrow(() -> new BussinesException("Error , no existe este cuestionario"));
 
         Temario temarioHijo = TemarioDTOConversor.fromJSON(temarioBasicDTO);
@@ -90,7 +93,7 @@ public class TemarioService {
     //Ver por supuesto si vale la pena realizar el cambio.
     @Transactional(readOnly = true)
     public List<Long> obtenerTodosLosIdsDePreguntas(Long id) {
-        logger.info("obtenerTodosLosIdsDePreguntas");
+        logger.debug("obtenerTodosLosIdsDePreguntas temarioId={}", id);
 
         Temario tema = temarioRepository.findById(id).orElseThrow(() ->
                 new BussinesException("Error no existe un temario con ese id"));
@@ -99,7 +102,34 @@ public class TemarioService {
 
     }
 
+    @Transactional
+    public Temario crearTemarioPreguntasInversa(InverseIssueCreateDTO inverseIssueCreateDTO) {
 
+        Long id = inverseIssueCreateDTO.idIssue();
+
+        Temario tema = temarioRepository.findById(id).orElseThrow(() ->
+                new BussinesException("Error no existe un temario con ese id"));
+
+
+        List<AResponder> listaDePreguntasAResponder = tema.getListaAResponder()
+                .stream().filter(a -> a.getTipo().equals(TipoAResponder.PREGUNTA_SIMPLE)).toList();
+
+        List<Long> ids = listaDePreguntasAResponder.stream().map(AResponder::getId).toList();
+
+        List<PreguntaSimple> listaDePregSimples = preguntaService.getListOfPreguntaSimples(ids);
+
+        List<AResponder> listaDePregSimplesInversa = listaDePregSimples.stream().map(p -> (AResponder) p.inversar()).toList();
+
+        Temario nuevoTemario = new Temario();
+        nuevoTemario.setIdDuenio(tema.getIdDuenio());
+        nuevoTemario.setTitulo(inverseIssueCreateDTO.name());
+        nuevoTemario.setListaAResponder(listaDePregSimplesInversa);
+        nuevoTemario.setTipo(tema.getTipo());
+
+
+        return temarioRepository.save(nuevoTemario);
+
+    }
 
 
 }

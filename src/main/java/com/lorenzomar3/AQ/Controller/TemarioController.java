@@ -1,14 +1,10 @@
 package com.lorenzomar3.AQ.Controller;
 
 
-import com.lorenzomar3.AQ.JsonVisualizador;
 import com.lorenzomar3.AQ.Service.PreguntaService;
 import com.lorenzomar3.AQ.Service.TemarioService;
 import com.lorenzomar3.AQ.dto.conversor.TemarioDTOConversor;
-import com.lorenzomar3.AQ.dto.newDto.AResponderItemListDTO;
-import com.lorenzomar3.AQ.dto.newDto.IssueWhitItemsDTO;
-import com.lorenzomar3.AQ.dto.newDto.TemarioBasicDTO;
-import com.lorenzomar3.AQ.dto.newDto.TemarioCuestionarioWhitItemListDTO;
+import com.lorenzomar3.AQ.dto.newDto.*;
 import com.lorenzomar3.AQ.model.AResponder.Temario.Temario;
 import com.lorenzomar3.AQ.projections.QuestionnaireItem;
 import jdk.jfr.Description;
@@ -35,13 +31,12 @@ public class TemarioController {
     @Autowired
     PreguntaService preguntaService;
 
-    @GetMapping("/allCuestionario")
+    @GetMapping("/questionnaires")
     public ResponseEntity<List<TemarioBasicDTO>> todosLosCuestionarios() {
+        logger.info("[GET /questionnaires]");
 
         List<TemarioBasicDTO> temarioBasicDTO = temarioService.obtenerTodosLosTemariosDeTipoCuestionario()
                 .stream().map(Temario::toTemarioCuestionarioCardDTO).toList();
-
-        logger.info("Endpoint: {}", "/allCuestionario");
 
 
         return new ResponseEntity<>(temarioBasicDTO, HttpStatus.OK);
@@ -49,18 +44,18 @@ public class TemarioController {
 
 
     @Transactional
-    @GetMapping("/issueWhitItems/{id}")
+    @GetMapping("/issues/{id}/items")
     public ResponseEntity<IssueWhitItemsDTO> getTopicContent(@PathVariable Long id) {
-        logger.info("Contenido del temario de id : " + id + "  endpoint : /issueWhitItems/" + id);
+        logger.info("[GET /issues/{}/items]", id);
 
         return new ResponseEntity<>(preguntaService.getIssueItems(id), HttpStatus.OK);
     }
 
 
-    @PostMapping("/issuequestionnaireCreate")
+    @PostMapping("/questionnaires")
     public ResponseEntity<TemarioBasicDTO> crearCuestionario(@RequestBody TemarioBasicDTO temarioBasicDTO) {
 
-        logger.info("Creacion de tema/cuestionario endpoint : /issuequestionnaireCreate/");
+        logger.info("[POST /questionnaires] nombre={}", temarioBasicDTO.name());
 
         Temario temario = TemarioDTOConversor.fromJSON(temarioBasicDTO);
 
@@ -71,41 +66,42 @@ public class TemarioController {
     }
 
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/issues/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
 
-        logger.info("eliminacion de temario /delete/" + id);
+        logger.info("[DELETE /issues/{}]", id);
 
         temarioService.eliminarCuestionario(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
-    @PutMapping("/editIssue")
+    @PutMapping("/issues")
     public ResponseEntity<TemarioBasicDTO> editarCuestionario(@RequestBody TemarioBasicDTO temarioBasicDTO) {
-        logger.info("/editIssue/");
-
-        JsonVisualizador.verJson(temarioBasicDTO);
+        logger.info("[PUT /issues] id={}", temarioBasicDTO.id());
 
         TemarioBasicDTO c = temarioService.actualizarCuestionario(temarioBasicDTO).toTemarioCuestionarioCardDTO();
         return new ResponseEntity<>(c, HttpStatus.OK);
     }
 
-    @PostMapping("/createIssue")
-
+    @PostMapping("/issues")
     public ResponseEntity<AResponderItemListDTO> crearTema(@RequestBody TemarioBasicDTO temarioBasicDTO) {
-        logger.info("Creacion de issue", "/createIssue");
+        logger.info("[POST /issues] Creacion de issue, fatherId={}", temarioBasicDTO.fatherid());
 
         AResponderItemListDTO itemDTO = temarioService.crearNuevoTemarioHijo(temarioBasicDTO).toResponderItemListDTO();
         return new ResponseEntity<>(itemDTO, HttpStatus.CREATED);
     }
 
 
-    @GetMapping("/getAllQuestionIdsToAnswer/{id}")
+
+
+
+
+    @GetMapping("/issues/{id}/question-ids")
     @Description("Descripcion pendiente")
     @Transactional
     public ResponseEntity<List<Long>> obtenerIdsPreguntas(@PathVariable Long id) {
-        logger.info("/getAllQuestionIdsToAnswer/" + id);
+        logger.info("[GET /issues/{}/question-ids]", id);
 
         List<Long> aRetornar;
         aRetornar = temarioService.obtenerTodosLosIdsDePreguntas(id);
@@ -115,4 +111,15 @@ public class TemarioController {
     }
 
 
-}
+    @PostMapping("/issues/inverse")
+    public ResponseEntity<AResponderItemListDTO> crearTemaConPreguntasInversas(@RequestBody InverseIssueCreateDTO inverseIssueCreateDTO) {
+        logger.info("[POST /issues/inverse] issueId={}", inverseIssueCreateDTO.idIssue());
+
+        AResponderItemListDTO itemDTO = temarioService.crearTemarioPreguntasInversa(inverseIssueCreateDTO).toResponderItemListDTO();
+
+        return new ResponseEntity<>(itemDTO, HttpStatus.CREATED);
+
+    }
+
+
+    }

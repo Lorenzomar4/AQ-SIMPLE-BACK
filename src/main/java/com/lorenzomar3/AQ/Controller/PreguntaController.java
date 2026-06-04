@@ -2,10 +2,7 @@ package com.lorenzomar3.AQ.Controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.Service.PreguntaService;
-import com.lorenzomar3.AQ.dto.newDto.CreateQuestionResponseDTO;
-import com.lorenzomar3.AQ.dto.newDto.ObtenerPreguntaDTO;
-import com.lorenzomar3.AQ.dto.newDto.PostPreguntaDTO;
-import com.lorenzomar3.AQ.dto.newDto.RespuestaDePreguntaDTO;
+import com.lorenzomar3.AQ.dto.newDto.*;
 import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 import com.lorenzomar3.AQ.model.View;
@@ -27,45 +24,48 @@ public class PreguntaController {
 
 
     @JsonView(View.JustToAnswer.class)
-    @PostMapping("/getQuestionForAnswer")
+    @PostMapping("/questions/fetch")
     public ResponseEntity<Pregunta> getQuestion(@RequestBody ObtenerPreguntaDTO getQuestionDTO) {
-        logger.info("/getQuestionForAnswer");
-        Pregunta pregunta = preguntaService.obtenerPregunta(getQuestionDTO.getId(), getQuestionDTO.getTipoAResponder());
+        logger.info("[POST /questions/fetch] id={}, tipo={}", getQuestionDTO.id(), getQuestionDTO.tipoAResponder());
+        Pregunta pregunta = preguntaService.obtenerPregunta(getQuestionDTO.id(), getQuestionDTO.tipoAResponder());
         return new ResponseEntity<>(pregunta, HttpStatus.OK);
 
     }
 
     @JsonView(View.Full.class)
-    @PostMapping("/getQuestionForAnswerFull")
+    @PostMapping("/questions/fetch-full")
     @Transactional
     public ResponseEntity<Pregunta> getQuestionFull(@RequestBody ObtenerPreguntaDTO getQuestionDTO) {
-        logger.info("/getQuestionForAnswerFull");
+        logger.info("[POST /questions/fetch-full] id={}, tipo={}", getQuestionDTO.id(), getQuestionDTO.tipoAResponder());
 
         Pregunta pregunta = preguntaService.obtenerPreguntaFull(getQuestionDTO);
         return new ResponseEntity<>(pregunta, HttpStatus.OK);
     }
 
 
-    @PostMapping("/createQuestion")
+    @PostMapping("/questions")
     public ResponseEntity<CreateQuestionResponseDTO> createQuestion(@RequestBody PostPreguntaDTO getQuestionDTO) {
-        logger.info("creacion de un cuestionario : endpoint /createQuestion ");
+        logger.info("[POST /questions] tipo={}, temarioId={}", getQuestionDTO.tipo(), getQuestionDTO.idTemarioPerteneciente());
 
         CreateQuestionResponseDTO createQuestionResponseDTO = preguntaService.createaQuestion(getQuestionDTO);
         return new ResponseEntity<>(createQuestionResponseDTO, HttpStatus.OK);
     }
 
 
-    @DeleteMapping("/questionDelete/{id}")
+
+
+
+    @DeleteMapping("/questions/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        logger.info("/questionDelete/"+id);
+        logger.info("[DELETE /questions/{}]", id);
         preguntaService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @JsonView(View.JustToAnswer.class)
-    @PutMapping("/editQuestion")
+    @PutMapping("/questions")
     public ResponseEntity<Pregunta> updateQuestion(@RequestBody PostPreguntaDTO getQuestionDTO) {
-        logger.info("/editQuestion/");
+        logger.info("[PUT /questions] id={}, tipo={}", getQuestionDTO.id(), getQuestionDTO.tipo());
 
 
         Pregunta pregunta = preguntaService.updateQuestion(getQuestionDTO);
@@ -73,15 +73,22 @@ public class PreguntaController {
 
     }
 
-    @PostMapping("/verifyRequest")
+    @PostMapping("/questions/verify")
     public ResponseEntity<Boolean> verifyRequestForUser(@RequestBody RespuestaDePreguntaDTO respuestaDelusuario) {
-        logger.info("/verifyRequest/");
+        logger.info("[POST /questions/verify] preguntaId={}, tipo={}", respuestaDelusuario.idPregunta(), respuestaDelusuario.tipoDePregunta());
         return new ResponseEntity<>(preguntaService.verifyResponse(respuestaDelusuario), HttpStatus.OK);
     }
 
 
+    @PostMapping("/questions/inverse")
+    public ResponseEntity<Void> createInverseQuestion(@RequestBody InverseQuestionCreateDTO inverseQuestionCreateDTO) {
+        logger.info("[POST /questions/inverse] preguntaId={}, tipo={}", inverseQuestionCreateDTO.idQuestion(), inverseQuestionCreateDTO.tipo());
+        preguntaService.createInverseQuestion(inverseQuestionCreateDTO);
 
 
 
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
 
 }

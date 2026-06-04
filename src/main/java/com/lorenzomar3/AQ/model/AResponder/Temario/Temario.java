@@ -104,14 +104,7 @@ public class Temario extends AResponder {
     }
 
     public TemarioCuestionarioWhitItemListDTO toTemarioCuestionarioWhitItemList() {
-        TemarioCuestionarioWhitItemListDTO temarioCuestionarioWhitItemListDTO =
-                new TemarioCuestionarioWhitItemListDTO(id, titulo, fechaDeCreacion);
-
         List<AResponderItemListDTO> itemList = listaAResponder.stream().map(AResponder::toResponderItemListDTO).toList();
-
-        temarioCuestionarioWhitItemListDTO.setItemList(itemList);
-
-
-        return temarioCuestionarioWhitItemListDTO;
+        return new TemarioCuestionarioWhitItemListDTO(id, titulo, fechaDeCreacion, itemList);
     }
 }

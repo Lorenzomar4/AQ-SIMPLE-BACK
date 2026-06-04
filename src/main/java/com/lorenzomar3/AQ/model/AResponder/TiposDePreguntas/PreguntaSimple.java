@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.dto.newDto.RespuestaDePreguntaDTO;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 import com.lorenzomar3.AQ.model.View;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Lob;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.jsoup.Jsoup;
 
 @Entity
 @NoArgsConstructor
@@ -20,7 +22,7 @@ public class PreguntaSimple extends Pregunta {
     @JsonView(View.Full.class)
 
 
-    @Lob
+    @Column(length = 50000)
     public String respuestaEstablecida;
 
     public PreguntaSimple(String titulo, String respuestaEstablecida) {
@@ -33,7 +35,7 @@ public class PreguntaSimple extends Pregunta {
 
 
 
-        return respuesta.getRespuestaBooleana();
+        return respuesta.respuestaBooleana();
     }
     //Usar en un futuro
     /*
@@ -43,5 +45,16 @@ public class PreguntaSimple extends Pregunta {
         return  respuestaPrecisa ?  respuestaDelUsuario.equals(respuestaEstablecida) : respuestaDePreguntaDTO.getRespuestaBooleana();
     }
     */
+
+    public PreguntaSimple inversar() {
+
+        String respuesta = Jsoup.parse(respuestaEstablecida).text();
+        PreguntaSimple preguntaSimple = new PreguntaSimple(respuesta, titulo);
+        preguntaSimple.setTipo(tipo);
+
+        return preguntaSimple;
+
+
+    }
 
 }

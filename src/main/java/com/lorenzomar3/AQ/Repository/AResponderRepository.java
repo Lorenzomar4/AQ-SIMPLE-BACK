@@ -131,5 +131,8 @@ public interface AResponderRepository extends JpaRepository<AResponder, Long> {
     ArrayList<Long> getCriticsIdsForQuestion(@Param("id") Long id);
 
 
+
+
+
 }
 

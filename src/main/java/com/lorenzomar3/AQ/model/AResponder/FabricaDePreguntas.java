@@ -41,7 +41,7 @@ public class FabricaDePreguntas {
     }
 
     public AResponder fromJSON(PostPreguntaDTO preguntaDTO) {
-        AResponder pregunta = mapTipoKeyPreguntaValue.get(preguntaDTO.getTipo());
+        AResponder pregunta = mapTipoKeyPreguntaValue.get(preguntaDTO.tipo());
         BeanUtils.copyProperties(preguntaDTO, pregunta);
 
 

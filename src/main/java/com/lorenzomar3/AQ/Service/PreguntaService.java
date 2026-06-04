@@ -11,10 +11,12 @@ import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import com.lorenzomar3.AQ.model.AResponder.FabricaDePreguntas;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 import com.lorenzomar3.AQ.model.AResponder.Temario.Temario;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.PreguntaSimple;
 import com.lorenzomar3.AQ.model.TipoAResponder;
 import com.lorenzomar3.AQ.projections.IssueOrQuestionnaireProjection;
 import com.lorenzomar3.AQ.projections.QuestionnaireItem;
 import jakarta.annotation.PostConstruct;
+import org.jsoup.Jsoup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -73,17 +75,22 @@ public class PreguntaService {
 
 
     public Pregunta obtenerPregunta(Long idPregunta, TipoAResponder tipo) {
-        logger.info("obtenerPregunta");
+        logger.debug("obtenerPregunta id={}, tipo={}", idPregunta, tipo);
         return (Pregunta) mapDeRepositorios.get(tipo).findById(idPregunta).orElseThrow(
                 () -> new BussinesException("No se encuentra una pregunta con el tipo De id solicitadO"));
     }
 
 
-    public Pregunta obtenerPreguntaFull(ObtenerPreguntaDTO getQuestionDTO) {
-        logger.info("obtenerPreguntaFull");
+    public List<Pregunta> obtenerPreguntaS(List<Long> ids, TipoAResponder tipo) {
+        logger.debug("obtenerPreguntas ids={}, tipo={}", ids.size(), tipo);
+        return (List<Pregunta>) mapDeRepositorios.get(tipo).findAllById(ids);
+    }
 
-        TipoAResponder tipo = getQuestionDTO.getTipoAResponder();
-        Long id = getQuestionDTO.getId();
+
+    public Pregunta obtenerPreguntaFull(ObtenerPreguntaDTO getQuestionDTO) {
+        TipoAResponder tipo = getQuestionDTO.tipoAResponder();
+        Long id = getQuestionDTO.id();
+        logger.debug("obtenerPreguntaFull id={}, tipo={}", id, tipo);
 
         return (Pregunta) mapDeRepositorios.get(tipo)
                 .findByIdWithTeoriaDeLaPregunta(id)
@@ -93,10 +100,9 @@ public class PreguntaService {
 
     @Transactional
     public CreateQuestionResponseDTO createaQuestion(PostPreguntaDTO preguntaDTO) {
-        logger.info("createaQuestion");
+        logger.info("Creando pregunta tipo={} en temario={}", preguntaDTO.tipo(), preguntaDTO.idTemarioPerteneciente());
 
-
-        Temario temario = temarioRepository.findById(preguntaDTO.getIdTemarioPerteneciente())
+        Temario temario = temarioRepository.findById(preguntaDTO.idTemarioPerteneciente())
                 .orElseThrow(() -> new BussinesException("No existe ese cuestionario"));
 
         FabricaDePreguntas fabricaDePreguntas = new FabricaDePreguntas();
@@ -106,25 +112,20 @@ public class PreguntaService {
 
         temarioRepository.save(temario);
 
-        CreateQuestionResponseDTO createQuestionResponseDTO = new CreateQuestionResponseDTO();
-        createQuestionResponseDTO.setIdFather(temario.getId());
-        createQuestionResponseDTO.setQuestionType(temario.getTipo());
-
-        return createQuestionResponseDTO;
+        return new CreateQuestionResponseDTO(temario.getId(), temario.getTipo());
     }
 
     @Transactional
     public void delete(Long id) {
-        logger.info("delete");
-
+        logger.info("Eliminando pregunta id={}", id);
         preguntaRepository.deleteById(id);
     }
 
 
     @Transactional
     public Pregunta updateQuestion(PostPreguntaDTO preguntaDTO) {
-        logger.info("updateQuestion");
-        Pregunta pregunta = obtenerPregunta(preguntaDTO.getId(), preguntaDTO.getTipo());
+        logger.info("Actualizando pregunta id={}, tipo={}", preguntaDTO.id(), preguntaDTO.tipo());
+        Pregunta pregunta = obtenerPregunta(preguntaDTO.id(), preguntaDTO.tipo());
         BeanUtils.copyProperties(preguntaDTO, pregunta);
         return preguntaRepository.save(pregunta);
     }
@@ -132,7 +133,7 @@ public class PreguntaService {
 
     @Transactional(readOnly = true)
     public IssueWhitItemsDTO getIssueItems(Long id) {
-        logger.info("Se trae al cuestionario/tema padre");
+        logger.debug("getIssueItems id={}", id);
         IssueOrQuestionnaireProjection temario = temarioRepository.findByIdBasic(id)
                 .orElseThrow(() -> new BussinesException("No existe ese cuestionario"));
 
@@ -140,12 +141,12 @@ public class PreguntaService {
         List<QuestionnaireItem> itemList;
         Boolean isCriticTheActualIssue = false;
         try {
-            logger.info("Se trae todo el contenido perteneciente al cuestionario/tema con id" + id);
+            logger.debug("Obteniendo items del temario id={}", id);
             itemList = aResponderRepository.getIssueItems(id);
             isCriticTheActualIssue = itemList.stream().filter(ele -> ele.getId().equals(id)).findFirst().get().getIsCritic();
             itemList.removeIf(ele -> ele.getId().equals(id));
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error("Error al obtener items del temario id={}", id, e);
             itemList = Collections.emptyList();
         }
 
@@ -160,22 +161,67 @@ public class PreguntaService {
 
     @Transactional
     List<Long> obtenerTodosLosIdsDePreguntas(ObtenerPreguntaDTO obtenerPreguntaDTO) {
-        Pregunta pregunta = obtenerPregunta(obtenerPreguntaDTO.getId(), obtenerPreguntaDTO.getTipoAResponder());
+        Pregunta pregunta = obtenerPregunta(obtenerPreguntaDTO.id(), obtenerPreguntaDTO.tipoAResponder());
         return pregunta.obtenerListaDeIdentificadoresDePreguntas();
     }
 
     @Transactional
     public Boolean verifyResponse(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
 
-        Pregunta preguntaAResponder = obtenerPregunta(respuestaDePreguntaDTO.getIdPregunta() ,respuestaDePreguntaDTO.getTipoDePregunta());
+        Pregunta preguntaAResponder = obtenerPregunta(respuestaDePreguntaDTO.idPregunta(), respuestaDePreguntaDTO.tipoDePregunta());
 
-        preguntaAResponder.verificarSiLaRespuestaEsCorrectaYAsignarCriticos(respuestaDePreguntaDTO);
+        Boolean esCorrecta = preguntaAResponder.verificarSiLaRespuestaEsCorrectaYAsignarCriticos(respuestaDePreguntaDTO);
 
         preguntaRepository.save(preguntaAResponder);
 
-        return respuestaDePreguntaDTO.getRespuestaBooleana();
+        return esCorrecta;
 
     }
+
+    @Transactional
+    public void createInverseQuestion(InverseQuestionCreateDTO inverseQuestionCreateDTO) {
+
+        Long idPregunta = inverseQuestionCreateDTO.idQuestion();
+        TipoAResponder tipo = inverseQuestionCreateDTO.tipo();
+
+        Pregunta pregunta = obtenerPregunta(idPregunta, tipo);
+
+
+        if (pregunta.getTipo().equals(TipoAResponder.PREGUNTA_SIMPLE)) {
+
+            PreguntaSimple preguntaSimple = (PreguntaSimple) pregunta;
+
+            String respuesta = Jsoup.parse(preguntaSimple.getRespuestaEstablecida()).text();
+            logger.info("Respuesta invertida: {}", respuesta);
+
+            PostPreguntaDTO postPreguntaDTO = new PostPreguntaDTO(
+                null,
+                respuesta,
+                pregunta.getDescripcion(),
+                tipo,
+                preguntaSimple.getIdDuenio(),
+                null,
+                preguntaSimple.titulo,
+                null,
+                null,
+                null,
+                null
+            );
+
+
+            createaQuestion(postPreguntaDTO);
+        }
+
+    }
+
+    public List<PreguntaSimple>  getListOfPreguntaSimples(List<Long> ids){
+
+        return (List<PreguntaSimple>) mapDeRepositorios.get(TipoAResponder.PREGUNTA_SIMPLE).findAllById(ids);
+
+    }
+
+
+
 
 
 }

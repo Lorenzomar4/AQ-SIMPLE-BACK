@@ -35,7 +35,7 @@ public class SeleccionUnica extends Pregunta implements IPreguntaVariasOpciones<
 
     @Override
     public void validacionDeDatosDTO(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
-        validacionDeOpcionUnica(respuestaDePreguntaDTO.getListaDeOpciones());
+        validacionDeOpcionUnica(respuestaDePreguntaDTO.listaDeOpciones());
 
     }
 
@@ -46,7 +46,7 @@ public class SeleccionUnica extends Pregunta implements IPreguntaVariasOpciones<
 
     @Override
     public List<Opcion> listaDeOpcionesConLaRespuestaDelUsuario(RespuestaDePreguntaDTO respuestaDePreguntaDTO) {
-        return respuestaDePreguntaDTO.getListaDeOpciones();
+        return respuestaDePreguntaDTO.listaDeOpciones();
     }
 
     public void validacionDeOpcionUnica(List<Opcion> lista) {
