@@ -27,7 +27,7 @@ Todo lo relacionado al flujo de responder: obtener preguntas, verificar respuest
 com/aq/
 │
 ├── content/
-│   ├── domain/
+│   ├── domain/                                      ← Java puro, sin anotaciones de frameworks
 │   │   ├── AResponder.java
 │   │   ├── Temario.java
 │   │   ├── Pregunta.java
@@ -40,30 +40,41 @@ com/aq/
 │   │   └── FabricaDePreguntas.java
 │   ├── application/
 │   │   ├── port/
-│   │   │   ├── in/                              ← interfaces de entrada (qué puede hacer el usuario)
+│   │   │   ├── in/                                  ← interfaces de entrada (qué puede hacer el usuario)
 │   │   │   │   ├── CrearCuestionarioUseCase.java
 │   │   │   │   ├── CrearPreguntaUseCase.java
 │   │   │   │   ├── EditarTemarioUseCase.java
 │   │   │   │   ├── EliminarTemarioUseCase.java
 │   │   │   │   ├── EliminarPreguntaUseCase.java
 │   │   │   │   └── ObtenerCuestionariosUseCase.java
-│   │   │   └── out/                             ← interfaces de salida (qué necesita el dominio)
+│   │   │   └── out/                                 ← interfaces de salida (qué necesita el dominio)
 │   │   │       ├── TemarioRepositoryPort.java
 │   │   │       └── PreguntaRepositoryPort.java
-│   │   └── service/                             ← implementaciones de los use cases
+│   │   └── service/                                 ← implementaciones de los use cases
 │   │       ├── CrearCuestionarioService.java
 │   │       ├── CrearPreguntaService.java
 │   │       └── EditarTemarioService.java
 │   └── infrastructure/
-│       ├── persistence/                         ← adaptadores OUT: implementan los repository ports
-│       │   ├── TemarioJpaAdapter.java
-│       │   └── PreguntaJpaAdapter.java
-│       └── controller/                          ← adaptadores IN: reciben HTTP, llaman use cases
+│       ├── persistence/
+│       │   ├── entity/                              ← entidades JPA (@Entity, sin lógica)
+│       │   │   ├── AResponderEntity.java
+│       │   │   ├── TemarioEntity.java
+│       │   │   ├── PreguntaEntity.java
+│       │   │   ├── PreguntaSimpleEntity.java
+│       │   │   ├── VerdaderoOFalsoEntity.java
+│       │   │   └── ... (resto de subclases)
+│       │   ├── mapper/                              ← convierten Entity ↔ Domain
+│       │   │   ├── TemarioMapper.java
+│       │   │   └── PreguntaMapper.java
+│       │   └── adapter/                             ← implementan los repository ports
+│       │       ├── TemarioJpaAdapter.java
+│       │       └── PreguntaJpaAdapter.java
+│       └── controller/                              ← adaptadores IN: reciben HTTP, llaman use cases
 │           ├── TemarioController.java
 │           └── PreguntaController.java
 │
 └── answering/
-    ├── domain/
+    ├── domain/                                      ← Java puro, sin anotaciones de frameworks
     │   ├── Respuesta.java
     │   └── EstadoCritico.java
     ├── application/
@@ -141,14 +152,83 @@ Si en el futuro aparece "banco de preguntas reutilizables entre cuestionarios", 
 
 ---
 
+## Domain Model vs Persistence Model
+
+### El problema actual
+
+Los objetos de dominio (`AResponder`, `Temario`, `Pregunta` y subclases) tienen anotaciones de frameworks mezcladas con lógica de negocio:
+
+- `@Entity`, `@Table`, `@Inheritance`, `@PostLoad` — acoplan el dominio a JPA
+- `@JsonView` — acopla el dominio a Jackson/HTTP
+- `BeanUtils.copyProperties` en `FabricaDePreguntas` — acopla el dominio a Spring
+
+**Consecuencia:** no se puede testear el dominio sin levantar Spring/JPA.
+
+### La solución: dos versiones de cada entidad
+
+**Objeto de dominio** — Java puro, contiene toda la lógica:
+```java
+// content/domain/Temario.java
+public class Temario {
+    private Long id;
+    private String nombre;
+    private List<AResponder> listaAResponder;
+
+    public void agregarALaLista(AResponder item) { ... }
+    public boolean contieneCritico() { ... }
+}
+```
+
+**Entidad JPA** — sin lógica, solo para persistir:
+```java
+// content/infrastructure/persistence/entity/TemarioEntity.java
+@Entity
+@Table(name = "temario")
+@Inheritance(strategy = InheritanceType.JOINED)
+public class TemarioEntity {
+    @Id @GeneratedValue
+    private Long id;
+    private String nombre;
+
+    @OneToMany
+    private List<AResponderEntity> listaAResponder;
+}
+```
+
+**Mapper entre los dos:**
+```java
+// content/infrastructure/persistence/mapper/TemarioMapper.java
+public class TemarioMapper {
+    public Temario toDomain(TemarioEntity entity) { ... }
+    public TemarioEntity toEntity(Temario domain) { ... }
+}
+```
+
+### El costo
+
+Por cada entidad de dominio se necesitan: objeto de dominio (limpiar anotaciones) + entity JPA (nueva) + mapper (nuevo).
+Con 8 subclases de `Pregunta` más `AResponder` y `Temario` son aproximadamente **20 clases nuevas** de infraestructura. Trabajo mecánico pero predecible.
+
+### Beneficios
+
+- Tests de dominio sin Spring — `new Temario()` funciona en cualquier test unitario
+- Libertad de cambiar el esquema de BD sin tocar el dominio
+- Libertad de cambiar el ORM sin tocar el dominio
+- Lógica de negocio concentrada en `domain/`, sin ruido de anotaciones
+
+---
+
 ## Consideraciones para la migración
 
 El obstáculo principal es que actualmente el dominio está acoplado a JPA (`@Entity`, `@PostLoad`, `InheritanceType.JOINED`). La migración más segura es incremental:
 
-1. Definir los puertos (interfaces) sin mover nada todavía.
-2. Crear los use cases como clases separadas delegando en los servicios actuales.
-3. Separar entidades JPA de objetos de dominio empezando por las subclases más simples.
-4. Limpiar anotaciones de framework del dominio al final.
+1. Crear las entidades JPA nuevas (`XxxEntity`) sin borrar las originales todavía.
+2. Crear los mappers.
+3. Crear los adapters JPA que usan las nuevas entities.
+4. Definir los puertos (interfaces) y crear los use cases como clases separadas.
+5. Migrar un use case a la vez para validar que funciona.
+6. Limpiar las anotaciones de los objetos de dominio originales.
+7. Borrar código que quedó sin usar.
 
 Hacer el cambio incremental mantiene el sistema funcionando durante la migración.
 
