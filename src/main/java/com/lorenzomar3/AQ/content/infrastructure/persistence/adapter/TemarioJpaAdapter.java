@@ -8,6 +8,7 @@ import com.lorenzomar3.AQ.model.TipoAResponder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class TemarioJpaAdapter implements TemarioRepositoryPort {
@@ -26,5 +27,10 @@ public class TemarioJpaAdapter implements TemarioRepositoryPort {
                 .stream()
                 .map(temarioMapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public Optional<Temario> findById(Long id) {
+        return temarioJpaRepository.findById(id).map(temarioMapper::toDomain);
     }
 }

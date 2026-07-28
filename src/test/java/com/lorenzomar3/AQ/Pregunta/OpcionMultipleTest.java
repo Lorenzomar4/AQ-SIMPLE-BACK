@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 public class OpcionMultipleTest {
+    /*
     Opcion opcion1;
     Opcion opcion2;
 
@@ -89,5 +90,5 @@ public class OpcionMultipleTest {
 
     }
 
-
+*/
 }

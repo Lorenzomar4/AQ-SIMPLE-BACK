@@ -2,7 +2,6 @@ package com.lorenzomar3.AQ.Repository;
 
 import com.lorenzomar3.AQ.dto.newDto.IssueWhitItemsDTO;
 import com.lorenzomar3.AQ.model.AResponder.Temario.Temario;
-import com.lorenzomar3.AQ.model.TipoAResponder;
 import com.lorenzomar3.AQ.projections.IssueOrQuestionnaireProjection;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,9 +23,6 @@ public interface TemarioRepository extends JpaRepository<Temario, Long> {
     @Query("SELECT T from Temario T WHERE T.id = :id")
     Optional<Temario> findByIdEssential(Long id);
 
-
-    //@Query("SELECT T from Temario T JOIN AResponder AR ON AR.id = T.id WHERE AR.tipo = :tipo")
-    List<Temario> findTemarioByTipo(@Param("tipo") TipoAResponder tipoAResponder);
 
     @Query("SELECT T.id ,T.titulo as name , T.fechaDeCreacion  as creationDate , T.idDuenio as fatherId ,  T.tipo as type from Temario T WHERE T.id = :id")
     Optional<IssueOrQuestionnaireProjection> findByIdBasic(@Param("id") Long id);

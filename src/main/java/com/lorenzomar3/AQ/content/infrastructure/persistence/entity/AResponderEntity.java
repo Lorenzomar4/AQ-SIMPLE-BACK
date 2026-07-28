@@ -21,7 +21,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "a_responder")
+@Table(name = "aresponder")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @Setter

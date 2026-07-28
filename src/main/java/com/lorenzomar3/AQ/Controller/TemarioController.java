@@ -3,6 +3,7 @@ package com.lorenzomar3.AQ.Controller;
 
 import com.lorenzomar3.AQ.Service.PreguntaService;
 import com.lorenzomar3.AQ.Service.TemarioService;
+import com.lorenzomar3.AQ.content.application.port.in.ObtenerCuestionariosUseCase;
 import com.lorenzomar3.AQ.dto.conversor.TemarioDTOConversor;
 import com.lorenzomar3.AQ.dto.newDto.*;
 import com.lorenzomar3.AQ.model.AResponder.Temario.Temario;
@@ -31,12 +32,17 @@ public class TemarioController {
     @Autowired
     PreguntaService preguntaService;
 
+    @Autowired
+    ObtenerCuestionariosUseCase obtenerCuestionariosUseCase;
+
     @GetMapping("/questionnaires")
     public ResponseEntity<List<TemarioBasicDTO>> todosLosCuestionarios() {
         logger.info("[GET /questionnaires]");
 
-        List<TemarioBasicDTO> temarioBasicDTO = temarioService.obtenerTodosLosTemariosDeTipoCuestionario()
-                .stream().map(Temario::toTemarioCuestionarioCardDTO).toList();
+        List<TemarioBasicDTO> temarioBasicDTO = obtenerCuestionariosUseCase.obtenerCuestionarios()
+                .stream()
+                .map(temario -> new TemarioBasicDTO(temario.getId(), temario.getTitulo(), temario.getFechaDeCreacion(), null))
+                .toList();
 
 
         return new ResponseEntity<>(temarioBasicDTO, HttpStatus.OK);

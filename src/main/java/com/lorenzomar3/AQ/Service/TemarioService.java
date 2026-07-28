@@ -38,14 +38,6 @@ public class TemarioService {
     public PreguntaService preguntaService;
 
 
-    @Transactional(readOnly = true)
-    public List<Temario> obtenerTodosLosTemariosDeTipoCuestionario() {
-
-        logger.debug("Obteniendo todos los temarios tipo={}", TipoAResponder.CUESTIONARIO);
-        return temarioRepository.findTemarioByTipo(TipoAResponder.CUESTIONARIO);
-    }
-
-
     @Transactional
     public Temario saveTemarioCuestionario(Temario temario) {
         logger.info("Guardando cuestionario titulo={}", temario.getTitulo());

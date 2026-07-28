@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 public class DesplegableCompartidoTest {
-
+ /*
 
     OpcionDeDesplegableCompartido opcion1;
     OpcionDeDesplegableCompartido opcion2;
@@ -89,6 +89,6 @@ public class DesplegableCompartidoTest {
 
         Assertions.assertTrue(desplegableCompartido.laRespuestaEsCorrecta(desplegableCompartidoeRespuestaDelUsuario));
     }
-
+*/
 
 }

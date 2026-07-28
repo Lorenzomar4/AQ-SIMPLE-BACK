@@ -2,9 +2,13 @@ package com.lorenzomar3.AQ.Controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.Service.PreguntaService;
+import com.lorenzomar3.AQ.content.application.port.in.CrearPreguntaUseCase;
+import com.lorenzomar3.AQ.content.application.port.in.EditarPreguntaUseCase;
 import com.lorenzomar3.AQ.dto.newDto.*;
 import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.PreguntaSimple;
+import com.lorenzomar3.AQ.model.TipoAResponder;
 import com.lorenzomar3.AQ.model.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +25,12 @@ public class PreguntaController {
 
     @Autowired
     PreguntaService preguntaService;
+
+    @Autowired
+    CrearPreguntaUseCase crearPreguntaUseCase;
+
+    @Autowired
+    EditarPreguntaUseCase editarPreguntaUseCase;
 
 
     @JsonView(View.JustToAnswer.class)
@@ -47,7 +57,10 @@ public class PreguntaController {
     public ResponseEntity<CreateQuestionResponseDTO> createQuestion(@RequestBody PostPreguntaDTO getQuestionDTO) {
         logger.info("[POST /questions] tipo={}, temarioId={}", getQuestionDTO.tipo(), getQuestionDTO.idTemarioPerteneciente());
 
-        CreateQuestionResponseDTO createQuestionResponseDTO = preguntaService.createaQuestion(getQuestionDTO);
+        CreateQuestionResponseDTO createQuestionResponseDTO = getQuestionDTO.tipo() == TipoAResponder.PREGUNTA_SIMPLE
+                ? crearPreguntaUseCase.crear(getQuestionDTO)
+                : preguntaService.createaQuestion(getQuestionDTO);
+
         return new ResponseEntity<>(createQuestionResponseDTO, HttpStatus.OK);
     }
 
@@ -67,6 +80,23 @@ public class PreguntaController {
     public ResponseEntity<Pregunta> updateQuestion(@RequestBody PostPreguntaDTO getQuestionDTO) {
         logger.info("[PUT /questions] id={}, tipo={}", getQuestionDTO.id(), getQuestionDTO.tipo());
 
+        if (getQuestionDTO.tipo() == TipoAResponder.PREGUNTA_SIMPLE) {
+            com.lorenzomar3.AQ.content.domain.PreguntaSimple actualizada = editarPreguntaUseCase.editar(getQuestionDTO);
+
+            PreguntaSimple respuesta = new PreguntaSimple();
+            respuesta.setId(actualizada.getId());
+            respuesta.setTitulo(actualizada.getTitulo());
+            respuesta.setDescripcion(actualizada.getDescripcion());
+            respuesta.setIdDuenio(actualizada.getIdDuenio());
+            respuesta.setFechaDeCreacion(actualizada.getFechaDeCreacion());
+            respuesta.setTipo(actualizada.getTipo());
+            respuesta.setIntentosParaQueDejeDeSerCriticoDisponible(actualizada.getIntentosParaQueDejeDeSerCriticoDisponible());
+            respuesta.setImagenTitulo(actualizada.getImagenTitulo());
+            respuesta.setRespuestaEstablecida(actualizada.getRespuestaEstablecida());
+            respuesta.setRespuestaPrecisa(actualizada.getRespuestaPrecisa());
+
+            return new ResponseEntity<>(respuesta, HttpStatus.OK);
+        }
 
         Pregunta pregunta = preguntaService.updateQuestion(getQuestionDTO);
         return new ResponseEntity<>(pregunta, HttpStatus.OK);

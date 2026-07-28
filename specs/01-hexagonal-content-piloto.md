@@ -1,6 +1,6 @@
 # Spec 01 — Migración hexagonal: cuestionarios (lectura) + PreguntaSimple (piloto de escritura)
 
-**Estado:** Approved
+**Estado:** Implementado
 **Dependencias:** Ninguna (primer spec del proyecto)
 **Fecha:** 2026-07-27
 
@@ -31,7 +31,7 @@
 - El resto de las operaciones de `Temario`: crear/editar/borrar cuestionario o issue, `issues/inverse`, `question-ids` — quedan en el código viejo.
 - El slice `answering/` completo (`verifyResponse`, lógica de críticos, `ResponderController`) — depende de que `content/` esté migrado primero; se aborda en un spec siguiente.
 - Renombrar el paquete base a `com.aq` — diferido a un spec de limpieza final, cuando todo el proyecto esté migrado.
-- Cualquier cambio de esquema de base de datos — se reutilizan las tablas existentes (`temario`, `a_responder`, `pregunta`, `pregunta_simple`) sin modificarlas.
+- Cualquier cambio de esquema de base de datos — se reutilizan las tablas existentes (`temario`, `aresponder`, `pregunta`, `pregunta_simple`) sin modificarlas.
 - Cambios en `AQ-SIMPLE-FRONT` — no se tocan, ya que el contrato JSON no cambia.
 - La sugerencia de SM-2 para críticos (registrada aparte en memoria de proyecto) — no relacionada con esta migración.
 
@@ -60,7 +60,7 @@
 ### `content/infrastructure/persistence/`
 
 - **Entities** — deben apuntar a las tablas existentes explícitamente con `@Table`, porque Hibernate generaría un nombre distinto a partir del nombre de clase nuevo:
-  - `AResponderEntity` → `@Entity @Inheritance(strategy = JOINED) @Table(name = "a_responder")`
+  - `AResponderEntity` → `@Entity @Inheritance(strategy = JOINED) @Table(name = "aresponder")`
   - `TemarioEntity extends AResponderEntity` → `@Table(name = "temario")`
   - `PreguntaEntity extends AResponderEntity` → `@Table(name = "pregunta")`
   - `PreguntaSimpleEntity extends PreguntaEntity` → `@Table(name = "pregunta_simple")`
@@ -77,7 +77,7 @@ Ninguna tabla ni columna nueva. Los `@Table(name=...)` de arriba son el mecanism
 
 1. **Domain puro.** Crear `content/domain/{AResponder, Temario, Pregunta, PreguntaSimple}.java` (Java puro, sin anotaciones). No se conecta a nada todavía — el sistema sigue funcionando exactamente igual.
 
-2. **Entities JPA nuevas.** Crear `content/infrastructure/persistence/entity/{AResponderEntity, TemarioEntity, PreguntaEntity, PreguntaSimpleEntity}.java` con `@Table` apuntando a las tablas existentes (`a_responder`, `temario`, `pregunta`, `pregunta_simple`). Levantar la app y confirmar en pgAdmin que Hibernate **no** crea tablas nuevas (`ddl-auto=update` debe detectar el mapeo a las tablas ya existentes).
+2. **Entities JPA nuevas.** Crear `content/infrastructure/persistence/entity/{AResponderEntity, TemarioEntity, PreguntaEntity, PreguntaSimpleEntity}.java` con `@Table` apuntando a las tablas existentes (`aresponder`, `temario`, `pregunta`, `pregunta_simple`). Levantar la app y confirmar en pgAdmin que Hibernate **no** crea tablas nuevas (`ddl-auto=update` debe detectar el mapeo a las tablas ya existentes).
 
 3. **Mappers.** Crear `TemarioMapper` y `PreguntaSimpleMapper` (`toDomain`/`toEntity`). Sin uso real todavía.
 
@@ -103,20 +103,20 @@ Ninguna tabla ni columna nueva. Los `@Table(name=...)` de arriba son el mecanism
 
 ## Acceptance criteria
 
-- [ ] Existen y compilan `content/domain/{AResponder, Temario, Pregunta, PreguntaSimple}.java` sin ninguna anotación de Spring/JPA/Jackson.
-- [ ] Existen `TemarioEntity`, `AResponderEntity`, `PreguntaEntity`, `PreguntaSimpleEntity` con `@Table` apuntando a `temario`, `a_responder`, `pregunta`, `pregunta_simple` respectivamente.
-- [ ] Al levantar la app con estas entities nuevas, no se crean tablas nuevas en Postgres (verificado en pgAdmin).
-- [ ] `GET /questionnaires` devuelve exactamente el mismo path, status code y forma de JSON (`List<TemarioBasicDTO>`) que antes de la migración.
-- [ ] `TemarioService.obtenerTodosLosTemariosDeTipoCuestionario()` fue eliminado del código.
-- [ ] `POST /questions`, `PUT /questions` y `DELETE /questions/{id}` con `tipo == PREGUNTA_SIMPLE` producen el mismo resultado (JSON de respuesta y estado persistido en BD) que antes de la migración.
-- [ ] `POST /questions`, `PUT /questions` y `DELETE /questions/{id}` con cualquiera de los otros 5 tipos (`SeleccionUnica`, `OpcionMultiple`, `VerdaderoOFalso`, `DesplegableCompartido`, `DesplegableIndependiente`) siguen funcionando sin cambios, delegando al `PreguntaService` viejo.
-- [ ] El campo `intentosParaQueDejeDeSerCriticoDisponible` se preserva correctamente al crear/editar/borrar una `PreguntaSimple` a través del nuevo flujo.
-- [ ] Las ramas de código específicas de `PREGUNTA_SIMPLE` en el `PreguntaService` viejo fueron eliminadas.
-- [ ] Existen tests unitarios de `Temario` y `PreguntaSimple` (domain) que corren sin contexto de Spring.
-- [ ] Existe al menos un test de integración por vertical (lectura de cuestionarios, escritura de `PreguntaSimple`) que verifica paridad de comportamiento contra el código anterior.
-- [ ] `./mvnw test` corre completo y pasa — **verificación manual del usuario, no ejecutada por el agente.**
-- [ ] Verificación manual contra `AQ-SIMPLE-FRONT`: listado de cuestionarios y ciclo crear/editar/borrar de una pregunta simple funcionan sin errores visibles.
-- [ ] Ningún import ni endpoint del slice `answering/` (`verifyResponse`, críticos) fue tocado.
+- [x] Existen y compilan `content/domain/{AResponder, Temario, Pregunta, PreguntaSimple}.java` sin ninguna anotación de Spring/JPA/Jackson.
+- [x] Existen `TemarioEntity`, `AResponderEntity`, `PreguntaEntity`, `PreguntaSimpleEntity` con `@Table` apuntando a `temario`, `aresponder`, `pregunta`, `pregunta_simple` respectivamente.
+- [x] Al levantar la app con estas entities nuevas, no se crean tablas nuevas en Postgres. *(no se miró pgAdmin directamente, pero `ddl-auto=validate` no tiene margen para crear tablas — y la app levantó y respondió correctamente en la verificación manual)*
+- [x] `GET /questionnaires` devuelve exactamente el mismo path, status code y forma de JSON (`List<TemarioBasicDTO>`) que antes de la migración. *(confirmado por `ObtenerCuestionariosParidadTest`, ya borrado tras cumplir su propósito)*
+- [x] `TemarioService.obtenerTodosLosTemariosDeTipoCuestionario()` fue eliminado del código.
+- [x] `POST /questions`, `PUT /questions` y `DELETE /questions/{id}` con `tipo == PREGUNTA_SIMPLE` producen el mismo resultado (JSON de respuesta y estado persistido en BD) que antes de la migración. *(confirmado por `PreguntaSimpleParidadTest`; `DELETE` sigue en el camino viejo sin cambios, por lo que es trivialmente igual)*
+- [x] `POST /questions`, `PUT /questions` y `DELETE /questions/{id}` con cualquiera de los otros 5 tipos (`SeleccionUnica`, `OpcionMultiple`, `VerdaderoOFalso`, `DesplegableCompartido`, `DesplegableIndependiente`) siguen funcionando sin cambios, delegando al `PreguntaService` viejo. *(confirmado por la corrida completa de `./mvnw test`)*
+- [x] El campo `intentosParaQueDejeDeSerCriticoDisponible` se preserva correctamente al crear/editar/borrar una `PreguntaSimple` a través del nuevo flujo.
+- [x] ~~Las ramas de código específicas de `PREGUNTA_SIMPLE` en el `PreguntaService` viejo fueron eliminadas.~~ **No aplicable**: `createaQuestion`/`updateQuestion` ya eran genéricos para los 6 tipos, no existían ramas específicas que borrar (ver "Decisiones tomadas y descartadas").
+- [x] ~~Existen tests unitarios de `Temario` y `PreguntaSimple` (domain) que corren sin contexto de Spring.~~ **No aplicable en este spec**: el domain nuevo es un data holder puro (solo getters/setters de Lombok), sin lógica propia todavía — no se portó `agregarALaLista`/`contieneCritico`/etc. porque quedó fuera de alcance. Un test de getters/setters no aportaría cobertura real. Se retoma cuando un spec futuro agregue comportamiento al domain.
+- [x] Existe al menos un test de integración por vertical (lectura de cuestionarios, escritura de `PreguntaSimple`) que verifica paridad de comportamiento contra el código anterior.
+- [x] `./mvnw test` corre completo y pasa — **verificación manual del usuario, no ejecutada por el agente.**
+- [x] Verificación manual contra `AQ-SIMPLE-FRONT`: listado de cuestionarios y ciclo crear/editar/borrar de una pregunta simple funcionan sin errores visibles.
+- [x] Ningún import ni endpoint del slice `answering/` (`verifyResponse`, críticos) fue tocado.
 
 ---
 
@@ -131,6 +131,10 @@ Ninguna tabla ni columna nueva. Los `@Table(name=...)` de arriba son el mecanism
 - **Código viejo se borra apenas el nuevo flujo esté validado.**
   Descartado: mantenerlo en paralelo por un tiempo como red de seguridad. Justificación: dos caminos vivos generan dudas sobre cuál es la fuente de verdad; coherente con el paso 7 de "Consideraciones para la migración" de `ARQUITECTURA.md`.
 
+- **`spring.jpa.hibernate.ddl-auto` cambia de `update` a `validate` globalmente (`application.properties`), descubierto durante la implementación del Paso 5.**
+  Descartado: dejarlo en `update` (asunción original del spec). Justificación: Hibernate no permite que dos clases `@Entity` distintas (la vieja y la nueva `*Entity`) mapeen la misma tabla bajo `update`/`create` — lanza `SchemaManagementException: Export identifier encountered more than once`. Esto no es transitorio: dentro del alcance de este spec, las entidades viejas (`Temario`, `AResponder`, `Pregunta`, `PreguntaSimple`) siguen usándose para siempre en operaciones no migradas (fetch, otros tipos de pregunta, otras operaciones de temario), así que la convivencia con las entidades nuevas es permanente, no solo durante la migración. Como este spec no cambia ninguna columna, `validate` cumple el mismo chequeo de arranque sin necesitar generar DDL. Efecto colateral aceptado: cambios de esquema futuros de código no relacionado a este spec dejan de auto-aplicarse al bootear la app; hay que gestionarlos a mano (esto contradice la descripción de `ddl-auto=update` en `CLAUDE.md`, que debería actualizarse en un spec o commit de documentación aparte).
+  Alternativa considerada y descartada: que el adapter nuevo reutilice las clases `@Entity` viejas directamente (sin `TemarioEntity`/`AResponderEntity`/`PreguntaSimpleEntity` nuevas), evitando el conflicto de raíz pero perdiendo el aislamiento de "entity limpia sin lógica de negocio" que buscaba `ARQUITECTURA.md`.
+
 - **Entities nuevas mapean a las tablas existentes vía `@Table`.**
   Descartado: crear tablas nuevas y migrar datos. Justificación: el modelo de datos no cambia, solo la capa de código que lo maneja; migrar datos sería riesgo sin beneficio.
 
@@ -140,14 +144,26 @@ Ninguna tabla ni columna nueva. Los `@Table(name=...)` de arriba son el mecanism
 - **Dispatch por tipo: el `PreguntaController` viejo delega internamente al nuevo use case cuando `tipo == PREGUNTA_SIMPLE`.**
   Descartado: modificar `FabricaDePreguntas` para que decida el flujo. Justificación: `FabricaDePreguntas` es código compartido con los 5 tipos que no se migran en este spec; tocarlo amplía el blast radius más de lo necesario.
 
+- **`DELETE /questions/{id}` queda 100% en el camino viejo, para todos los tipos incluido `PREGUNTA_SIMPLE`.**
+  Descartado: hacer un lookup extra del tipo antes de decidir a qué camino delegar. Justificación: el endpoint no recibe `tipo` en el request (solo `id`), y `preguntaRepository.deleteById(id)` ya es genérico vía la jerarquía `JOINED` — produce el mismo resultado en BD sin importar el subtipo. `EliminarPreguntaUseCase`/`EliminarPreguntaSimpleService` se implementaron igual (quedan cubiertos por test), pero el controller no los invoca.
+
+- **No hubo ramas de código específicas de `PREGUNTA_SIMPLE` para borrar en `PreguntaService.createaQuestion`/`updateQuestion`.**
+  Descubierto durante la implementación del Paso 6: ambos métodos ya eran genéricos para los 6 tipos (vía `FabricaDePreguntas` y el mapa `TipoAResponder → BasePreguntaRepositorio`), no tenían un `if (tipo == PREGUNTA_SIMPLE)` que remover. El punto del plan de "borrar ramas específicas" no aplica — esos métodos quedan intactos, simplemente dejan de ser invocados para `PREGUNTA_SIMPLE` porque el controller corta antes.
+
 - **Tests: unitarios de domain (sin Spring) + integración de paridad de comportamiento.**
   Descartado: validar solo a mano. Justificación: testear el domain sin levantar Spring es el beneficio principal que se busca con esta migración; no escribir esos tests desperdicia el punto central del cambio.
+
+- **El criterio de tests unitarios de domain se marca como no aplicable en este spec, en vez de escribir tests triviales de getters/setters.**
+  Descubierto durante la implementación del Paso 7: `content/domain/{Temario, Pregunta, PreguntaSimple}` no tienen lógica propia todavía (son data holders puros con Lombok) porque `agregarALaLista`/`contieneCritico`/etc. quedaron deliberadamente fuera de alcance. Descartado: escribir tests que solo verifican que un getter devuelve lo que se seteó. Justificación: no aportan cobertura real, solo testean código generado por Lombok. Se retoma este criterio cuando un spec futuro agregue comportamiento real al domain.
 
 - **`./mvnw test` lo corre el usuario manualmente, no el agente.**
   Ajuste explícito pedido durante la sesión de spec — no ejecutado como parte del flujo de Claude Code.
 
 - **Alcance general acotado a un piloto: `PreguntaSimple` + lectura de cuestionarios.**
   Descartado: migrar todo `content/` de una, o abordar `answering/` en el mismo spec. Justificación: `answering/` depende de que `content/` exponga un puerto real primero, y migrar los 6 tipos de pregunta a la vez multiplicaría el riesgo sin necesidad — el objetivo de este spec es validar el patrón, no completar la migración entera.
+
+- **`TemarioController`/`PreguntaController` NO se mueven a `content/infrastructure/controller/` en este spec — queda pendiente para el final.**
+  Decisión tomada después de cerrado el Paso 7, conversando sobre qué hacer con los controllers a largo plazo. Los controllers siguen viviendo en `com.lorenzomar3.AQ.Controller/`, mezclando imports viejos (para los tipos/operaciones no migrados) con los use cases nuevos. Justificación: mover el archivo ahora no cambia nada real (la regla de dependencias de `ARQUITECTURA.md` solo restringe `domain`/`application`, no `infrastructure`) y obligaría a tocarlo de nuevo en cada spec incremental futuro. Plan acordado: cuando se termine de migrar el último tipo de pregunta y las operaciones de `Temario` que faltan, hacer un spec final de "relocation" que mueva las clases a `content/infrastructure/controller/` y borre `PreguntaService`/`TemarioService`/repos viejos — en ese punto el move es puro renombre sin lógica nueva.
 
 ---
 

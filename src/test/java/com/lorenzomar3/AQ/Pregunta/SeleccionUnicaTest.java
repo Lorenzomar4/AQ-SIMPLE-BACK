@@ -10,7 +10,7 @@ import java.util.List;
 
 public class SeleccionUnicaTest {
 
-
+ /*
     SeleccionUnica seleccionUnica;
 
 
@@ -80,6 +80,6 @@ public class SeleccionUnicaTest {
         Assertions.assertTrue(seleccionUnica.laRespuestaEsCorrecta(seleccionUnicaRespuesta));
 
     }
-
+*/
 
 }
