@@ -1,0 +1,44 @@
+package com.lorenzomar3.AQ.content.application.service;
+
+import com.lorenzomar3.AQ.content.application.port.in.EditarSeleccionUnicaUseCase;
+import com.lorenzomar3.AQ.content.application.port.out.SeleccionUnicaRepositoryPort;
+import com.lorenzomar3.AQ.content.domain.Opcion;
+import com.lorenzomar3.AQ.content.domain.SeleccionUnica;
+import com.lorenzomar3.AQ.dto.newDto.PostPreguntaDTO;
+import com.lorenzomar3.AQ.exception.BussinesException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+public class EditarSeleccionUnicaService implements EditarSeleccionUnicaUseCase {
+
+    private final SeleccionUnicaRepositoryPort seleccionUnicaRepositoryPort;
+
+    public EditarSeleccionUnicaService(SeleccionUnicaRepositoryPort seleccionUnicaRepositoryPort) {
+        this.seleccionUnicaRepositoryPort = seleccionUnicaRepositoryPort;
+    }
+
+    @Override
+    @Transactional
+    public SeleccionUnica editar(PostPreguntaDTO postPreguntaDTO) {
+        SeleccionUnica seleccionUnica = seleccionUnicaRepositoryPort.findById(postPreguntaDTO.id())
+                .orElseThrow(() -> new BussinesException("No se encuentra una pregunta con el tipo De id solicitadO"));
+
+        seleccionUnica.setTitulo(postPreguntaDTO.titulo());
+        seleccionUnica.setDescripcion(postPreguntaDTO.descripcion());
+        seleccionUnica.setListaDeOpciones(convertirOpciones(postPreguntaDTO));
+
+        return seleccionUnicaRepositoryPort.save(seleccionUnica);
+    }
+
+    private List<Opcion> convertirOpciones(PostPreguntaDTO postPreguntaDTO) {
+        return postPreguntaDTO.listaDeOpcionesConSuRespuestaReal().stream().map(opcionVieja -> {
+            Opcion opcion = new Opcion();
+            opcion.setOpcion(opcionVieja.getOpcion());
+            opcion.setLaRespuestaEs(opcionVieja.getRespuestaCorrecta());
+            return opcion;
+        }).toList();
+    }
+}
