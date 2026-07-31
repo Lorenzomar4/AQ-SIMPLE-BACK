@@ -19,7 +19,7 @@ import java.util.*;
 @NoArgsConstructor
 public class DesplegableCompartido extends Pregunta implements IPreguntaVariasOpciones<String, OpcionDeDesplegableCompartido> {
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "id_pregunta")
 
     public List<OpcionDeDesplegableCompartido> listaDeOpcionDesplegableCompartido;

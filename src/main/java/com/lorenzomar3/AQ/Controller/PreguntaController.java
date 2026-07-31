@@ -2,10 +2,12 @@ package com.lorenzomar3.AQ.Controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.Service.PreguntaService;
+import com.lorenzomar3.AQ.content.application.port.in.CrearDesplegableCompartidoUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.CrearOpcionMultipleUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.CrearPreguntaUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.CrearSeleccionUnicaUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.CrearVerdaderoOFalsoUseCase;
+import com.lorenzomar3.AQ.content.application.port.in.EditarDesplegableCompartidoUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.EditarOpcionMultipleUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.EditarPreguntaUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.EditarSeleccionUnicaUseCase;
@@ -13,6 +15,8 @@ import com.lorenzomar3.AQ.content.application.port.in.EditarVerdaderoOFalsoUseCa
 import com.lorenzomar3.AQ.dto.newDto.*;
 import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableCompartido.DesplegableCompartido;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableCompartido.OpcionDeDesplegableCompartido;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.Opcion;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.OpcionMultiple;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.PreguntaSimple;
@@ -60,6 +64,12 @@ public class PreguntaController {
     @Autowired
     EditarOpcionMultipleUseCase editarOpcionMultipleUseCase;
 
+    @Autowired
+    CrearDesplegableCompartidoUseCase crearDesplegableCompartidoUseCase;
+
+    @Autowired
+    EditarDesplegableCompartidoUseCase editarDesplegableCompartidoUseCase;
+
 
     @JsonView(View.JustToAnswer.class)
     @PostMapping("/questions/fetch")
@@ -94,6 +104,8 @@ public class PreguntaController {
             createQuestionResponseDTO = crearSeleccionUnicaUseCase.crear(getQuestionDTO);
         } else if (getQuestionDTO.tipo() == TipoAResponder.OPCION_MULTIPLE) {
             createQuestionResponseDTO = crearOpcionMultipleUseCase.crear(getQuestionDTO);
+        } else if (getQuestionDTO.tipo() == TipoAResponder.DESPLEGABLE_COMPARTIDO) {
+            createQuestionResponseDTO = crearDesplegableCompartidoUseCase.crear(getQuestionDTO);
         } else {
             createQuestionResponseDTO = preguntaService.createaQuestion(getQuestionDTO);
         }
@@ -190,6 +202,29 @@ public class PreguntaController {
             respuesta.setListaDeOpcionesConSuRespuestaReal(
                     actualizada.getListaDeOpciones().stream().map(opcion -> {
                         Opcion opcionVieja = new Opcion(opcion.getOpcion(), opcion.getLaRespuestaEs());
+                        opcionVieja.setId(opcion.getId());
+                        return opcionVieja;
+                    }).toList()
+            );
+
+            return new ResponseEntity<>(respuesta, HttpStatus.OK);
+        }
+
+        if (getQuestionDTO.tipo() == TipoAResponder.DESPLEGABLE_COMPARTIDO) {
+            com.lorenzomar3.AQ.content.domain.DesplegableCompartido actualizada = editarDesplegableCompartidoUseCase.editar(getQuestionDTO);
+
+            DesplegableCompartido respuesta = new DesplegableCompartido();
+            respuesta.setId(actualizada.getId());
+            respuesta.setTitulo(actualizada.getTitulo());
+            respuesta.setDescripcion(actualizada.getDescripcion());
+            respuesta.setIdDuenio(actualizada.getIdDuenio());
+            respuesta.setFechaDeCreacion(actualizada.getFechaDeCreacion());
+            respuesta.setTipo(actualizada.getTipo());
+            respuesta.setIntentosParaQueDejeDeSerCriticoDisponible(actualizada.getIntentosParaQueDejeDeSerCriticoDisponible());
+            respuesta.setImagenTitulo(actualizada.getImagenTitulo());
+            respuesta.setListaDeOpcionDesplegableCompartido(
+                    actualizada.getListaDeOpciones().stream().map(opcion -> {
+                        OpcionDeDesplegableCompartido opcionVieja = new OpcionDeDesplegableCompartido(opcion.getPregunta(), opcion.getRespuesta());
                         opcionVieja.setId(opcion.getId());
                         return opcionVieja;
                     }).toList()
