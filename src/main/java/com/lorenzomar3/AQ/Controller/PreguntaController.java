@@ -2,12 +2,22 @@ package com.lorenzomar3.AQ.Controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.Service.PreguntaService;
+import com.lorenzomar3.AQ.content.application.port.in.CrearOpcionMultipleUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.CrearPreguntaUseCase;
+import com.lorenzomar3.AQ.content.application.port.in.CrearSeleccionUnicaUseCase;
+import com.lorenzomar3.AQ.content.application.port.in.CrearVerdaderoOFalsoUseCase;
+import com.lorenzomar3.AQ.content.application.port.in.EditarOpcionMultipleUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.EditarPreguntaUseCase;
+import com.lorenzomar3.AQ.content.application.port.in.EditarSeleccionUnicaUseCase;
+import com.lorenzomar3.AQ.content.application.port.in.EditarVerdaderoOFalsoUseCase;
 import com.lorenzomar3.AQ.dto.newDto.*;
 import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.Opcion;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.OpcionMultiple;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.PreguntaSimple;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.SeleccionUnica;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.VerdaderoOFalso;
 import com.lorenzomar3.AQ.model.TipoAResponder;
 import com.lorenzomar3.AQ.model.View;
 import org.slf4j.Logger;
@@ -31,6 +41,24 @@ public class PreguntaController {
 
     @Autowired
     EditarPreguntaUseCase editarPreguntaUseCase;
+
+    @Autowired
+    CrearVerdaderoOFalsoUseCase crearVerdaderoOFalsoUseCase;
+
+    @Autowired
+    EditarVerdaderoOFalsoUseCase editarVerdaderoOFalsoUseCase;
+
+    @Autowired
+    CrearSeleccionUnicaUseCase crearSeleccionUnicaUseCase;
+
+    @Autowired
+    EditarSeleccionUnicaUseCase editarSeleccionUnicaUseCase;
+
+    @Autowired
+    CrearOpcionMultipleUseCase crearOpcionMultipleUseCase;
+
+    @Autowired
+    EditarOpcionMultipleUseCase editarOpcionMultipleUseCase;
 
 
     @JsonView(View.JustToAnswer.class)
@@ -57,9 +85,18 @@ public class PreguntaController {
     public ResponseEntity<CreateQuestionResponseDTO> createQuestion(@RequestBody PostPreguntaDTO getQuestionDTO) {
         logger.info("[POST /questions] tipo={}, temarioId={}", getQuestionDTO.tipo(), getQuestionDTO.idTemarioPerteneciente());
 
-        CreateQuestionResponseDTO createQuestionResponseDTO = getQuestionDTO.tipo() == TipoAResponder.PREGUNTA_SIMPLE
-                ? crearPreguntaUseCase.crear(getQuestionDTO)
-                : preguntaService.createaQuestion(getQuestionDTO);
+        CreateQuestionResponseDTO createQuestionResponseDTO;
+        if (getQuestionDTO.tipo() == TipoAResponder.PREGUNTA_SIMPLE) {
+            createQuestionResponseDTO = crearPreguntaUseCase.crear(getQuestionDTO);
+        } else if (getQuestionDTO.tipo() == TipoAResponder.VERDADERO_FALSO) {
+            createQuestionResponseDTO = crearVerdaderoOFalsoUseCase.crear(getQuestionDTO);
+        } else if (getQuestionDTO.tipo() == TipoAResponder.SELECCION_UNICA) {
+            createQuestionResponseDTO = crearSeleccionUnicaUseCase.crear(getQuestionDTO);
+        } else if (getQuestionDTO.tipo() == TipoAResponder.OPCION_MULTIPLE) {
+            createQuestionResponseDTO = crearOpcionMultipleUseCase.crear(getQuestionDTO);
+        } else {
+            createQuestionResponseDTO = preguntaService.createaQuestion(getQuestionDTO);
+        }
 
         return new ResponseEntity<>(createQuestionResponseDTO, HttpStatus.OK);
     }
@@ -94,6 +131,69 @@ public class PreguntaController {
             respuesta.setImagenTitulo(actualizada.getImagenTitulo());
             respuesta.setRespuestaEstablecida(actualizada.getRespuestaEstablecida());
             respuesta.setRespuestaPrecisa(actualizada.getRespuestaPrecisa());
+
+            return new ResponseEntity<>(respuesta, HttpStatus.OK);
+        }
+
+        if (getQuestionDTO.tipo() == TipoAResponder.VERDADERO_FALSO) {
+            com.lorenzomar3.AQ.content.domain.VerdaderoOFalso actualizada = editarVerdaderoOFalsoUseCase.editar(getQuestionDTO);
+
+            VerdaderoOFalso respuesta = new VerdaderoOFalso();
+            respuesta.setId(actualizada.getId());
+            respuesta.setTitulo(actualizada.getTitulo());
+            respuesta.setDescripcion(actualizada.getDescripcion());
+            respuesta.setIdDuenio(actualizada.getIdDuenio());
+            respuesta.setFechaDeCreacion(actualizada.getFechaDeCreacion());
+            respuesta.setTipo(actualizada.getTipo());
+            respuesta.setIntentosParaQueDejeDeSerCriticoDisponible(actualizada.getIntentosParaQueDejeDeSerCriticoDisponible());
+            respuesta.setImagenTitulo(actualizada.getImagenTitulo());
+            respuesta.respuestaVerdadera = actualizada.getRespuestaVerdadera();
+
+            return new ResponseEntity<>(respuesta, HttpStatus.OK);
+        }
+
+        if (getQuestionDTO.tipo() == TipoAResponder.SELECCION_UNICA) {
+            com.lorenzomar3.AQ.content.domain.SeleccionUnica actualizada = editarSeleccionUnicaUseCase.editar(getQuestionDTO);
+
+            SeleccionUnica respuesta = new SeleccionUnica();
+            respuesta.setId(actualizada.getId());
+            respuesta.setTitulo(actualizada.getTitulo());
+            respuesta.setDescripcion(actualizada.getDescripcion());
+            respuesta.setIdDuenio(actualizada.getIdDuenio());
+            respuesta.setFechaDeCreacion(actualizada.getFechaDeCreacion());
+            respuesta.setTipo(actualizada.getTipo());
+            respuesta.setIntentosParaQueDejeDeSerCriticoDisponible(actualizada.getIntentosParaQueDejeDeSerCriticoDisponible());
+            respuesta.setImagenTitulo(actualizada.getImagenTitulo());
+            respuesta.setListaDeOpcionesConSuRespuestaReal(
+                    actualizada.getListaDeOpciones().stream().map(opcion -> {
+                        Opcion opcionVieja = new Opcion(opcion.getOpcion(), opcion.getLaRespuestaEs());
+                        opcionVieja.setId(opcion.getId());
+                        return opcionVieja;
+                    }).toList()
+            );
+
+            return new ResponseEntity<>(respuesta, HttpStatus.OK);
+        }
+
+        if (getQuestionDTO.tipo() == TipoAResponder.OPCION_MULTIPLE) {
+            com.lorenzomar3.AQ.content.domain.OpcionMultiple actualizada = editarOpcionMultipleUseCase.editar(getQuestionDTO);
+
+            OpcionMultiple respuesta = new OpcionMultiple();
+            respuesta.setId(actualizada.getId());
+            respuesta.setTitulo(actualizada.getTitulo());
+            respuesta.setDescripcion(actualizada.getDescripcion());
+            respuesta.setIdDuenio(actualizada.getIdDuenio());
+            respuesta.setFechaDeCreacion(actualizada.getFechaDeCreacion());
+            respuesta.setTipo(actualizada.getTipo());
+            respuesta.setIntentosParaQueDejeDeSerCriticoDisponible(actualizada.getIntentosParaQueDejeDeSerCriticoDisponible());
+            respuesta.setImagenTitulo(actualizada.getImagenTitulo());
+            respuesta.setListaDeOpcionesConSuRespuestaReal(
+                    actualizada.getListaDeOpciones().stream().map(opcion -> {
+                        Opcion opcionVieja = new Opcion(opcion.getOpcion(), opcion.getLaRespuestaEs());
+                        opcionVieja.setId(opcion.getId());
+                        return opcionVieja;
+                    }).toList()
+            );
 
             return new ResponseEntity<>(respuesta, HttpStatus.OK);
         }
