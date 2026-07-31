@@ -29,7 +29,7 @@ public class DesplegableIndependiente extends Pregunta implements IPreguntaVaria
     void init() {
         //Por alguna razon se traen los elementos de esta lista de manera duplicada desde la base de datos a pesar de que alli
         // Ejemplo con numeros [1,2,1,2] . Esto claramente yo no quiero asi que con esto logro la unicidad [1,2]
-        listaDeOpcionDesplegableIndependiente = listaDeOpcionDesplegableIndependiente.stream().distinct().toList();
+        listaDeOpcionDesplegableIndependiente = listaDeOpcionDesplegableIndependiente.stream().distinct().collect(Collectors.toCollection(ArrayList::new));
     }
 
 

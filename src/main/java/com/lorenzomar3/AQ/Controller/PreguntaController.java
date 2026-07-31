@@ -3,11 +3,13 @@ package com.lorenzomar3.AQ.Controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.lorenzomar3.AQ.Service.PreguntaService;
 import com.lorenzomar3.AQ.content.application.port.in.CrearDesplegableCompartidoUseCase;
+import com.lorenzomar3.AQ.content.application.port.in.CrearDesplegableIndependienteUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.CrearOpcionMultipleUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.CrearPreguntaUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.CrearSeleccionUnicaUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.CrearVerdaderoOFalsoUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.EditarDesplegableCompartidoUseCase;
+import com.lorenzomar3.AQ.content.application.port.in.EditarDesplegableIndependienteUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.EditarOpcionMultipleUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.EditarPreguntaUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.EditarSeleccionUnicaUseCase;
@@ -17,6 +19,8 @@ import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableCompartido.DesplegableCompartido;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableCompartido.OpcionDeDesplegableCompartido;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegabeIndependiente.DesplegableIndependiente;
+import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegabeIndependiente.SeleccionUnicaParaDesplegableIndependiente;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.Opcion;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.OpcionMultiple;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.PreguntaSimple;
@@ -70,6 +74,12 @@ public class PreguntaController {
     @Autowired
     EditarDesplegableCompartidoUseCase editarDesplegableCompartidoUseCase;
 
+    @Autowired
+    CrearDesplegableIndependienteUseCase crearDesplegableIndependienteUseCase;
+
+    @Autowired
+    EditarDesplegableIndependienteUseCase editarDesplegableIndependienteUseCase;
+
 
     @JsonView(View.JustToAnswer.class)
     @PostMapping("/questions/fetch")
@@ -106,6 +116,8 @@ public class PreguntaController {
             createQuestionResponseDTO = crearOpcionMultipleUseCase.crear(getQuestionDTO);
         } else if (getQuestionDTO.tipo() == TipoAResponder.DESPLEGABLE_COMPARTIDO) {
             createQuestionResponseDTO = crearDesplegableCompartidoUseCase.crear(getQuestionDTO);
+        } else if (getQuestionDTO.tipo() == TipoAResponder.DESPLEGABLE_INDEPENDIENTE) {
+            createQuestionResponseDTO = crearDesplegableIndependienteUseCase.crear(getQuestionDTO);
         } else {
             createQuestionResponseDTO = preguntaService.createaQuestion(getQuestionDTO);
         }
@@ -227,6 +239,36 @@ public class PreguntaController {
                         OpcionDeDesplegableCompartido opcionVieja = new OpcionDeDesplegableCompartido(opcion.getPregunta(), opcion.getRespuesta());
                         opcionVieja.setId(opcion.getId());
                         return opcionVieja;
+                    }).toList()
+            );
+
+            return new ResponseEntity<>(respuesta, HttpStatus.OK);
+        }
+
+        if (getQuestionDTO.tipo() == TipoAResponder.DESPLEGABLE_INDEPENDIENTE) {
+            com.lorenzomar3.AQ.content.domain.DesplegableIndependiente actualizada = editarDesplegableIndependienteUseCase.editar(getQuestionDTO);
+
+            DesplegableIndependiente respuesta = new DesplegableIndependiente();
+            respuesta.setId(actualizada.getId());
+            respuesta.setTitulo(actualizada.getTitulo());
+            respuesta.setDescripcion(actualizada.getDescripcion());
+            respuesta.setIdDuenio(actualizada.getIdDuenio());
+            respuesta.setFechaDeCreacion(actualizada.getFechaDeCreacion());
+            respuesta.setTipo(actualizada.getTipo());
+            respuesta.setIntentosParaQueDejeDeSerCriticoDisponible(actualizada.getIntentosParaQueDejeDeSerCriticoDisponible());
+            respuesta.setImagenTitulo(actualizada.getImagenTitulo());
+            respuesta.setListaDeOpcionDesplegableIndependiente(
+                    actualizada.getListaDeOpciones().stream().map(subPregunta -> {
+                        SeleccionUnicaParaDesplegableIndependiente subPreguntaVieja = new SeleccionUnicaParaDesplegableIndependiente(
+                                subPregunta.getTitulo(),
+                                subPregunta.getListaDeOpciones().stream().map(opcion -> {
+                                    Opcion opcionVieja = new Opcion(opcion.getOpcion(), opcion.getLaRespuestaEs());
+                                    opcionVieja.setId(opcion.getId());
+                                    return opcionVieja;
+                                }).toList()
+                        );
+                        subPreguntaVieja.setId(subPregunta.getId());
+                        return subPreguntaVieja;
                     }).toList()
             );
 
