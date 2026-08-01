@@ -151,9 +151,14 @@ public class PreguntaService {
         }
 
 
+        List<IssueItemDTO> issueItemDTOList = itemList.stream()
+                .map(ele -> new IssueItemDTO(ele.getId(), ele.getName(), ele.getType(), ele.getCreationDate(),
+                        ele.getIsCritic(), ele.getNumberOfQuestions()))
+                .toList();
+
         IssueWhitItemsDTO issueWhitItemsDTO = new IssueWhitItemsDTO(id, temario.getName(),
                 temario.getCreationDate(),
-                temario.getFatherId(), itemList, temario.getType(), isCriticTheActualIssue);
+                temario.getFatherId(), issueItemDTOList, temario.getType(), isCriticTheActualIssue);
 
 
         return issueWhitItemsDTO;

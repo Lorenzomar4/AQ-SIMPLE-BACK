@@ -1,6 +1,7 @@
 package com.lorenzomar3.AQ.content.infrastructure.persistence.adapter;
 
 import com.lorenzomar3.AQ.content.application.port.out.AResponderChildRef;
+import com.lorenzomar3.AQ.content.application.port.out.AResponderItemDetail;
 import com.lorenzomar3.AQ.content.application.port.out.TemarioRepositoryPort;
 import com.lorenzomar3.AQ.content.domain.Temario;
 import com.lorenzomar3.AQ.content.infrastructure.persistence.mapper.TemarioMapper;
@@ -57,6 +58,14 @@ public class TemarioJpaAdapter implements TemarioRepositoryPort {
         return aResponderRepositoryViejo.getIssueItems(id).stream()
                 .filter(item -> !item.getId().equals(id))
                 .map(item -> new AResponderChildRef(item.getId(), item.getType()))
+                .toList();
+    }
+
+    @Override
+    public List<AResponderItemDetail> findIssueItems(Long id) {
+        return aResponderRepositoryViejo.getIssueItems(id).stream()
+                .map(item -> new AResponderItemDetail(item.getId(), item.getType(), item.getName(),
+                        item.getCreationDate(), item.getIsCritic(), item.getNumberOfQuestions()))
                 .toList();
     }
 }
