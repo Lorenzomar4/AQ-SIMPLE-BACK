@@ -158,3 +158,11 @@ Ninguna tabla ni columna nueva.
 
 - **`IssueWhitItemsDTO.itemList` cambia de tipo (`QuestionnaireItem` → `IssueItemDTO`)**, lo cual es un cambio de tipo Java aunque no de contrato JSON. Si algún otro punto del código viejo (no detectado en la investigación) también construyera o leyera `IssueWhitItemsDTO` esperando `QuestionnaireItem`, ese código dejaría de compilar y quedaría expuesto en tiempo de build, no en runtime.
   *Mitigación:* ninguna adicional necesaria — un error de compilación es preferible a uno silencioso, y `./mvnw test`/`package` (paso 11) lo detectaría de inmediato si existiera.
+
+---
+
+## Próximo spec sugerido
+
+Con este spec, `TemarioController` queda 100% migrado (8/8 endpoints). En `PreguntaController` siguen sin migrar `POST /questions/fetch`, `POST /questions/fetch-full`, `POST /questions/verify` y `POST /questions/inverse` (individual); `ResponderController` sigue completo en código viejo (`random-ids`, `critical-ids`).
+
+**Recomendación: migrar `POST /questions/fetch` y `POST /questions/fetch-full` a continuación.** Es la migración más parecida a la de este spec — lectura pura, sin lógica de negocio riesgosa, reutilizando el dispatch por tipo ya existente desde specs 01-06 — y desbloquea las pantallas `question-view`/`question-response` del frontend. Se descarta arrancar por `POST /questions/verify` porque toca la lógica de "crítico" (mutación de `intentosParaQueDejeDeSerCriticoDisponible`), más delicada y candidata a su propio spec dedicado en vez de combinarla con otra migración.

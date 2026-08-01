@@ -15,6 +15,10 @@ import com.lorenzomar3.AQ.content.application.port.in.EditarPreguntaUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.EditarSeleccionUnicaUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.EditarVerdaderoOFalsoUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.EliminarPreguntaPorIdUseCase;
+import com.lorenzomar3.AQ.content.application.port.in.ObtenerPreguntaFullUseCase;
+import com.lorenzomar3.AQ.content.application.port.in.ObtenerPreguntaUseCase;
+import com.lorenzomar3.AQ.content.application.port.in.ObtenerVerdaderoOFalsoFullUseCase;
+import com.lorenzomar3.AQ.content.application.port.in.ObtenerVerdaderoOFalsoUseCase;
 import com.lorenzomar3.AQ.dto.newDto.*;
 import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
@@ -84,24 +88,52 @@ public class PreguntaController {
     @Autowired
     EliminarPreguntaPorIdUseCase eliminarPreguntaPorIdUseCase;
 
+    @Autowired
+    ObtenerPreguntaUseCase obtenerPreguntaUseCase;
+
+    @Autowired
+    ObtenerPreguntaFullUseCase obtenerPreguntaFullUseCase;
+
+    @Autowired
+    ObtenerVerdaderoOFalsoUseCase obtenerVerdaderoOFalsoUseCase;
+
+    @Autowired
+    ObtenerVerdaderoOFalsoFullUseCase obtenerVerdaderoOFalsoFullUseCase;
+
 
     @JsonView(View.JustToAnswer.class)
     @PostMapping("/questions/fetch")
-    public ResponseEntity<Pregunta> getQuestion(@RequestBody ObtenerPreguntaDTO getQuestionDTO) {
+    public ResponseEntity<Object> getQuestion(@RequestBody ObtenerPreguntaDTO getQuestionDTO) {
         logger.info("[POST /questions/fetch] id={}, tipo={}", getQuestionDTO.id(), getQuestionDTO.tipoAResponder());
-        Pregunta pregunta = preguntaService.obtenerPregunta(getQuestionDTO.id(), getQuestionDTO.tipoAResponder());
-        return new ResponseEntity<>(pregunta, HttpStatus.OK);
 
+        Object respuesta;
+        if (getQuestionDTO.tipoAResponder() == TipoAResponder.PREGUNTA_SIMPLE) {
+            respuesta = obtenerPreguntaUseCase.obtener(getQuestionDTO.id());
+        } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.VERDADERO_FALSO) {
+            respuesta = obtenerVerdaderoOFalsoUseCase.obtener(getQuestionDTO.id());
+        } else {
+            respuesta = preguntaService.obtenerPregunta(getQuestionDTO.id(), getQuestionDTO.tipoAResponder());
+        }
+
+        return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
     @JsonView(View.Full.class)
     @PostMapping("/questions/fetch-full")
     @Transactional
-    public ResponseEntity<Pregunta> getQuestionFull(@RequestBody ObtenerPreguntaDTO getQuestionDTO) {
+    public ResponseEntity<Object> getQuestionFull(@RequestBody ObtenerPreguntaDTO getQuestionDTO) {
         logger.info("[POST /questions/fetch-full] id={}, tipo={}", getQuestionDTO.id(), getQuestionDTO.tipoAResponder());
 
-        Pregunta pregunta = preguntaService.obtenerPreguntaFull(getQuestionDTO);
-        return new ResponseEntity<>(pregunta, HttpStatus.OK);
+        Object respuesta;
+        if (getQuestionDTO.tipoAResponder() == TipoAResponder.PREGUNTA_SIMPLE) {
+            respuesta = obtenerPreguntaFullUseCase.obtenerFull(getQuestionDTO.id());
+        } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.VERDADERO_FALSO) {
+            respuesta = obtenerVerdaderoOFalsoFullUseCase.obtenerFull(getQuestionDTO.id());
+        } else {
+            respuesta = preguntaService.obtenerPreguntaFull(getQuestionDTO);
+        }
+
+        return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
 
