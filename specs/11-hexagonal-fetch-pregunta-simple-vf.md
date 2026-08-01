@@ -158,3 +158,13 @@ Ninguna tabla ni columna nueva — se reutilizan `pregunta`, `pregunta_simple` y
 
 - **`AResponder.tipo` en el modelo JPA viejo es un campo mantenido a mano, no un discriminator de JPA** (mismo riesgo estructural ya documentado en specs anteriores) — si estuviera desincronizado para una fila existente, el dispatch por tipo del controller (nuevo `if/else`) podría enviar la request al Use Case nuevo equivocado o al camino viejo cuando debería ir al nuevo, sin que el sistema lo detecte.
   *Mitigación:* ninguna adicional — mismo riesgo estructural ya aceptado en toda la migración.
+
+---
+
+## Próximo spec sugerido
+
+Con este spec, `PreguntaController` tiene migrados `fetch`/`fetch-full` (solo `PREGUNTA_SIMPLE`/`VERDADERO_FALSO`), `POST /questions`, `PUT /questions` y `DELETE /questions/{id}`. Siguen en código viejo: `POST /questions/verify`, `POST /questions/inverse`, y todo `ResponderController` (`POST /questions/random-ids`, `GET /questions/{id}/critical-ids`).
+
+**Recomendación: migrar `ResponderController` a continuación (`POST /questions/random-ids` y `GET /questions/{id}/critical-ids`).** Es la migración más parecida a la de este spec: lectura pura, sin mutación de estado. Además, `random-ids` ya puede apoyarse casi directamente en `ObtenerIdsDePreguntasUseCase` (spec 08) para el caso `CUESTIONARIO`/`TEMA`/`SUBTEMA` — hoy `ResponderService.obtenerIdsDePreguntasDeManeraAleatoria` delega a `TemarioService.obtenerTodosLosIdsDePreguntas` (el equivalente viejo de ese mismo Use Case) —, minimizando el trabajo nuevo a un Use Case de shuffle sobre esa lista. `critical-ids` sí requiere un puerto nuevo (`getCriticsIdsForQuestion` no tiene hoy equivalente hexagonal), pero sigue siendo una lectura sin lógica de negocio riesgosa.
+
+Se descarta arrancar por `POST /questions/verify` porque muta `intentosParaQueDejeDeSerCriticoDisponible` (lógica de "crítico") — más delicada, y ya señalada como candidata a su propio spec dedicado en la sugerencia de spec 10. Se descarta también `POST /questions/inverse` porque, a diferencia del resto, incluye lógica de transformación (`Jsoup.parse(...).text()` para stripear HTML) que conviene revisar en un spec propio en vez de combinarla con una migración de lectura.

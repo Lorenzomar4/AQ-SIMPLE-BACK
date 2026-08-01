@@ -18,4 +18,6 @@ public interface TemarioRepositoryPort {
     List<AResponderChildRef> findDirectChildren(Long id);
 
     List<AResponderItemDetail> findIssueItems(Long id);
+
+    List<Long> findCriticalQuestionIds(Long id);
 }
