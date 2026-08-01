@@ -44,6 +44,9 @@ public abstract class AResponderEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime fechaDeCreacion;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime ultimaActualizacion;
+
     @Enumerated(EnumType.STRING)
     private TipoAResponder tipo;
 }

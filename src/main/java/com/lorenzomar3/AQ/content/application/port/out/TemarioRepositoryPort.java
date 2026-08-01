@@ -10,4 +10,8 @@ public interface TemarioRepositoryPort {
     List<Temario> findAllCuestionarios();
 
     Optional<Temario> findById(Long id);
+
+    Temario save(Temario temario);
+
+    void deleteById(Long id);
 }

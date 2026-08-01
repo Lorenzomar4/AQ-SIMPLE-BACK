@@ -17,5 +17,6 @@ public abstract class AResponder {
     private String descripcion;
     private Long idDuenio;
     private LocalDateTime fechaDeCreacion;
+    private LocalDateTime ultimaActualizacion;
     private TipoAResponder tipo;
 }

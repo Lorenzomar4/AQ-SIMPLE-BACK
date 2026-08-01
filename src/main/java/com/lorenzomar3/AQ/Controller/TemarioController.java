@@ -3,10 +3,12 @@ package com.lorenzomar3.AQ.Controller;
 
 import com.lorenzomar3.AQ.Service.PreguntaService;
 import com.lorenzomar3.AQ.Service.TemarioService;
+import com.lorenzomar3.AQ.content.application.port.in.CrearCuestionarioUseCase;
+import com.lorenzomar3.AQ.content.application.port.in.CrearIssueUseCase;
+import com.lorenzomar3.AQ.content.application.port.in.EditarIssueUseCase;
+import com.lorenzomar3.AQ.content.application.port.in.EliminarIssueUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.ObtenerCuestionariosUseCase;
-import com.lorenzomar3.AQ.dto.conversor.TemarioDTOConversor;
 import com.lorenzomar3.AQ.dto.newDto.*;
-import com.lorenzomar3.AQ.model.AResponder.Temario.Temario;
 import com.lorenzomar3.AQ.projections.QuestionnaireItem;
 import jdk.jfr.Description;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,18 @@ public class TemarioController {
 
     @Autowired
     ObtenerCuestionariosUseCase obtenerCuestionariosUseCase;
+
+    @Autowired
+    CrearCuestionarioUseCase crearCuestionarioUseCase;
+
+    @Autowired
+    CrearIssueUseCase crearIssueUseCase;
+
+    @Autowired
+    EditarIssueUseCase editarIssueUseCase;
+
+    @Autowired
+    EliminarIssueUseCase eliminarIssueUseCase;
 
     @GetMapping("/questionnaires")
     public ResponseEntity<List<TemarioBasicDTO>> todosLosCuestionarios() {
@@ -63,12 +77,9 @@ public class TemarioController {
 
         logger.info("[POST /questionnaires] nombre={}", temarioBasicDTO.name());
 
-        Temario temario = TemarioDTOConversor.fromJSON(temarioBasicDTO);
+        TemarioBasicDTO temarioCuestionarioGuardado = crearCuestionarioUseCase.crear(temarioBasicDTO);
 
-        TemarioBasicDTO TemarioCuestionarioGuardado =
-                temarioService.saveTemarioCuestionario(temario).toTemarioCuestionarioCardDTO();
-
-        return new ResponseEntity<>(TemarioCuestionarioGuardado, HttpStatus.CREATED);
+        return new ResponseEntity<>(temarioCuestionarioGuardado, HttpStatus.CREATED);
     }
 
 
@@ -77,7 +88,7 @@ public class TemarioController {
 
         logger.info("[DELETE /issues/{}]", id);
 
-        temarioService.eliminarCuestionario(id);
+        eliminarIssueUseCase.eliminar(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -86,7 +97,7 @@ public class TemarioController {
     public ResponseEntity<TemarioBasicDTO> editarCuestionario(@RequestBody TemarioBasicDTO temarioBasicDTO) {
         logger.info("[PUT /issues] id={}", temarioBasicDTO.id());
 
-        TemarioBasicDTO c = temarioService.actualizarCuestionario(temarioBasicDTO).toTemarioCuestionarioCardDTO();
+        TemarioBasicDTO c = editarIssueUseCase.editar(temarioBasicDTO);
         return new ResponseEntity<>(c, HttpStatus.OK);
     }
 
@@ -94,7 +105,7 @@ public class TemarioController {
     public ResponseEntity<AResponderItemListDTO> crearTema(@RequestBody TemarioBasicDTO temarioBasicDTO) {
         logger.info("[POST /issues] Creacion de issue, fatherId={}", temarioBasicDTO.fatherid());
 
-        AResponderItemListDTO itemDTO = temarioService.crearNuevoTemarioHijo(temarioBasicDTO).toResponderItemListDTO();
+        AResponderItemListDTO itemDTO = crearIssueUseCase.crear(temarioBasicDTO);
         return new ResponseEntity<>(itemDTO, HttpStatus.CREATED);
     }
 

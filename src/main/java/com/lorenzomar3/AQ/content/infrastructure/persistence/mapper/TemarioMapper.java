@@ -14,7 +14,20 @@ public class TemarioMapper {
         temario.setDescripcion(entity.getDescripcion());
         temario.setIdDuenio(entity.getIdDuenio());
         temario.setFechaDeCreacion(entity.getFechaDeCreacion());
+        temario.setUltimaActualizacion(entity.getUltimaActualizacion());
         temario.setTipo(entity.getTipo());
         return temario;
+    }
+
+    public TemarioEntity toEntity(Temario temario) {
+        TemarioEntity entity = new TemarioEntity();
+        entity.setId(temario.getId());
+        entity.setTitulo(temario.getTitulo());
+        entity.setDescripcion(temario.getDescripcion());
+        entity.setIdDuenio(temario.getIdDuenio());
+        entity.setFechaDeCreacion(temario.getFechaDeCreacion());
+        entity.setUltimaActualizacion(temario.getUltimaActualizacion());
+        entity.setTipo(temario.getTipo());
+        return entity;
     }
 }
