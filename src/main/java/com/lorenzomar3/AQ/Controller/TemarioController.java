@@ -2,12 +2,13 @@ package com.lorenzomar3.AQ.Controller;
 
 
 import com.lorenzomar3.AQ.Service.PreguntaService;
-import com.lorenzomar3.AQ.Service.TemarioService;
 import com.lorenzomar3.AQ.content.application.port.in.CrearCuestionarioUseCase;
+import com.lorenzomar3.AQ.content.application.port.in.CrearIssueInversoUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.CrearIssueUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.EditarIssueUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.EliminarIssueUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.ObtenerCuestionariosUseCase;
+import com.lorenzomar3.AQ.content.application.port.in.ObtenerIdsDePreguntasUseCase;
 import com.lorenzomar3.AQ.dto.newDto.*;
 import com.lorenzomar3.AQ.projections.QuestionnaireItem;
 import jdk.jfr.Description;
@@ -29,9 +30,6 @@ public class TemarioController {
 
 
     @Autowired
-    TemarioService temarioService;
-
-    @Autowired
     PreguntaService preguntaService;
 
     @Autowired
@@ -48,6 +46,12 @@ public class TemarioController {
 
     @Autowired
     EliminarIssueUseCase eliminarIssueUseCase;
+
+    @Autowired
+    ObtenerIdsDePreguntasUseCase obtenerIdsDePreguntasUseCase;
+
+    @Autowired
+    CrearIssueInversoUseCase crearIssueInversoUseCase;
 
     @GetMapping("/questionnaires")
     public ResponseEntity<List<TemarioBasicDTO>> todosLosCuestionarios() {
@@ -121,7 +125,7 @@ public class TemarioController {
         logger.info("[GET /issues/{}/question-ids]", id);
 
         List<Long> aRetornar;
-        aRetornar = temarioService.obtenerTodosLosIdsDePreguntas(id);
+        aRetornar = obtenerIdsDePreguntasUseCase.obtenerIdsDePreguntas(id);
         return new ResponseEntity<>(aRetornar, HttpStatus.OK);
 
 
@@ -132,7 +136,7 @@ public class TemarioController {
     public ResponseEntity<AResponderItemListDTO> crearTemaConPreguntasInversas(@RequestBody InverseIssueCreateDTO inverseIssueCreateDTO) {
         logger.info("[POST /issues/inverse] issueId={}", inverseIssueCreateDTO.idIssue());
 
-        AResponderItemListDTO itemDTO = temarioService.crearTemarioPreguntasInversa(inverseIssueCreateDTO).toResponderItemListDTO();
+        AResponderItemListDTO itemDTO = crearIssueInversoUseCase.crear(inverseIssueCreateDTO);
 
         return new ResponseEntity<>(itemDTO, HttpStatus.CREATED);
 
