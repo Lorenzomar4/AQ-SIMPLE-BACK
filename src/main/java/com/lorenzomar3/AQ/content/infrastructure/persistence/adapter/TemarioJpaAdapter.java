@@ -1,5 +1,6 @@
 package com.lorenzomar3.AQ.content.infrastructure.persistence.adapter;
 
+import com.lorenzomar3.AQ.content.application.port.out.AResponderChildRef;
 import com.lorenzomar3.AQ.content.application.port.out.TemarioRepositoryPort;
 import com.lorenzomar3.AQ.content.domain.Temario;
 import com.lorenzomar3.AQ.content.infrastructure.persistence.mapper.TemarioMapper;
@@ -16,13 +17,16 @@ public class TemarioJpaAdapter implements TemarioRepositoryPort {
     private final TemarioJpaRepository temarioJpaRepository;
     private final TemarioMapper temarioMapper;
     private final com.lorenzomar3.AQ.Repository.TemarioRepository temarioRepositoryViejo;
+    private final com.lorenzomar3.AQ.Repository.AResponderRepository aResponderRepositoryViejo;
 
     public TemarioJpaAdapter(TemarioJpaRepository temarioJpaRepository,
                               TemarioMapper temarioMapper,
-                              com.lorenzomar3.AQ.Repository.TemarioRepository temarioRepositoryViejo) {
+                              com.lorenzomar3.AQ.Repository.TemarioRepository temarioRepositoryViejo,
+                              com.lorenzomar3.AQ.Repository.AResponderRepository aResponderRepositoryViejo) {
         this.temarioJpaRepository = temarioJpaRepository;
         this.temarioMapper = temarioMapper;
         this.temarioRepositoryViejo = temarioRepositoryViejo;
+        this.aResponderRepositoryViejo = aResponderRepositoryViejo;
     }
 
     @Override
@@ -46,5 +50,13 @@ public class TemarioJpaAdapter implements TemarioRepositoryPort {
     @Override
     public void deleteById(Long id) {
         temarioRepositoryViejo.deleteById(id);
+    }
+
+    @Override
+    public List<AResponderChildRef> findDirectChildren(Long id) {
+        return aResponderRepositoryViejo.getIssueItems(id).stream()
+                .filter(item -> !item.getId().equals(id))
+                .map(item -> new AResponderChildRef(item.getId(), item.getType()))
+                .toList();
     }
 }

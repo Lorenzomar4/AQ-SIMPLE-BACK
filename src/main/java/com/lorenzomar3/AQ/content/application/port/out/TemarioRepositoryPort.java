@@ -14,4 +14,6 @@ public interface TemarioRepositoryPort {
     Temario save(Temario temario);
 
     void deleteById(Long id);
+
+    List<AResponderChildRef> findDirectChildren(Long id);
 }
