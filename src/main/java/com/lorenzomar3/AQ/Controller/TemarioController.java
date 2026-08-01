@@ -9,6 +9,7 @@ import com.lorenzomar3.AQ.content.application.port.in.EditarIssueUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.EliminarIssueUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.ObtenerCuestionariosUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.ObtenerIdsDePreguntasUseCase;
+import com.lorenzomar3.AQ.content.application.port.in.ObtenerItemsDeIssueUseCase;
 import com.lorenzomar3.AQ.dto.newDto.*;
 import com.lorenzomar3.AQ.projections.QuestionnaireItem;
 import jdk.jfr.Description;
@@ -53,6 +54,9 @@ public class TemarioController {
     @Autowired
     CrearIssueInversoUseCase crearIssueInversoUseCase;
 
+    @Autowired
+    ObtenerItemsDeIssueUseCase obtenerItemsDeIssueUseCase;
+
     @GetMapping("/questionnaires")
     public ResponseEntity<List<TemarioBasicDTO>> todosLosCuestionarios() {
         logger.info("[GET /questionnaires]");
@@ -72,7 +76,7 @@ public class TemarioController {
     public ResponseEntity<IssueWhitItemsDTO> getTopicContent(@PathVariable Long id) {
         logger.info("[GET /issues/{}/items]", id);
 
-        return new ResponseEntity<>(preguntaService.getIssueItems(id), HttpStatus.OK);
+        return new ResponseEntity<>(obtenerItemsDeIssueUseCase.obtenerItems(id), HttpStatus.OK);
     }
 
 
