@@ -14,6 +14,7 @@ import com.lorenzomar3.AQ.content.application.port.in.EditarOpcionMultipleUseCas
 import com.lorenzomar3.AQ.content.application.port.in.EditarPreguntaUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.EditarSeleccionUnicaUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.EditarVerdaderoOFalsoUseCase;
+import com.lorenzomar3.AQ.content.application.port.in.EliminarPreguntaPorIdUseCase;
 import com.lorenzomar3.AQ.dto.newDto.*;
 import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
@@ -80,6 +81,9 @@ public class PreguntaController {
     @Autowired
     EditarDesplegableIndependienteUseCase editarDesplegableIndependienteUseCase;
 
+    @Autowired
+    EliminarPreguntaPorIdUseCase eliminarPreguntaPorIdUseCase;
+
 
     @JsonView(View.JustToAnswer.class)
     @PostMapping("/questions/fetch")
@@ -132,7 +136,7 @@ public class PreguntaController {
     @DeleteMapping("/questions/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         logger.info("[DELETE /questions/{}]", id);
-        preguntaService.delete(id);
+        eliminarPreguntaPorIdUseCase.eliminar(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
