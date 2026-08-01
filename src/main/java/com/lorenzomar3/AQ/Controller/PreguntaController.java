@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -101,7 +102,6 @@ public class PreguntaController {
     ObtenerVerdaderoOFalsoFullUseCase obtenerVerdaderoOFalsoFullUseCase;
 
 
-    @JsonView(View.JustToAnswer.class)
     @PostMapping("/questions/fetch")
     public ResponseEntity<Object> getQuestion(@RequestBody ObtenerPreguntaDTO getQuestionDTO) {
         logger.info("[POST /questions/fetch] id={}, tipo={}", getQuestionDTO.id(), getQuestionDTO.tipoAResponder());
@@ -112,13 +112,15 @@ public class PreguntaController {
         } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.VERDADERO_FALSO) {
             respuesta = obtenerVerdaderoOFalsoUseCase.obtener(getQuestionDTO.id());
         } else {
-            respuesta = preguntaService.obtenerPregunta(getQuestionDTO.id(), getQuestionDTO.tipoAResponder());
+            Pregunta pregunta = preguntaService.obtenerPregunta(getQuestionDTO.id(), getQuestionDTO.tipoAResponder());
+            MappingJacksonValue vistaFiltrada = new MappingJacksonValue(pregunta);
+            vistaFiltrada.setSerializationView(View.JustToAnswer.class);
+            respuesta = vistaFiltrada;
         }
 
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
-    @JsonView(View.Full.class)
     @PostMapping("/questions/fetch-full")
     @Transactional
     public ResponseEntity<Object> getQuestionFull(@RequestBody ObtenerPreguntaDTO getQuestionDTO) {
@@ -130,7 +132,10 @@ public class PreguntaController {
         } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.VERDADERO_FALSO) {
             respuesta = obtenerVerdaderoOFalsoFullUseCase.obtenerFull(getQuestionDTO.id());
         } else {
-            respuesta = preguntaService.obtenerPreguntaFull(getQuestionDTO);
+            Pregunta pregunta = preguntaService.obtenerPreguntaFull(getQuestionDTO);
+            MappingJacksonValue vistaFiltrada = new MappingJacksonValue(pregunta);
+            vistaFiltrada.setSerializationView(View.Full.class);
+            respuesta = vistaFiltrada;
         }
 
         return new ResponseEntity<>(respuesta, HttpStatus.OK);

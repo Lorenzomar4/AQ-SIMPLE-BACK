@@ -68,4 +68,9 @@ public class TemarioJpaAdapter implements TemarioRepositoryPort {
                         item.getCreationDate(), item.getIsCritic(), item.getNumberOfQuestions()))
                 .toList();
     }
+
+    @Override
+    public List<Long> findCriticalQuestionIds(Long id) {
+        return aResponderRepositoryViejo.getCriticsIdsForQuestion(id);
+    }
 }
