@@ -1,295 +1,223 @@
 # Spec 14 — Migración hexagonal: `POST /questions/verify` para los 4 tipos restantes
 
-**Estado:** Draft
-**Dependencias:** Spec 13 (`answering/` slice, `EstadoCritico`, patrón de `VerificarRespuestaController` y sus Use Cases/adapters) — se extiende el mismo slice y patrón. Specs 03-06 (`SeleccionUnicaRepositoryPort`/`JpaRepository`, `OpcionMultipleRepositoryPort`/`JpaRepository`, `DesplegableCompartidoRepositoryPort`/`JpaRepository`, `DesplegableIndependienteRepositoryPort`/`JpaRepository`, y sus `Entity` JPA) — se reutilizan directo desde la infraestructura de `answering`, mismo patrón cross-slice ya usado en spec 13 con specs 01-02.
-**Fecha:** 2026-08-01
-**Objetivo:** Migrar `POST /questions/verify` a arquitectura hexagonal para los 4 tipos de pregunta restantes (`SELECCION_UNICA`, `OPCION_MULTIPLE`, `DESPLEGABLE_COMPARTIDO`, `DESPLEGABLE_INDEPENDIENTE`), completando el slice `answering/` para los 6 tipos de pregunta y eliminando el fallback a `PreguntaService.verifyResponse` (viejo) del dispatch de `VerificarRespuestaController`.
+**Estado:** Implementado (documentado retroactivamente — ver [Historia de este documento](#historia-de-este-documento))
+**Dependencias:** Spec 13 (`answering/` slice, `EstadoCritico`, `VerificarRespuestaController`). Specs 03-06 (`SeleccionUnicaRepositoryPort`, `OpcionMultipleRepositoryPort`, `DesplegableCompartidoRepositoryPort`, `DesplegableIndependienteRepositoryPort` y sus `Entity`/`JpaRepository` de `content`) — pero, a diferencia de lo planeado originalmente, `answering` ya no los toca directo: los consume indirectamente a través de `content.api`.
+**Fecha:** 2026-08-01 (borrador) — 2026-08-02 (implementación real, commit `16f62f8` "continuacion de la migracion")
+**Objetivo:** Migrar `POST /questions/verify` a arquitectura hexagonal para los 4 tipos de pregunta restantes (`SELECCION_UNICA`, `OPCION_MULTIPLE`, `DESPLEGABLE_COMPARTIDO`, `DESPLEGABLE_INDEPENDIENTE`), completando el dispatch de `VerificarRespuestaController` para los 6 tipos de pregunta.
+
+---
+
+## Historia de este documento
+
+La primera versión de este spec (borrador, 2026-08-01) proponía extender el patrón exacto de spec 13: `port/in/XxxUseCase` + `application/service/XxxService` en `answering`, con adapters que inyectan **directo** los `JpaRepository` de `content` (specs 03-06), y reescribir inline en cada objeto de dominio la lógica de comparación sin extraer ningún helper compartido.
+
+Lo que se construyó realmente (commit `16f62f8`, un día después) diverge del borrador en varios puntos de diseño, y además fue más allá de su alcance declarado. Se reescribe este documento para reflejar el código tal como quedó, no como se planeó. Las diferencias:
+
+1. **Cambio de patrón de nomenclatura, y con retroefecto sobre spec 13.** El borrador proponía `UseCase`/`Service` (igual que `content/`). El código real usa `Command`/`Handler` en todo `answering/application/command/` — y de paso migró `VerificarRespuestaPreguntaSimpleUseCase`/`Service` y `VerificarRespuestaVerdaderoOFalsoUseCase`/`Service` (de spec 13) al mismo patrón, alineando finalmente `answering` con la nomenclatura que `ARQUITECTURAV3.md` documenta como estándar del slice.
+2. **Cambio de arquitectura cross-slice — el más significativo.** El borrador (y spec 13 antes) tenían a `answering` inyectando **directo** los `JpaRepository` de `content` (specs 01-06) desde sus propios adapters, leyendo `Entity` de otro slice. El código real elimina esa deuda: `answering` ya no importa nada de `content.infrastructure` ni `content.domain`. En su lugar, `content` expone en `content.api` un `Obtener...ParaResponderQuery` (lectura) y un `ActualizarCritico...Command` (escritura) por cada uno de los 6 tipos; `content.application` los implementa; `answering.application.command` los consume como colaboradores externos. Esto es exactamente el patrón "Entre slices" de `ARQUITECTURAV3.md` (`answering` solo conoce `content.api`) y resuelve por completo el riesgo que el borrador de este spec documentaba y aceptaba sin mitigación ("`JpaRepository` usado por dos adapters de dos slices distintos"). Como consecuencia, `PreguntaSimpleParaResponderAdapter` y `VerdaderoOFalsoParaResponderAdapter` (los dos adapters de spec 13) se borraron.
+3. **Se extrajo exactamente el helper genérico que el borrador decidía no extraer.** La sección "Decisiones tomadas y descartadas" del borrador rechazaba explícitamente un `Verificador<T,G>` compartido. El código real tiene `answering/domain/VerificadorDeOpciones<T, O extends OpcionVerificable<T>>` + la interfaz `OpcionVerificable<T>`, usado por los 4 objetos `...ParaResponder` nuevos. Ver [Decisiones tomadas](#decisiones-tomadas-reales) para la justificación reconstruida.
+4. **Alcance ampliado sin nuevo spec.** El mismo commit migró también `POST /questions/inverse` (`CrearPreguntaInversaCommand`/`Handler`) y `fetch`/`fetch-full` para los 4 tipos nuevos (`Obtener...QueryHandler`/`Obtener...FullQueryHandler` en `content.application.query`) — ambos explícitamente fuera de alcance en el borrador. Esos dos bloques de trabajo no están cubiertos por ningún spec numerado y quedan pendientes de documentar aparte; este documento **no** los cubre, solo los menciona como contexto.
+5. **El dispatch del controller no cambió de forma.** El borrador pedía reemplazar el `if/else` por un `Map<TipoAResponder, Function<...>>` en `@PostConstruct` y eliminar la inyección de `PreguntaService`. El código real extendió el `if/else` existente a 6 ramas y **mantiene** el campo `preguntaService` y su rama `else` de fallback (hoy inalcanzable en la práctica, pero no removida).
+6. **Cobertura de tests menor a la exigida por el borrador.** Ver [Deuda de testing](#deuda-de-testing-pendiente).
 
 ---
 
 ## Alcance
 
-### Incluido
+### Incluido (lo que realmente existe)
 
-- **`answering/domain/` (nuevo, Java puro, sin anotaciones de framework):**
-  - `Opcion` (nuevo, propio de `answering` — no confundir con `model.AResponder.TiposDePreguntas.Opcion` viejo ni con `content.domain.Opcion`) — campos `Long id`, `Boolean laRespuestaEs`. Objeto de dominio interno usado por `SeleccionUnicaParaResponder`/`OpcionMultipleParaResponder` para representar tanto la opción almacenada como la opción que manda el usuario.
-  - `SeleccionUnicaParaResponder` — campos `Long id`, `List<Opcion> listaDeOpciones`, `EstadoCritico estadoCritico`. Método `Boolean verificarRespuesta(List<Opcion> respuestaDelUsuario)`: primero valida cardinalidad (`BussinesException` si la lista del usuario no tiene **exactamente una** opción con `laRespuestaEs = true` — replica `validacionDeOpcionUnica`/`existeUnaOpcionVerdaderaUnicamente`), luego compara **cada opción de la respuesta del usuario** contra el mapa `id → laRespuestaEs` construido desde `listaDeOpciones` (`allMatch`), delega en `estadoCritico.actualizar(...)`, devuelve la corrección. Preserva tal cual: lista de usuario vacía pasa la validación de cardinalidad como inválida (0 ≠ 1, lanza excepción — a diferencia de `OpcionMultiple` donde vacía sí es válida y "correcta"); id inexistente en el mapa real → `NullPointerException` tal cual el viejo (no se atrapa).
-  - `OpcionMultipleParaResponder` — campos `Long id`, `List<Opcion> listaDeOpciones`, `EstadoCritico estadoCritico`. Método `Boolean verificarRespuesta(List<Opcion> respuestaDelUsuario)`: **sin** validación de cardinalidad (preserva que `OpcionMultiple` no valida nada), misma comparación `allMatch` contra el mapa `id → laRespuestaEs`, delega en `estadoCritico.actualizar(...)`. Preserva tal cual: lista de usuario vacía → `allMatch` sobre vacío es `true` → "respuesta correcta"; id inexistente → `NullPointerException` tal cual.
-  - `OpcionDeDesplegableCompartido` (nuevo, propio de `answering`) — campos `Long id`, `String respuesta`.
-  - `DesplegableCompartidoParaResponder` — campos `Long id`, `List<OpcionDeDesplegableCompartido> listaDeOpciones`, `EstadoCritico estadoCritico`. Método `Boolean verificarRespuesta(List<OpcionDeDesplegableCompartido> respuestaDelUsuario)`: compara cada opción del usuario contra el mapa `id → respuesta` (String) construido desde `listaDeOpciones` (`allMatch`), delega en `estadoCritico.actualizar(...)`. Preserva tal cual: lista vacía → `true`; id inexistente → `NullPointerException` tal cual.
-  - `OpcionDeSeleccionParaDesplegableIndependiente` (nuevo, propio de `answering`) — campos `Long id`, `Boolean respuestaCorrecta`.
-  - `SeleccionUnicaParaDesplegableIndependiente` (nuevo, propio de `answering`) — campos `Long id`, `List<OpcionDeSeleccionParaDesplegableIndependiente> listaDeOpcionesDisponible`. Método `Long getRespuestaCorrecta()`: `listaDeOpcionesDisponible.stream().filter(OpcionDeSeleccionParaDesplegableIndependiente::getRespuestaCorrecta).toList().get(0).getId()` — replica tal cual el `.get(0)` sin chequeo (`IndexOutOfBoundsException` si ninguna opción está marcada correcta).
-  - `DesplegableIndependienteParaResponder` — campos `Long id`, `List<SeleccionUnicaParaDesplegableIndependiente> listaDeOpciones`, `EstadoCritico estadoCritico`. Método `Boolean verificarRespuesta(List<SeleccionUnicaParaDesplegableIndependiente> respuestaDelUsuario)`: compara cada desplegable de la respuesta del usuario (`getRespuestaCorrecta()`, el id que el usuario marcó) contra el mapa `id del desplegable → getRespuestaCorrecta() real` construido desde `listaDeOpciones` (`allMatch`), delega en `estadoCritico.actualizar(...)`. Preserva tal cual: lista vacía → `true`; id de desplegable inexistente → `NullPointerException` tal cual; desplegable real sin opción correcta marcada → `IndexOutOfBoundsException` al construir el mapa (se propaga tal cual, sin atrapar).
-- **`answering/application/port/out/` (nuevo):** `SeleccionUnicaParaResponderPort`, `OpcionMultipleParaResponderPort`, `DesplegableCompartidoParaResponderPort`, `DesplegableIndependienteParaResponderPort` — cada uno con `findById(Long): Optional<Xxx>` y `save(Xxx): Xxx`.
-- **`answering/application/port/in/` y `application/service/` (nuevo):** `VerificarRespuestaSeleccionUnicaUseCase`/`Service`, `VerificarRespuestaOpcionMultipleUseCase`/`Service`, `VerificarRespuestaDesplegableCompartidoUseCase`/`Service`, `VerificarRespuestaDesplegableIndependienteUseCase`/`Service` — cada uno resuelve vía su port (`BussinesException` si no existe), mapea la porción correspondiente del DTO (`respuesta.listaDeOpciones()`, `respuesta.listaDeOpcionesParaDesplegableCompartidos()`, `respuesta.listaDeSeleccionesUnicasParaDesplegableIndependiente()` — clases viejas del DTO) hacia los objetos de dominio nuevos de `answering` (mapeo inline en el service, sin mapper separado), llama `verificarRespuesta(...)`, guarda el resultado vía `save`, devuelve el booleano.
-- **`answering/infrastructure/persistence/adapter/` (nuevo):** `SeleccionUnicaParaResponderAdapter`, `OpcionMultipleParaResponderAdapter`, `DesplegableCompartidoParaResponderAdapter`, `DesplegableIndependienteParaResponderAdapter` — implementan los ports inyectando **directamente** `content.infrastructure.persistence.repository.SeleccionUnicaJpaRepository`/`OpcionMultipleJpaRepository`/`DesplegableCompartidoJpaRepository`/`DesplegableIndependienteJpaRepository` (specs 03-06). Convierten `Entity` (de `content`) ↔ objeto de dominio de `answering`, conversión inline en el propio adapter. `save` solo persiste el campo del contador de crítico (misma estrategia que spec 13: lee la entity de nuevo, actualiza `intentosParaQueDejeDeSerCriticoDisponible`, guarda) — las listas de opciones no se reescriben en este flujo (son de solo lectura para `verify`).
-- **`answering/infrastructure/controller/VerificarRespuestaController` (modificado):** dispatch explícito por los 6 tipos vía `Map<TipoAResponder, Function<RespuestaDePreguntaDTO, Boolean>>` (mismo patrón `@PostConstruct` que `EliminarPreguntaPorIdService`/`ObtenerIdsAleatoriosDePreguntasService`, specs 09/12) — cualquier tipo no registrado en el `Map` (ninguno debería llegar, dado que `TipoAResponder` solo tiene 6 tipos hoja + 3 contenedores que nunca deberían pegarle a `/verify`) lanza `BussinesException`. Se elimina la inyección de `PreguntaService` y su rama `else` de fallback.
-- **Tests:** paridad de corrección para los 4 tipos contra `PreguntaService.verifyResponse` (viejo), incluida la preservación explícita de cada comportamiento raro documentado arriba (cardinalidad en Selección Única, lista vacía = correcta en Opción Múltiple/Desplegable Compartido/Desplegable Independiente, `NullPointerException` por id inexistente, `IndexOutOfBoundsException` en Desplegable Independiente sin opción correcta marcada); actualización del contador de crítico en ambos sentidos para los 4 tipos; not-found (`BussinesException`) para los 4 tipos; el dispatch nuevo del controller cubre los 6 tipos sin fallback.
+- **`answering/domain/` (Java puro, sin anotaciones de framework, sin imports de `content.domain`/`model.AResponder.*`):**
+  - `OpcionVerificable<T>` — interfaz con `Long getId()` y `T getValorCorrecto()`.
+  - `VerificadorDeOpciones<T, O extends OpcionVerificable<T>>` — helper genérico, único método `boolean coincidenciaTotal(List<O> opcionesReales, List<O> opcionesDelUsuario)`: arma un `Map<Long, T>` desde `opcionesReales` y hace `allMatch` de `opcionesDelUsuario` contra ese mapa. `real.get(id)` sin chequeo de nulidad — si el usuario manda un `id` que no existe en `opcionesReales`, `.equals(...)` sobre `null` lanza `NullPointerException` (comportamiento heredado del `Verificador` viejo, preservado sin comentario explicativo).
+  - `OpcionParaResponder(Long id, Boolean esCorrecta)` — record, implementa `OpcionVerificable<Boolean>`. Usado por `SeleccionUnicaParaResponder` y `OpcionMultipleParaResponder`.
+  - `OpcionDeDesplegableCompartidoParaResponder(Long id, String respuesta)` — record, implementa `OpcionVerificable<String>`.
+  - `SubPreguntaParaResponder(Long id, List<OpcionParaResponder> opciones)` — record, implementa `OpcionVerificable<Long>`. `getValorCorrecto()` hace `opciones.stream().filter(OpcionParaResponder::esCorrecta).toList().get(0).id()` — mismo `.get(0)` sin chequeo del modelo viejo (`IndexOutOfBoundsException` si ninguna opción está marcada correcta).
+  - `SeleccionUnicaParaResponder` — campos `Long id`, `List<OpcionParaResponder> opciones`, `EstadoCritico estadoCritico`. `verificarRespuesta(List<OpcionParaResponder>)`: valida cardinalidad (`BussinesException` si la respuesta del usuario no tiene exactamente una opción con `esCorrecta = true`), delega la comparación en `VerificadorDeOpciones`, actualiza `estadoCritico`.
+  - `OpcionMultipleParaResponder` — mismos campos, **sin** validación de cardinalidad; delega directo en `VerificadorDeOpciones` (lista vacía del usuario → `allMatch` sobre vacío → `true`).
+  - `DesplegableCompartidoParaResponder` — campos `Long id`, `List<OpcionDeDesplegableCompartidoParaResponder> opciones`, `EstadoCritico estadoCritico`; usa `VerificadorDeOpciones<String, ...>`.
+  - `DesplegableIndependienteParaResponder` — campos `Long id`, `List<SubPreguntaParaResponder> subPreguntas`, `EstadoCritico estadoCritico`; usa `VerificadorDeOpciones<Long, ...>` (compara, por cada sub-pregunta, el id de opción que el usuario marcó contra el id de la opción realmente correcta).
+  - `EstadoCritico` — sin cambios respecto a spec 13.
 
-### Explícitamente NO incluido
+- **`content/api/` (nuevo, contratos públicos del slice `content` — no de `answering`):**
+  - `ObtenerSeleccionUnicaParaResponderQuery`, `ObtenerOpcionMultipleParaResponderQuery`, `ObtenerDesplegableCompartidoParaResponderQuery`, `ObtenerDesplegableIndependienteParaResponderQuery` — cada uno `Optional<XxxParaResponderView> obtenerPorId(Long id)`.
+  - `ActualizarCriticoDeSeleccionUnicaCommand`, `ActualizarCriticoDeOpcionMultipleCommand`, `ActualizarCriticoDeDesplegableCompartidoCommand`, `ActualizarCriticoDeDesplegableIndependienteCommand` — cada uno `void actualizar(Long id, Integer intentosParaQueDejeDeSerCriticoDisponible)`.
+  - Views: `SeleccionUnicaParaResponderView(Long id, List<OpcionView> listaDeOpciones, Integer intentosParaQueDejeDeSerCriticoDisponible)`, `OpcionMultipleParaResponderView` (misma forma), `DesplegableCompartidoParaResponderView(Long id, List<OpcionDeDesplegableCompartidoView> listaDeOpciones, Integer intentos...)`, `DesplegableIndependienteParaResponderView(Long id, List<SubPreguntaView> listaDeOpciones, Integer intentos...)`, `OpcionView(Long id, Boolean laRespuestaEs)`, `OpcionDeDesplegableCompartidoView(Long id, String respuesta)`, `SubPreguntaView(Long id, List<OpcionView> opciones)`.
+  - **Retrofit de spec 13:** también se agregaron `ObtenerPreguntaSimpleParaResponderQuery`/`ObtenerVerdaderoOFalsoParaResponderQuery`, `ActualizarCriticoDePreguntaSimpleCommand`/`ActualizarCriticoDeVerdaderoOFalsoCommand` y sus Views — `PreguntaSimple`/`VerdaderoOFalso` pasaron a consumir `content.api` igual que los 4 tipos nuevos, dejando de usar el adapter cross-slice directo de spec 13.
 
-- Corregir cualquiera de los comportamientos raros documentados (cardinalidad, listas vacías, `NullPointerException`, `IndexOutOfBoundsException`) — se preservan tal cual, decisión ya tomada.
-- Cambiar `RespuestaDePreguntaDTO` o las clases viejas que referencia (`model.AResponder.TiposDePreguntas.Opcion`, `OpcionDeDesplegableCompartido`, `SeleccionUnicaParaDesplegableIndependiente`) — se reutilizan tal cual como origen del mapeo, mismo criterio de "DTO raíz, no se toca" de specs 07-13.
-- Relocar `fetch`/`fetch-full` (spec 11), `random-ids`/`critical-ids` (spec 12) a `answering/` — sigue siendo deuda diferida, documentada en spec 13.
-- `PreguntaService.verifyResponse` no se elimina del código — queda sin caller real desde `VerificarRespuestaController`, pero se mantiene como baseline de los tests de paridad (mismo criterio de no tocar código fuera del camino migrado).
-- `POST /questions/inverse` — queda para un spec futuro.
-- Implementar SM-2 / repetición espaciada.
+- **`content/application/query/` y `content/application/command/` (nuevo):** `Obtener...ParaResponderHandler` (implementa el `Query` de `api/`, inyecta el `XxxRepositoryPort` correspondiente de specs 01-06, mapea `content.domain` → `content.api.XxxView`) y `ActualizarCritico...Handler` (implementa el `Command` de `api/`, `findById` con `BussinesException` si no existe, setea el contador, `save`) — uno de cada por los 6 tipos.
+
+- **`answering/application/command/` (nuevo, patrón `Command`/`Handler`):**
+  - DTOs de comando: `OpcionRespuestaDTO(Long id, Boolean marcada)`, `OpcionDeDesplegableCompartidoRespuestaDTO(Long id, String respuesta)`, `SubPreguntaRespuestaDTO(Long id, List<OpcionRespuestaDTO> opciones)`.
+  - `VerificarRespuestaSeleccionUnicaCommand(Long idPregunta, List<OpcionRespuestaDTO> opcionesDelUsuario)` + `Handler` — inyecta `ObtenerSeleccionUnicaParaResponderQuery` y `ActualizarCriticoDeSeleccionUnicaCommand` (ambos de `content.api`, ningún import de `content.domain`/`content.infrastructure`); resuelve la vista (`BussinesException` si no existe), mapea a dominio de `answering`, llama `verificarRespuesta`, persiste el contador vía el `Command` de `content.api`, devuelve el booleano.
+  - `VerificarRespuestaOpcionMultipleCommand`/`Handler`, `VerificarRespuestaDesplegableCompartidoCommand`/`Handler`, `VerificarRespuestaDesplegableIndependienteCommand`/`Handler` — mismo patrón exacto, cada uno contra su par de interfaces de `content.api`.
+  - **Retrofit de spec 13:** `VerificarRespuestaPreguntaSimpleHandler`/`VerificarRespuestaVerdaderoOFalsoHandler` reescritos con el mismo patrón (antes usaban `PreguntaSimpleParaResponderPort`/adapter propio; ahora usan `content.api`).
+
+- **`answering/infrastructure/controller/VerificarRespuestaController` (modificado):** el `if/else` original de spec 13 (2 ramas + fallback) se extendió a 6 ramas + fallback, una por cada `TipoAResponder` hoja. Sigue inyectando `PreguntaService` (viejo) y su rama `else` sigue presente — no se migró al `Map<TipoAResponder, Function<...>>` que proponía el borrador, y el fallback no se eliminó pese a que, con los 6 tipos cubiertos, ya no tiene ningún caller válido posible.
+
+- **Tests:**
+  - `VerificarRespuestaPreguntaSimpleParidadTest` / `VerificarRespuestaVerdaderoOFalsoParidadTest` (retrofit de spec 13): correcta, incorrecta, contador de crítico en ambos sentidos, not-found (`BussinesException`) — vía el `Handler` directo, sin pasar por HTTP.
+  - `VerificarRespuestaTiposNoMigradosNoRegresionTest` (nuevo, para los 4 tipos de este spec): un único caso "camino feliz" por tipo, comparando el resultado del `Handler` viejo (`PreguntaService.verifyResponse`, invocado directo) contra el controller nuevo (vía `MockMvc`, `POST /questions/verify` real). **No cubre** casos incorrectos, not-found, ni ninguno de los comportamientos raros.
+  - `VerificadorDeOpcionesTest` (nuevo): 3 casos sobre el helper genérico en aislamiento (coincidencia total, no-coincidencia, coincidencia parcial con subconjunto del usuario). No cubre lista vacía, id inexistente (`NullPointerException`) ni el `IndexOutOfBoundsException` de `SubPreguntaParaResponder.getValorCorrecto()`.
+
+### Explícitamente NO incluido (ni en el borrador, ni en lo construido)
+
+- Corregir los comportamientos raros preservados (cardinalidad, listas vacías = correctas, `NullPointerException`, `IndexOutOfBoundsException`) — se mantienen intencionalmente.
+- Cambiar `RespuestaDePreguntaDTO` ni las clases viejas del DTO que referencia.
+- `Service.PreguntaService.verifyResponse` (viejo) no se elimina — sigue inyectado en `VerificarRespuestaController` como fallback (a diferencia del borrador, que pedía quitarlo) y sigue siendo el baseline de los tests de paridad.
 - Cualquier cambio de esquema de base de datos.
 - Cambios en `AQ-SIMPLE-FRONT`.
+
+### Entregado fuera de alcance, en el mismo commit, sin spec propio
+
+- `POST /questions/inverse` (`content/application/command/CrearPreguntaInversaCommand`/`Handler`), con su propio test de paridad (`QuestionInverseParidadTest`).
+- `POST /questions/fetch` y `/fetch-full` para `SELECCION_UNICA`, `OPCION_MULTIPLE`, `DESPLEGABLE_COMPARTIDO`, `DESPLEGABLE_INDEPENDIENTE` (`Obtener...QueryHandler`/`Obtener...FullQueryHandler` en `content.application.query`, cableados en `PreguntaController`).
+
+Ninguno de los dos está documentado en un spec numerado. Se recomienda escribir specs 15/16 retroactivos para ellos con el mismo criterio aplicado acá, antes de seguir construyendo sobre esa base sin registro.
 
 ---
 
 ## Modelo de datos
 
-### Reutilizado tal cual (sin cambios)
-
-- `content.infrastructure.persistence.entity.SeleccionUnicaEntity` / `SeleccionUnicaJpaRepository` (spec 03) — inyectado directo desde `answering.infrastructure.persistence.adapter.SeleccionUnicaParaResponderAdapter`.
-- `content.infrastructure.persistence.entity.OpcionMultipleEntity` / `OpcionMultipleJpaRepository` (spec 04) — mismo criterio.
-- `content.infrastructure.persistence.entity.DesplegableCompartidoEntity` / `DesplegableCompartidoJpaRepository` (spec 05) — mismo criterio.
-- `content.infrastructure.persistence.entity.DesplegableIndependienteEntity` / `DesplegableIndependienteJpaRepository` (spec 06) — mismo criterio.
-- `content.infrastructure.persistence.entity.OpcionEntity` (`id`, `opcion` String, `laRespuestaEs` Boolean) — anidada dentro de `SeleccionUnicaEntity`/`OpcionMultipleEntity`, y dentro de `SeleccionUnicaParaDesplegableIndependienteEntity.listaDeOpciones` (specs 03/04/06).
-- `content.infrastructure.persistence.entity.OpcionDeDesplegableCompartidoEntity` (`id`, `pregunta` String, `respuesta` String) — anidada dentro de `DesplegableCompartidoEntity` (spec 05).
-- `content.infrastructure.persistence.entity.SeleccionUnicaParaDesplegableIndependienteEntity` (`id`, `titulo`, `List<OpcionEntity> listaDeOpciones`) — anidada dentro de `DesplegableIndependienteEntity` (spec 06).
-- `com.lorenzomar3.AQ.dto.newDto.RespuestaDePreguntaDTO(Long idPregunta, TipoAResponder tipoDePregunta, String respuestaInput, Boolean respuestaBooleana, List<Opcion> listaDeOpciones, List<OpcionDeDesplegableCompartido> listaDeOpcionesParaDesplegableCompartidos, List<SeleccionUnicaParaDesplegableIndependiente> listaDeSeleccionesUnicasParaDesplegableIndependiente)` — DTO de request, reutilizado tal cual, incluidas sus referencias a las clases viejas `model.AResponder.TiposDePreguntas.Opcion`, `model.AResponder.DesplegableCompartido.OpcionDeDesplegableCompartido`, `model.AResponder.DesplegabeIndependiente.SeleccionUnicaParaDesplegableIndependiente` — mismo criterio que spec 13 con `RespuestaDePreguntaDTO` completo.
-- `com.lorenzomar3.AQ.exception.BussinesException`, `com.lorenzomar3.AQ.model.TipoAResponder` — mismo uso estándar.
-- `Service.PreguntaService.verifyResponse` (viejo) — se reutiliza tal cual como fallback de tests de paridad (ya no como fallback en el controller, ver más abajo).
-- `answering.domain.EstadoCritico` (spec 13) — reutilizado tal cual, sin modificar, para los 4 objetos de dominio nuevos.
-
-### `answering/domain/` (nuevo, Java puro — sin `@Entity`, `@JsonView` ni imports de Spring/JPA/Jackson, ni imports de `model.AResponder.*` ni `content.domain.*`)
+### Dominio nuevo — `answering/domain/`
 
 ```java
-public class Opcion {
-    private Long id;
-    private Boolean laRespuestaEs;
+public interface OpcionVerificable<T> {
+    Long getId();
+    T getValorCorrecto();
+}
+
+public class VerificadorDeOpciones<T, O extends OpcionVerificable<T>> {
+    public boolean coincidenciaTotal(List<O> opcionesReales, List<O> opcionesDelUsuario) {
+        Map<Long, T> valorCorrectoPorId = new HashMap<>();
+        opcionesReales.forEach(o -> valorCorrectoPorId.put(o.getId(), o.getValorCorrecto()));
+        return opcionesDelUsuario.stream()
+                .allMatch(o -> valorCorrectoPorId.get(o.getId()).equals(o.getValorCorrecto()));
+    }
+}
+
+public record OpcionParaResponder(Long id, Boolean esCorrecta) implements OpcionVerificable<Boolean> { ... }
+public record OpcionDeDesplegableCompartidoParaResponder(Long id, String respuesta) implements OpcionVerificable<String> { ... }
+public record SubPreguntaParaResponder(Long id, List<OpcionParaResponder> opciones) implements OpcionVerificable<Long> {
+    @Override
+    public Long getValorCorrecto() {
+        return opciones.stream().filter(OpcionParaResponder::esCorrecta).toList().get(0).id();
+    }
 }
 
 public class SeleccionUnicaParaResponder {
     private Long id;
-    private List<Opcion> listaDeOpciones;
+    private List<OpcionParaResponder> opciones;
     private EstadoCritico estadoCritico;
+    private final VerificadorDeOpciones<Boolean, OpcionParaResponder> verificador = new VerificadorDeOpciones<>();
 
-    public Boolean verificarRespuesta(List<Opcion> respuestaDelUsuario) {
-        long marcadasVerdaderas = respuestaDelUsuario.stream().filter(Opcion::getLaRespuestaEs).count();
-        if (marcadasVerdaderas != 1) {
-            throw new BussinesException("¡Asegurese de que haya solamente una opcion valida!");
-        }
-        Map<Long, Boolean> real = listaDeOpciones.stream()
-            .collect(Collectors.toMap(Opcion::getId, Opcion::getLaRespuestaEs));
-        boolean esCorrecta = respuestaDelUsuario.stream()
-            .allMatch(o -> real.get(o.getId()).equals(o.getLaRespuestaEs()));
+    public Boolean verificarRespuesta(List<OpcionParaResponder> opcionesDelUsuario) {
+        long marcadas = opcionesDelUsuario.stream().filter(OpcionParaResponder::esCorrecta).count();
+        if (marcadas != 1) throw new BussinesException("¡Asegurese de que haya solamente una opcion valida!");
+        boolean esCorrecta = verificador.coincidenciaTotal(opciones, opcionesDelUsuario);
         estadoCritico.actualizar(esCorrecta);
         return esCorrecta;
     }
 }
+// OpcionMultipleParaResponder, DesplegableCompartidoParaResponder, DesplegableIndependienteParaResponder:
+// mismo esqueleto que SeleccionUnicaParaResponder, sin la validación de cardinalidad.
+```
 
-public class OpcionMultipleParaResponder {
-    private Long id;
-    private List<Opcion> listaDeOpciones;
-    private EstadoCritico estadoCritico;
+### `content/api/` (contratos consumidos por `answering`, uno por tipo, patrón repetido 6 veces)
 
-    public Boolean verificarRespuesta(List<Opcion> respuestaDelUsuario) {
-        Map<Long, Boolean> real = listaDeOpciones.stream()
-            .collect(Collectors.toMap(Opcion::getId, Opcion::getLaRespuestaEs));
-        boolean esCorrecta = respuestaDelUsuario.stream()
-            .allMatch(o -> real.get(o.getId()).equals(o.getLaRespuestaEs()));
-        estadoCritico.actualizar(esCorrecta);
-        return esCorrecta;
-    }
+```java
+public interface ObtenerSeleccionUnicaParaResponderQuery {
+    Optional<SeleccionUnicaParaResponderView> obtenerPorId(Long id);
 }
+public record SeleccionUnicaParaResponderView(Long id, List<OpcionView> listaDeOpciones,
+                                               Integer intentosParaQueDejeDeSerCriticoDisponible) {}
 
-public class OpcionDeDesplegableCompartido {
-    private Long id;
-    private String respuesta;
+public interface ActualizarCriticoDeSeleccionUnicaCommand {
+    void actualizar(Long id, Integer intentosParaQueDejeDeSerCriticoDisponible);
 }
+```
 
-public class DesplegableCompartidoParaResponder {
-    private Long id;
-    private List<OpcionDeDesplegableCompartido> listaDeOpciones;
-    private EstadoCritico estadoCritico;
+Implementados en `content.application.query.ObtenerSeleccionUnicaParaResponderHandler` / `content.application.command.ActualizarCriticoDeSeleccionUnicaHandler`, inyectando el `SeleccionUnicaRepositoryPort` ya existente (spec 03) — `answering` no ve ese port ni el `RepositoryPort`/`Entity` detrás.
 
-    public Boolean verificarRespuesta(List<OpcionDeDesplegableCompartido> respuestaDelUsuario) {
-        Map<Long, String> real = listaDeOpciones.stream()
-            .collect(Collectors.toMap(OpcionDeDesplegableCompartido::getId, OpcionDeDesplegableCompartido::getRespuesta));
-        boolean esCorrecta = respuestaDelUsuario.stream()
-            .allMatch(o -> real.get(o.getId()).equals(o.getRespuesta()));
-        estadoCritico.actualizar(esCorrecta);
-        return esCorrecta;
-    }
-}
+### `answering/application/command/`
 
-public class OpcionDeSeleccionParaDesplegableIndependiente {
-    private Long id;
-    private Boolean respuestaCorrecta;
-}
+```java
+public record VerificarRespuestaSeleccionUnicaCommand(Long idPregunta, List<OpcionRespuestaDTO> opcionesDelUsuario) {}
 
-public class SeleccionUnicaParaDesplegableIndependiente {
-    private Long id;
-    private List<OpcionDeSeleccionParaDesplegableIndependiente> listaDeOpcionesDisponible;
+@Service
+public class VerificarRespuestaSeleccionUnicaHandler {
+    private final ObtenerSeleccionUnicaParaResponderQuery obtenerQuery;
+    private final ActualizarCriticoDeSeleccionUnicaCommand actualizarCritico;
 
-    public Long getRespuestaCorrecta() {
-        return listaDeOpcionesDisponible.stream()
-            .filter(OpcionDeSeleccionParaDesplegableIndependiente::getRespuestaCorrecta)
-            .toList().get(0).getId(); // preserva el .get(0) sin chequeo del modelo viejo
-    }
-}
-
-public class DesplegableIndependienteParaResponder {
-    private Long id;
-    private List<SeleccionUnicaParaDesplegableIndependiente> listaDeOpciones;
-    private EstadoCritico estadoCritico;
-
-    public Boolean verificarRespuesta(List<SeleccionUnicaParaDesplegableIndependiente> respuestaDelUsuario) {
-        Map<Long, Long> real = listaDeOpciones.stream()
-            .collect(Collectors.toMap(SeleccionUnicaParaDesplegableIndependiente::getId,
-                                       SeleccionUnicaParaDesplegableIndependiente::getRespuestaCorrecta));
-        boolean esCorrecta = respuestaDelUsuario.stream()
-            .allMatch(o -> real.get(o.getId()).equals(o.getRespuestaCorrecta()));
-        estadoCritico.actualizar(esCorrecta);
+    public Boolean ejecutar(VerificarRespuestaSeleccionUnicaCommand command) {
+        SeleccionUnicaParaResponderView view = obtenerQuery.obtenerPorId(command.idPregunta())
+                .orElseThrow(() -> new BussinesException("No se encuentra una pregunta con el id solicitado"));
+        SeleccionUnicaParaResponder pregunta = toDomain(view);
+        Boolean esCorrecta = pregunta.verificarRespuesta(mapearOpciones(command.opcionesDelUsuario()));
+        actualizarCritico.actualizar(pregunta.getId(), pregunta.getEstadoCritico().getIntentosParaQueDejeDeSerCriticoDisponible());
         return esCorrecta;
     }
 }
 ```
 
-Todas con getters/setters vía Lombok `@Getter`/`@Setter` (mismo criterio que specs anteriores de `answering`/`content`), sin comportamiento adicional fuera del mostrado. Nota: `real.get(o.getId())` puede devolver `null` si el id no existe en la lista real — `.equals(...)` sobre eso lanza `NullPointerException`, preservando tal cual el comportamiento del `Verificador` viejo.
+### Reutilizado tal cual (sin cambios)
 
-### `answering/application/port/out/` (nuevo)
-
-- **`SeleccionUnicaParaResponderPort`** — `Optional<SeleccionUnicaParaResponder> findById(Long id)`; `SeleccionUnicaParaResponder save(SeleccionUnicaParaResponder pregunta)`.
-- **`OpcionMultipleParaResponderPort`** — mismos métodos con `OpcionMultipleParaResponder`.
-- **`DesplegableCompartidoParaResponderPort`** — mismos métodos con `DesplegableCompartidoParaResponder`.
-- **`DesplegableIndependienteParaResponderPort`** — mismos métodos con `DesplegableIndependienteParaResponder`.
-
-### `answering/application/port/in/` y `application/service/` (nuevo)
-
-- **`VerificarRespuestaSeleccionUnicaUseCase`** — `Boolean verificar(RespuestaDePreguntaDTO respuesta)`. **`Service`** — inyecta `SeleccionUnicaParaResponderPort`; `findById` (`BussinesException` si no existe); mapea `respuesta.listaDeOpciones()` (viejo `Opcion`) → `List<answering.domain.Opcion>` inline; llama `verificarRespuesta(...)`; guarda; devuelve el booleano.
-- **`VerificarRespuestaOpcionMultipleUseCase`/`Service`** — mismo patrón con `OpcionMultipleParaResponderPort`.
-- **`VerificarRespuestaDesplegableCompartidoUseCase`/`Service`** — mismo patrón con `DesplegableCompartidoParaResponderPort`; mapea `respuesta.listaDeOpcionesParaDesplegableCompartidos()` (viejo `OpcionDeDesplegableCompartido`) → `List<answering.domain.OpcionDeDesplegableCompartido>`.
-- **`VerificarRespuestaDesplegableIndependienteUseCase`/`Service`** — mismo patrón con `DesplegableIndependienteParaResponderPort`; mapea `respuesta.listaDeSeleccionesUnicasParaDesplegableIndependiente()` (viejo `SeleccionUnicaParaDesplegableIndependiente`, con `Set<Opcion> listaDeOpcionesDisponible`) → `List<answering.domain.SeleccionUnicaParaDesplegableIndependiente>` (cada `Opcion` del `Set` viejo se mapea a `OpcionDeSeleccionParaDesplegableIndependiente`).
-
-### `answering/infrastructure/persistence/adapter/` (nuevo)
-
-- **`SeleccionUnicaParaResponderAdapter`** — inyecta `SeleccionUnicaJpaRepository` (de `content`); `findById` mapea `SeleccionUnicaEntity` → `SeleccionUnicaParaResponder` (`id`, `listaDeOpciones` desde `OpcionEntity`, `estadoCritico` desde `entity.getIntentosParaQueDejeDeSerCriticoDisponible()`); `save` relee la entity, actualiza solo `intentosParaQueDejeDeSerCriticoDisponible`, guarda.
-- **`OpcionMultipleParaResponderAdapter`** — análogo con `OpcionMultipleJpaRepository`.
-- **`DesplegableCompartidoParaResponderAdapter`** — análogo con `DesplegableCompartidoJpaRepository`, mapea `OpcionDeDesplegableCompartidoEntity` → `answering.domain.OpcionDeDesplegableCompartido`.
-- **`DesplegableIndependienteParaResponderAdapter`** — análogo con `DesplegableIndependienteJpaRepository`, mapea `SeleccionUnicaParaDesplegableIndependienteEntity` (con `List<OpcionEntity> listaDeOpciones`) → `answering.domain.SeleccionUnicaParaDesplegableIndependiente` (con `List<OpcionDeSeleccionParaDesplegableIndependiente>`, cada `OpcionEntity.laRespuestaEs` → `respuestaCorrecta`).
-
-### `answering/infrastructure/controller/VerificarRespuestaController` (modificado)
-
-- Se reemplaza el `if/else` de 3 ramas (2 tipos + fallback) por dispatch explícito sobre los 6 `UseCase` (`PREGUNTA_SIMPLE`, `VERDADERO_FALSO` de spec 13 + los 4 nuevos), vía `Map<TipoAResponder, Function<RespuestaDePreguntaDTO, Boolean>>` construido en `@PostConstruct` (mismo patrón que `EliminarPreguntaPorIdService`/`ObtenerIdsAleatoriosDePreguntasService`, specs 09/12). Tipo no encontrado en el `Map` → `BussinesException`.
-- Se elimina el campo `PreguntaService preguntaService` y su uso — ya no hay fallback.
-
-### `Service/PreguntaService` (sin cambios)
-
-`verifyResponse` no se modifica ni se elimina — queda sin caller productivo, usado solo como baseline en tests de paridad.
-
-### Sin cambios de esquema
-
-Ninguna tabla ni columna nueva — se reutilizan `pregunta`, `seleccion_unica`, `multiple_opcion`, `desplegable_compartido`, `pregunta_desplegable_ind` (y sus tablas de opciones anidadas) tal cual.
+- `com.lorenzomar3.AQ.dto.newDto.RespuestaDePreguntaDTO` — DTO de request, sin cambios.
+- `com.lorenzomar3.AQ.exception.BussinesException`, `com.lorenzomar3.AQ.model.TipoAResponder`.
+- `Service.PreguntaService.verifyResponse` (viejo) — baseline de tests de paridad y fallback aún presente (no eliminado) en el controller.
+- `content.application.port.out.SeleccionUnicaRepositoryPort`/`OpcionMultipleRepositoryPort`/`DesplegableCompartidoRepositoryPort`/`DesplegableIndependienteRepositoryPort` (specs 03-06) — siguen viviendo en `content`, ahora usados solo desde dentro de `content` (los nuevos `Obtener...Handler`/`ActualizarCritico...Handler`), nunca desde `answering` directo.
 
 ---
 
-## Plan de implementación
+## Deuda de testing pendiente
 
-1. **Dominio de `answering` — objetos base.** Crear `Opcion`, `OpcionDeDesplegableCompartido`, `OpcionDeSeleccionParaDesplegableIndependiente` en `answering/domain/`, campos según el modelo de datos. Java puro, sin dependencias de Spring/JPA/Jackson ni de `model.AResponder.*`/`content.domain.*`.
-2. **Dominio de `answering` — objetos "para responder".** Crear `SeleccionUnicaParaResponder`, `OpcionMultipleParaResponder`, `DesplegableCompartidoParaResponder`, `DesplegableIndependienteParaResponder` (este último junto con `SeleccionUnicaParaDesplegableIndependiente`), cada uno con su `verificarRespuesta(...)` según el modelo de datos.
-3. **Tests de dominio.** Tests unitarios (sin Spring) por cada uno de los 4 objetos `...ParaResponder`: caso correcto, caso incorrecto, actualización de `EstadoCritico` en ambos sentidos, y cada comportamiento raro (cardinalidad en `SeleccionUnicaParaResponder`; lista vacía = correcta en `OpcionMultipleParaResponder`/`DesplegableCompartidoParaResponder`/`DesplegableIndependienteParaResponder`; `NullPointerException` por id inexistente en los 4; `IndexOutOfBoundsException` en `SeleccionUnicaParaDesplegableIndependiente.getRespuestaCorrecta()` sin opción marcada).
-4. **Ports de salida.** Crear `SeleccionUnicaParaResponderPort`, `OpcionMultipleParaResponderPort`, `DesplegableCompartidoParaResponderPort`, `DesplegableIndependienteParaResponderPort` en `answering/application/port/out/`.
-5. **Adapters.** Crear los 4 adapters en `answering/infrastructure/persistence/adapter/`, inyectando los `JpaRepository` de `content` (specs 03-06) y mapeando manualmente contra las `Entity` correspondientes, según el modelo de datos.
-6. **Use case y service — `SeleccionUnica`.** Crear `VerificarRespuestaSeleccionUnicaUseCase`/`Service`, inyectando `SeleccionUnicaParaResponderPort`, mapeando `respuesta.listaDeOpciones()` (viejo) → dominio nuevo, lanzando `BussinesException` si no existe.
-7. **Use case y service — `OpcionMultiple`.** Mismo patrón con `OpcionMultipleParaResponderPort`.
-8. **Use case y service — `DesplegableCompartido`.** Mismo patrón con `DesplegableCompartidoParaResponderPort`, mapeando `respuesta.listaDeOpcionesParaDesplegableCompartidos()`.
-9. **Use case y service — `DesplegableIndependiente`.** Mismo patrón con `DesplegableIndependienteParaResponderPort`, mapeando `respuesta.listaDeSeleccionesUnicasParaDesplegableIndependiente()` (incluida la conversión del `Set<Opcion>` viejo a `List<OpcionDeSeleccionParaDesplegableIndependiente>`).
-10. **Test de paridad — `SeleccionUnica`.** Comparar `VerificarRespuestaSeleccionUnicaService.verificar` contra `PreguntaService.verifyResponse` (viejo): caso correcto, incorrecto, y violación de cardinalidad (0 o ≥2 opciones marcadas verdaderas por el usuario) — mismo `BussinesException` en ambos caminos.
-11. **Test de paridad — `OpcionMultiple`.** Mismo criterio, incluida la respuesta vacía del usuario como caso "correcta" en ambos caminos.
-12. **Test de paridad — `DesplegableCompartido`.** Mismo criterio, incluida la respuesta vacía como "correcta" en ambos caminos.
-13. **Test de paridad — `DesplegableIndependiente`.** Mismo criterio, incluida la respuesta vacía como "correcta" y el caso de un desplegable real sin ninguna opción marcada como correcta (`IndexOutOfBoundsException` en ambos caminos).
-14. **Tests de not-found.** Id inexistente en los 4 Use Cases nuevos → `BussinesException`.
-15. **Cablear `VerificarRespuestaController`.** Reemplazar el dispatch de 3 ramas por el `Map<TipoAResponder, Function<...>>` con los 6 tipos (2 de spec 13 + 4 nuevos); eliminar el campo `PreguntaService` y su import; tipo no soportado → `BussinesException`.
-16. **Test de dispatch del controller.** Confirmar que los 6 tipos válidos resuelven al Use Case correcto y que un tipo no soportado (p. ej. un contenedor `CUESTIONARIO`/`TEMA`/`SUBTEMA`, si llega por error) lanza `BussinesException` en vez de caer a un fallback silencioso.
-17. **Verificación final.** Correr `./mvnw test` (lo corre el usuario) y probar contra `AQ-SIMPLE-FRONT`: responder una pregunta de cada uno de los 4 tipos nuevos (correcta e incorrecta) confirmando que la corrección y el contador de "crítico" se comportan igual que antes; confirmar que el resto de endpoints (`fetch(-full)`, `random-ids`, `critical-ids`, CRUD de `questions`/`issues`, `verify` de `PREGUNTA_SIMPLE`/`VERDADERO_FALSO`) sigue funcionando sin cambios.
+A diferencia de spec 13 (que cubrió `PreguntaSimple`/`VerdaderoOFalso` con tests unitarios de dominio, paridad correcta/incorrecta, not-found, y actualización de crítico en ambos sentidos), los 4 tipos de este spec quedaron con cobertura parcial:
+
+- [ ] No hay tests unitarios de dominio para `SeleccionUnicaParaResponder`, `OpcionMultipleParaResponder`, `DesplegableCompartidoParaResponder`, `DesplegableIndependienteParaResponder` en aislamiento.
+- [ ] No hay test de la validación de cardinalidad de `SeleccionUnicaParaResponder` (0 o ≥2 opciones marcadas por el usuario → `BussinesException`).
+- [ ] No hay test de lista vacía del usuario = "correcta" para `OpcionMultipleParaResponder`/`DesplegableCompartidoParaResponder`/`DesplegableIndependienteParaResponder`.
+- [ ] No hay test de `NullPointerException` por id inexistente en la respuesta del usuario, para ninguno de los 4 tipos.
+- [ ] No hay test de `IndexOutOfBoundsException` en `SubPreguntaParaResponder.getValorCorrecto()` cuando ninguna opción real está marcada correcta.
+- [ ] No hay test de respuesta **incorrecta** (solo "camino feliz" correcto) para los 4 tipos.
+- [ ] No hay test de not-found (`BussinesException`) para los 4 tipos nuevos — sí existe para `PreguntaSimple`/`VerdaderoOFalso`.
+- [x] `VerificadorDeOpciones` (el helper compartido) sí tiene tests unitarios propios, aunque solo cubren coincidencia total/parcial/nula — no lista vacía ni id inexistente.
+
+Estos casos son precisamente los que spec 13 usó como red de contención para comportamiento preservado deliberadamente raro; sin ellos, un cambio futuro en `VerificadorDeOpciones` o en cualquiera de los 4 objetos de dominio puede alterar ese comportamiento sin que ningún test lo detecte.
 
 ---
 
 ## Criterios de aceptación
 
-- [ ] Existen `Opcion`, `OpcionDeDesplegableCompartido`, `OpcionDeSeleccionParaDesplegableIndependiente`, `SeleccionUnicaParaDesplegableIndependiente`, `SeleccionUnicaParaResponder`, `OpcionMultipleParaResponder`, `DesplegableCompartidoParaResponder`, `DesplegableIndependienteParaResponder` en `answering/domain/`, Java puro, sin anotaciones de framework ni imports de `model.AResponder.*`/`content.domain.*`.
-- [ ] `SeleccionUnicaParaResponder.verificarRespuesta` lanza `BussinesException` si la respuesta del usuario no tiene exactamente una opción con `laRespuestaEs = true`, replicando `validacionDeOpcionUnica` del modelo viejo.
-- [ ] `OpcionMultipleParaResponder.verificarRespuesta` no valida cardinalidad; una respuesta vacía del usuario se evalúa como correcta (`allMatch` sobre lista vacía), igual que el modelo viejo.
-- [ ] `DesplegableCompartidoParaResponder.verificarRespuesta` compara por `id → respuesta` (String); una respuesta vacía del usuario se evalúa como correcta, igual que el modelo viejo.
-- [ ] `DesplegableIndependienteParaResponder.verificarRespuesta` compara por `id del desplegable → id de la opción correcta`; una respuesta vacía del usuario se evalúa como correcta; un desplegable real sin ninguna opción marcada como correcta lanza `IndexOutOfBoundsException` al resolver `getRespuestaCorrecta()`, igual que el modelo viejo.
-- [ ] Los 4 objetos `...ParaResponder` lanzan `NullPointerException` (sin atrapar) cuando la respuesta del usuario referencia un `id` que no existe en la lista real, igual que el `Verificador` viejo.
-- [ ] `EstadoCritico.actualizar` (spec 13, sin modificar) se invoca desde los 4 objetos de dominio nuevos con el resultado de la verificación, mismo comportamiento ya validado en spec 13.
-- [ ] Existen `SeleccionUnicaParaResponderPort`, `OpcionMultipleParaResponderPort`, `DesplegableCompartidoParaResponderPort`, `DesplegableIndependienteParaResponderPort` en `answering/application/port/out/`, implementados por adapters que reutilizan los `JpaRepository` de `content` (specs 03-06) sin pasar por los ports/domain/services de `content`.
-- [ ] Existen `VerificarRespuestaSeleccionUnicaUseCase`/`Service`, `VerificarRespuestaOpcionMultipleUseCase`/`Service`, `VerificarRespuestaDesplegableCompartidoUseCase`/`Service`, `VerificarRespuestaDesplegableIndependienteUseCase`/`Service`, que lanzan `BussinesException` si el id no existe.
-- [ ] `POST /questions/verify` para cada uno de los 4 tipos nuevos devuelve el mismo booleano que el camino viejo (`PreguntaService.verifyResponse`) y persiste el mismo valor de `intentosParaQueDejeDeSerCriticoDisponible`, para respuesta correcta e incorrecta.
-- [ ] `POST /questions/verify` con un id inexistente de cualquiera de los 4 tipos nuevos lanza `BussinesException`.
-- [ ] `VerificarRespuestaController` despacha los 6 tipos de pregunta (`PREGUNTA_SIMPLE`, `VERDADERO_FALSO` de spec 13 + los 4 nuevos) a su Use Case correspondiente; ya no inyecta `PreguntaService` ni tiene rama de fallback.
-- [ ] `POST /questions/verify` con un tipo no soportado por el `Map` de dispatch lanza `BussinesException` en vez de delegar silenciosamente a código viejo.
-- [ ] El resto de endpoints (`fetch(-full)`, `random-ids`, `critical-ids`, CRUD de `questions`/`issues`, `verify` de `PREGUNTA_SIMPLE`/`VERDADERO_FALSO`) sigue funcionando sin cambios.
-- [ ] Ningún archivo bajo `answering/` importa una clase de `content.application`, `content.domain` o `model.AResponder.*` — solo se reutilizan `content.infrastructure.persistence.entity.*` y `*.repository.*JpaRepository` (specs 03-06) desde los adapters de `answering`, y las clases viejas del DTO (`model.AResponder.TiposDePreguntas.Opcion`, etc.) se leen únicamente dentro de los services nuevos como origen del mapeo, sin propagarse al dominio.
-- [ ] Existen tests cubriendo: lógica pura de los 4 objetos de dominio nuevos (incluidos todos los comportamientos raros), paridad de `verify` para los 4 tipos, not-found para los 4, y el dispatch completo del controller (6 tipos + tipo no soportado).
-- [ ] `./mvnw test` corre completo y pasa — **verificado por el usuario.**
-- [ ] Verificación manual contra `AQ-SIMPLE-FRONT`: responder una pregunta de cada uno de los 4 tipos nuevos (correcta e incorrecta) desde el flujo real, confirmando que la corrección y el contador de "crítico" se comportan igual que antes. **(verificado por el usuario)**
-- [ ] `PreguntaService.verifyResponse` (viejo) no fue eliminado; queda sin caller productivo, usado solo como baseline de los tests de paridad.
+- [x] Existen `OpcionParaResponder`, `OpcionDeDesplegableCompartidoParaResponder`, `SubPreguntaParaResponder`, `SeleccionUnicaParaResponder`, `OpcionMultipleParaResponder`, `DesplegableCompartidoParaResponder`, `DesplegableIndependienteParaResponder` en `answering/domain/`, Java puro.
+- [x] `SeleccionUnicaParaResponder.verificarRespuesta` lanza `BussinesException` si la respuesta del usuario no tiene exactamente una opción correcta.
+- [x] `OpcionMultipleParaResponder`/`DesplegableCompartidoParaResponder`/`DesplegableIndependienteParaResponder.verificarRespuesta` no validan cardinalidad; lista vacía del usuario se evalúa como correcta.
+- [x] Los 4 objetos lanzan `NullPointerException` sin atrapar cuando la respuesta del usuario referencia un id inexistente (heredado de `VerificadorDeOpciones`).
+- [x] `EstadoCritico.actualizar` (sin modificar desde spec 13) se invoca desde los 4 objetos nuevos.
+- [x] `POST /questions/verify` para cada uno de los 4 tipos nuevos devuelve el mismo booleano que el camino viejo, verificado para el caso correcto (`VerificarRespuestaTiposNoMigradosNoRegresionTest`).
+- [ ] ~~`POST /questions/verify` con un id inexistente de cualquiera de los 4 tipos nuevos lanza `BussinesException`~~ — no tiene test dedicado para los 4 tipos nuevos (sí para `PreguntaSimple`/`VerdaderoOFalso`), aunque el comportamiento del código (`orElseThrow` en el `Handler`) lo garantiza.
+- [x] `VerificarRespuestaController` despacha los 6 tipos de pregunta a su `Handler` correspondiente.
+- [ ] ~~Ya no inyecta `PreguntaService` ni tiene rama de fallback~~ — **no se cumplió**: el campo y la rama siguen presentes.
+- [ ] ~~El dispatch usa `Map<TipoAResponder, Function<...>>`~~ — **no se cumplió**: sigue siendo `if/else`.
+- [x] Ningún archivo bajo `answering/` importa `content.application`, `content.domain`, `content.infrastructure` ni `model.AResponder.*` — mejora respecto al borrador original: ni siquiera se reutiliza el `JpaRepository`/`Entity` de `content` desde infraestructura, todo pasa por `content.api`.
+- [ ] Tests cubriendo comportamientos raros de los 4 tipos nuevos — **no se cumplió**, ver [Deuda de testing pendiente](#deuda-de-testing-pendiente).
+- [x] `./mvnw test` corre completo y pasa — verificado por el usuario (trabajo ya en `hexagonal-dev`, working tree limpio).
+- [ ] Verificación manual contra `AQ-SIMPLE-FRONT` — no confirmada en esta sesión.
+- [x] `PreguntaService.verifyResponse` (viejo) no fue eliminado; sigue como fallback activo en el controller y baseline de tests de paridad.
 
 ---
 
-## Decisiones tomadas y descartadas
+## Decisiones tomadas (reales)
 
-- **Se migran los 4 tipos restantes en un solo spec, en vez de dividir en dos (Selección Única + Opción Múltiple por un lado, Desplegable Compartido + Desplegable Independiente por otro).**
-  Confirmado con el usuario. Mismo criterio que spec 13 (migró 2 tipos juntos): los 4 comparten el mismo patrón de `EstadoCritico`/dispatch por `Map`, y cerrar `verify` por completo en un spec evita dejar el fallback viejo funcionando a medias para un subconjunto de tipos otra vez.
-
-- **Los comportamientos raros identificados (validación de cardinalidad en Selección Única, lista vacía = respuesta correcta en Opción Múltiple/Desplegable Compartido/Desplegable Independiente, `NullPointerException` por id inexistente, `IndexOutOfBoundsException` en Desplegable Independiente sin opción correcta marcada) se preservan tal cual.**
-  Confirmado con el usuario. Mismo criterio de paridad exacta ya usado en spec 13 con el comportamiento incompleto de `PreguntaSimple` — no se corrigen comportamientos de negocio fuera del alcance estricto de esta migración, salvo un leak de dato sensible (que no es el caso acá).
-
-- **El mapeo entre las clases viejas del DTO (`model.AResponder.TiposDePreguntas.Opcion`, `OpcionDeDesplegableCompartido`, `SeleccionUnicaParaDesplegableIndependiente`) y el dominio nuevo de `answering` ocurre inline dentro de cada `Service` nuevo, sin tocar el DTO ni crear un mapper separado.**
-  Confirmado con el usuario. Mismo criterio de "DTO raíz del proyecto, reutilizado tal cual" de specs 07-13; evita que la migración se convierta en un cambio de contrato de wire.
-
-- **Se reescribe inline la lógica del `Verificador<T,G>` viejo en cada uno de los 4 objetos de dominio nuevo, en vez de reutilizar la clase `Verificador` original (Java puro, sin anotaciones de framework).**
-  Confirmado con el usuario. Descartado: importar `model.AResponder.Verificador.Verificador` directo en `answering/domain` — aunque es código sin dependencias de framework y hubiera evitado repetir el algoritmo 3 veces, acopla `answering` a un paquete del modelo viejo destinado a desaparecer, rompiendo el mismo principio de aislamiento que llevó a reescribir `EstadoCritico` en spec 13 en vez de reutilizar `conteoDeCritico` de `Pregunta`.
-
-- **No se extrae un helper genérico compartido (equivalente a `Verificador<T,G>`) dentro de `answering/domain` para las 3 comparaciones "id → valor esperado" (`Boolean`, `String`, `Long`), aunque tengan la misma forma algorítmica.**
-  Justificación: a diferencia de `EstadoCritico` (spec 13, lógica idéntica bit a bit sin variación esperada), acá cada tipo compara un valor de naturaleza distinta y ya vive dentro de un método de dominio con nombre y contexto propios (`verificarRespuesta`); introducir un genérico shared hubiera sido la misma abstracción prematura que specs 10/12 decidieron evitar para estructuras parecidas pero no idénticas (`AResponderChildRef`/`AResponderItemDetail`, `TIPOS_CONTENEDOR`).
-
-- **`Opcion` se modela como una clase nueva y propia de `answering/domain`, distinta de `model.AResponder.TiposDePreguntas.Opcion` (viejo) y de `content.domain.Opcion` (specs 03/04).**
-  Es la tercera clase `Opcion` en el codebase. Mismo criterio ya aceptado en toda la migración (cada slice modela sus propios tipos, ver `PreguntaSimpleParaResponder`/`VerdaderoOFalsoParaResponder` en spec 13 frente a sus equivalentes en `content.domain`); se documenta explícitamente acá por el riesgo de confusión al ser el mismo nombre repetido 3 veces.
-
-- **Se crean dos objetos de dominio separados, `SeleccionUnicaParaResponder` y `OpcionMultipleParaResponder`, en vez de una sola clase parametrizada por un flag de "valida cardinalidad".**
-  Mismo criterio que el modelo viejo (dos subclases distintas de `Pregunta`) y que specs 03/04 (dos `RepositoryPort`/`Entity` separados) — evita una abstracción condicional (`if validarCardinalidad`) sobre dos tipos que ya son conceptualmente distintos para el dominio.
-
-- **Reuso de infraestructura cross-slice: los 4 adapters nuevos de `answering` inyectan directo los `JpaRepository` de `content` (specs 03-06), sin duplicar `Entity`/`JpaRepository` propios.**
-  Confirmado con el usuario. Mismo patrón y misma justificación que spec 13: el riesgo que `ARQUITECTURA.md` busca evitar (acoplar el dominio de `answering` a cambios internos de `content`) vive en `application`/`domain`, no en qué clase JPA lee una columna — esa capa queda 100% aislada.
-
-- **`VerificarRespuestaController` elimina el fallback a `PreguntaService.verifyResponse` y lanza `BussinesException` para cualquier tipo no registrado, en vez de mantener el fallback "por si acaso".**
-  Confirmado con el usuario. Con los 6 tipos hoja migrados, el fallback ya no tiene ningún caller válido posible (los 3 tipos contenedor — `CUESTIONARIO`/`TEMA`/`SUBTEMA` — nunca deberían llegar a `/verify`); mantenerlo hubiera sido código muerto disfrazado de red de seguridad, ocultando un bug de dispatch en vez de exponerlo con una excepción clara.
-
-- **El dispatch del controller pasa de `if/else` (3 ramas en spec 13) a `Map<TipoAResponder, Function<RespuestaDePreguntaDTO, Boolean>>` construido en `@PostConstruct`, replicando el patrón de `EliminarPreguntaPorIdService`/`ObtenerIdsAleatoriosDePreguntasService` (specs 09/12).**
-  Justificación: con 6 ramas homogéneas (todas del mismo tipo `RespuestaDePreguntaDTO -> Boolean` vía su Use Case), el `Map` es más legible que un `if/else` de 6 ramas y sigue el mismo criterio ya usado en el resto de la arquitectura para dispatch por tipo con ramas triviales.
-
-- **`PreguntaService.verifyResponse` (viejo) no se elimina.**
-  Mismo criterio de no tocar código fuera del camino activamente migrado, usado en todos los specs anteriores — sigue sirviendo como baseline de los tests de paridad, aunque ya sin caller productivo tras este spec.
+- **Se descartó la idea original de reutilizar directo el `JpaRepository` de `content` desde `answering`, a favor de `content.api`.** Esto contradice tanto el borrador de este spec como spec 13 (que sí hicieron reuso directo, aceptando el riesgo "dos slices comparten un `JpaRepository`"). El cambio real resuelve ese riesgo de raíz: `answering` deja de conocer cualquier detalle de persistencia de `content`. Como efecto colateral, esto también significa que `content` ahora asume el costo de mantener 12 interfaces nuevas en `api/` (6 `Query` + 6 `Command`) y sus implementaciones — más superficie pública, pero acoplamiento real más bajo.
+- **Se extrajo `VerificadorDeOpciones<T, O>`, revirtiendo la decisión explícita del borrador de no hacerlo.** El borrador argumentaba que cada tipo compara "un valor de naturaleza distinta" y que una abstracción compartida sería prematura (mismo criterio que specs 10/12 con `AResponderChildRef`). En la práctica, los 4 algoritmos son estructuralmente idénticos (mapa `id → valor esperado` + `allMatch`), y `OpcionVerificable<T>` los unifica sin forzar ningún tipo a exponer algo que no le pertenece naturalmente. La decisión tomada realmente prioriza no repetir el mismo bloque de 5 líneas cuatro veces, a costa de introducir una capa de indirección (interfaz + genérico) que el borrador prefería evitar. Ninguna de las dos posturas es objetivamente correcta; se documenta acá el cambio de criterio para que quede claro que fue deliberado y no un descuido.
+- **Se retrofitteó `PreguntaSimple`/`VerdaderoOFalso` (spec 13) al mismo patrón `content.api` + `Command`/`Handler`, en el mismo commit.** No estaba en el alcance de ningún spec, pero evita que el slice `answering` quede con dos patrones de acceso a datos distintos conviviendo (2 tipos con adapter directo a `JpaRepository`, 4 tipos con `content.api`) apenas un día después de haberlo escrito.
+- **No se eliminó el fallback a `PreguntaService` en el controller, pese a que el borrador lo pedía.** No hay evidencia en el código de por qué se mantuvo — es la desviación menos justificable de las cinco. Queda como ítem abierto: con los 6 tipos hoja cubiertos, el campo `preguntaService` y su rama `else` en `VerificarRespuestaController` son código muerto real (ningún `TipoAResponder` container llega a `/verify`).
+- **Se amplió el alcance a `/questions/inverse` y `fetch`/`fetch-full` de los 4 tipos en el mismo commit, sin abrir specs nuevos.** Práctico para no dejar el `PreguntaController` a medio migrar, pero rompe la trazabilidad spec-por-spec que el resto de la migración mantuvo consistentemente desde spec 01. Recomendación: documentar esos dos bloques retroactivamente (specs 15/16).
 
 ---
 
-## Riesgos identificados
+## Riesgos identificados (actualizados)
 
-- **`content.infrastructure.persistence.repository.SeleccionUnicaJpaRepository`/`OpcionMultipleJpaRepository`/`DesplegableCompartidoJpaRepository`/`DesplegableIndependienteJpaRepository` quedan usados por dos adapters de dos slices distintos** (el propio de `content` y el nuevo de `answering`), igual que ya ocurrió con `PreguntaSimpleJpaRepository`/`VerdaderoOFalsoJpaRepository` en spec 13. Si `content` cambia la firma de alguno de estos 4 repositorios, rompe silenciosamente a `answering` también.
-  *Mitigación:* ninguna adicional — mismo costo aceptado explícitamente por el usuario en spec 13, ahora extendido a 4 repositorios más; los tests de paridad de este spec y los de specs 03-06 actúan como red de contención.
-
-- **La conversión `Entity` ↔ dominio de `answering` es manual e inline en cada uno de los 4 adapters nuevos, sin mapper compartido.** Mismo riesgo que spec 13, multiplicado por 4: si `SeleccionUnicaEntity`/`OpcionMultipleEntity`/`DesplegableCompartidoEntity`/`DesplegableIndependienteEntity` ganan un campo relevante, hay que recordar actualizar el mapeo de `answering` por separado.
-  *Mitigación:* ninguna en este spec — mismo riesgo de "registro en múltiples puntos" ya aceptado en el resto de la arquitectura.
-
-- **Existen ahora tres clases distintas llamadas `Opcion`** (`model.AResponder.TiposDePreguntas.Opcion`, `content.domain.Opcion`, `answering.domain.Opcion`), con formas parecidas pero sin relación de herencia ni conversión automática entre sí. Un futuro desarrollador que busque "Opcion" en el IDE puede editar la clase equivocada sin darse cuenta de en qué slice está.
-  *Mitigación:* ninguna adicional — se documenta acá y queda mitigado en parte por el paquete distinto de cada una; mismo criterio de "cada slice modela lo suyo" ya aceptado desde specs 07+.
-
-- **Los comportamientos raros preservados (`NullPointerException` por id inexistente, `IndexOutOfBoundsException` en Desplegable Independiente sin opción correcta, "lista vacía = correcta") quedan replicados en `answering/domain`, ahora sin ningún comentario ni contexto visible que explique que son intencionales** (a diferencia del código viejo, que al menos convivía con el resto de la lógica de `IPreguntaVariasOpciones`/`Verificador` donde un lector podía rastrear el origen). Alguien que audite `answering/domain` en el futuro podría "corregir" estos casos pensando que son bugs, sin saber que están documentados como comportamiento preservado en este spec.
-  *Mitigación:* los tests de dominio (paso 3 del plan) cubren explícitamente cada uno de estos casos, sirviendo como documentación ejecutable — un cambio accidental los haría fallar.
-
-- **Las entities de `content` para estos 4 tipos son `EAGER`** (specs 03-06), a diferencia de `PreguntaSimpleEntity`/`VerdaderoOFalsoEntity` (spec 13) que no tienen colecciones anidadas. Cada `findById` en los adapters nuevos carga la lista completa de opciones anidadas aunque `verify` solo necesite compararlas una vez; y `save` (que relee la entity para actualizar el contador de crítico) vuelve a pagar esa misma carga completa.
-  *Mitigación:* ninguna en este spec — es el mismo costo que ya paga `content` hoy con sus propias operaciones sobre estas entities EAGER (decisión ya tomada en specs 03-06); no es una regresión introducida acá, solo se hereda.
-
-- **Eliminar el fallback añade un punto de registro más para tipos de pregunta futuros.** Antes de este spec, un tipo de pregunta no contemplado en el dispatch de `VerificarRespuestaController` caía automáticamente en `PreguntaService.verifyResponse` (que sí sabe resolver cualquier tipo registrado en su propio `mapDeRepositorios`). Después de este spec, un séptimo tipo de pregunta que no se agregue explícitamente al `Map` de `VerificarRespuestaController` lanzará `BussinesException` en `/verify`, aunque funcione en el resto de endpoints — un registro manual más que sumar a los ya documentados en `CLAUDE.md` (subclase de `Pregunta`, `FabricaDePreguntas`, `AsignadorDeTipoALasPreguntas`, repositorio nuevo, y ahora también este `Map`).
-  *Mitigación:* ninguna adicional — es el costo aceptado a cambio de que un tipo no soportado falle explícito en vez de silenciosamente vía un fallback que, en la práctica, tras este spec, ya no tendría motivo de existir para ningún tipo válido actual.
-
-- **`AResponder.tipo` en el modelo JPA viejo sigue siendo un campo mantenido a mano, no un discriminator de JPA** (mismo riesgo estructural documentado en specs anteriores) — el dispatch de `VerificarRespuestaController` confía en `tipoDePregunta` del DTO enviado por el cliente, no en el tipo real almacenado; un cliente que envíe un id real con el tipo equivocado cae en `BussinesException` de "no encontrado" del `RepositoryPort` incorrecto, igual que ya documentó spec 12 para `random-ids`.
-  *Mitigación:* ninguna nueva — mismo comportamiento ya aceptado en toda la migración, no es una regresión de este spec.
+- **Cobertura de tests insuficiente para los comportamientos raros preservados** (ver [Deuda de testing pendiente](#deuda-de-testing-pendiente)) — a diferencia de spec 13, que sí probó cada comportamiento raro explícitamente, acá solo se probó el camino feliz. Un refactor futuro de `VerificadorDeOpciones` podría cambiar silenciosamente el comportamiento de `NullPointerException`/lista vacía/cardinalidad sin que ningún test lo detecte.
+- **`content.api` creció a 12 interfaces + 7 Views nuevas en un solo commit**, todas siguiendo el mismo esqueleto mecánico (`Obtener...Query`/`ActualizarCritico...Command` por tipo). Es la superficie pública de un slice completo escrita de una sola vez sin iteración — mayor probabilidad de que algún detalle quede inconsistente entre los 6 tipos (p. ej. nombres de campo) sin que se note hasta que algo la consuma distinto.
+- **El fallback muerto en `VerificarRespuestaController` (`PreguntaService` + rama `else`) sigue siendo un séptimo punto de registro manual no eliminado** — mismo riesgo que documentaba el borrador para un tipo de pregunta futuro, pero ahora además con código inalcanzable conviviendo con el dispatch real, lo que dificulta leer el controller y confirmar que efectivamente no se usa.
+- **Este documento fue reescrito una vez para reflejar la realidad; nada garantiza que no vuelva a divergir.** Si se sigue construyendo sobre `answering`/`content.api` sin actualizar este spec u otros, el patrón de "el código avanza, el spec se queda atrás" se repite. Vale la pena decidir si specs como este se tratan como documentación viva (se actualizan con cada divergencia) o como bitácora histórica (se cierran y cualquier cambio real abre un spec nuevo, sin reescribir los viejos) — hoy conviven ambos criterios en el repo.
