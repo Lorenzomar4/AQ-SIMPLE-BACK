@@ -1,8 +1,6 @@
 package com.lorenzomar3.AQ.model.AResponder;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.lorenzomar3.AQ.dto.conversor.AResponseItemDTOConversor;
-import com.lorenzomar3.AQ.dto.newDto.AResponderItemListDTO;
 import com.lorenzomar3.AQ.model.TipoAResponder;
 import com.lorenzomar3.AQ.model.View;
 import jakarta.persistence.*;
@@ -71,10 +69,5 @@ public abstract class AResponder {
     public abstract void asignacionDeTipo();
 
     public abstract List<Long> obtenerListaDeIdentificadoresDePreguntas();
-
-
-    public AResponderItemListDTO toResponderItemListDTO() {
-        return AResponseItemDTOConversor.toDTO(this);
-    }
 
 }

@@ -1,9 +1,5 @@
 package com.lorenzomar3.AQ.model.AResponder.Temario;
 
-import com.lorenzomar3.AQ.dto.conversor.TemarioDTOConversor;
-import com.lorenzomar3.AQ.dto.newDto.AResponderItemListDTO;
-import com.lorenzomar3.AQ.dto.newDto.TemarioBasicDTO;
-import com.lorenzomar3.AQ.dto.newDto.TemarioCuestionarioWhitItemListDTO;
 import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import com.lorenzomar3.AQ.model.TipoAResponder;
@@ -98,13 +94,4 @@ public class Temario extends AResponder {
         return listaAResponder.stream().flatMap(elem -> elem.obtenerListaDeIdentificadoresDePreguntas().stream()).toList();
     }
 
-
-    public TemarioBasicDTO toTemarioCuestionarioCardDTO() {
-        return TemarioDTOConversor.toTeamarioCuestionarioCardDTO(this);
-    }
-
-    public TemarioCuestionarioWhitItemListDTO toTemarioCuestionarioWhitItemList() {
-        List<AResponderItemListDTO> itemList = listaAResponder.stream().map(AResponder::toResponderItemListDTO).toList();
-        return new TemarioCuestionarioWhitItemListDTO(id, titulo, fechaDeCreacion, itemList);
-    }
 }
