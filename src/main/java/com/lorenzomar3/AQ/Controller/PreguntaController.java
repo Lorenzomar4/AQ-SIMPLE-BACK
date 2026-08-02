@@ -321,13 +321,6 @@ public class PreguntaController {
 
     }
 
-    @PostMapping("/questions/verify")
-    public ResponseEntity<Boolean> verifyRequestForUser(@RequestBody RespuestaDePreguntaDTO respuestaDelusuario) {
-        logger.info("[POST /questions/verify] preguntaId={}, tipo={}", respuestaDelusuario.idPregunta(), respuestaDelusuario.tipoDePregunta());
-        return new ResponseEntity<>(preguntaService.verifyResponse(respuestaDelusuario), HttpStatus.OK);
-    }
-
-
     @PostMapping("/questions/inverse")
     public ResponseEntity<Void> createInverseQuestion(@RequestBody InverseQuestionCreateDTO inverseQuestionCreateDTO) {
         logger.info("[POST /questions/inverse] preguntaId={}, tipo={}", inverseQuestionCreateDTO.idQuestion(), inverseQuestionCreateDTO.tipo());
