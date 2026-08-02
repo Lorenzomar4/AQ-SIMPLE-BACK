@@ -1,7 +1,6 @@
 package com.lorenzomar3.AQ.Controller;
 
 
-import com.lorenzomar3.AQ.Service.PreguntaService;
 import com.lorenzomar3.AQ.content.application.port.in.CrearCuestionarioUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.CrearIssueInversoUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.CrearIssueUseCase;
@@ -29,9 +28,6 @@ public class TemarioController {
 
     private static final Logger logger = LoggerFactory.getLogger(TemarioController.class);
 
-
-    @Autowired
-    PreguntaService preguntaService;
 
     @Autowired
     ObtenerCuestionariosUseCase obtenerCuestionariosUseCase;

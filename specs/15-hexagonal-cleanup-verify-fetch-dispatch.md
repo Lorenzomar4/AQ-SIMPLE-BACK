@@ -1,6 +1,6 @@
 # Spec 15 — Limpieza de código muerto: fallback legacy y dispatch por `Map` en `PreguntaController`/`VerificarRespuestaController`
 
-**Estado:** Draft
+**Estado:** Implementado
 **Dependencias:** Spec 14 (deja los 6 tipos de pregunta cubiertos en `POST /questions/verify`), specs 11/12 y el commit `16f62f8` (dejan los 6 tipos cubiertos en `fetch`/`fetch-full`/`POST /questions`/`PUT /questions`). Este spec no agrega comportamiento nuevo — solo remueve caminos que quedaron inalcanzables como consecuencia de esos specs.
 **Fecha:** 2026-08-02
 **Objetivo:** Con los 6 tipos de pregunta (`PREGUNTA_SIMPLE`, `VERDADERO_FALSO`, `SELECCION_UNICA`, `OPCION_MULTIPLE`, `DESPLEGABLE_COMPARTIDO`, `DESPLEGABLE_INDEPENDIENTE`) ya cubiertos por handlers hexagonales en los 5 endpoints de pregunta (`fetch`, `fetch-full`, `POST /questions`, `PUT /questions`, `POST /questions/verify`), las ramas `else` que caían a `PreguntaService` (viejo) quedaron sin ningún caller productivo posible — los únicos `TipoAResponder` que podrían activarlas (`CUESTIONARIO`, `TEMA`, `SUBTEMA`) nunca deberían llegar a un endpoint de pregunta. Este spec: (1) elimina esas ramas y reemplaza el fallback silencioso por un `BussinesException` explícito; (2) de paso, migra el dispatch de `if/else` a `Map<TipoAResponder, Function<...>>`, siguiendo el mismo patrón ya usado en `EliminarPreguntaPorIdService`/`ObtenerIdsAleatoriosDePreguntasService` (specs 09/12); (3) borra el código de `Service/PreguntaService`/`Controller/TemarioController` que queda huérfano como consecuencia directa de (1).
@@ -78,17 +78,17 @@ Mismo esqueleto para `fetch-full` (`mapDeObtencionFull`), `POST /questions` (`ma
 
 ## Criterios de aceptación
 
-- [ ] `PreguntaController.getQuestion`/`getQuestionFull`/`createQuestion`/`updateQuestion` despachan vía `Map<TipoAResponder, Function<...>>`; ningún `if/else` por tipo permanece en esos 4 métodos.
-- [ ] `VerificarRespuestaController.verifyRequestForUser` despacha vía `Map<TipoAResponder, Function<RespuestaDePreguntaDTO, Boolean>>`.
-- [ ] Ningún tipo no soportado cae silenciosamente a `PreguntaService` — los 4 métodos de `PreguntaController` y el de `VerificarRespuestaController` lanzan `BussinesException` para un tipo ausente del `Map`.
-- [ ] `PreguntaController` y `VerificarRespuestaController` ya no inyectan `PreguntaService` en ningún punto.
-- [ ] `TemarioController` ya no inyecta `PreguntaService`.
-- [ ] `Service/PreguntaService` ya no tiene el método `obtenerPreguntaFull`.
-- [ ] `Service/PreguntaService.obtenerPregunta`, `.createaQuestion`, `.updateQuestion`, `.verifyResponse`, `.createInverseQuestion`, `.delete`, `.getIssueItems`, `.getListOfPreguntaSimples` siguen existiendo sin cambios (siguen siendo baseline de tests).
-- [ ] `Service/TemarioService` y `Service/ResponderService` no fueron tocados.
-- [ ] El comportamiento observable de los 5 endpoints (`fetch`, `fetch-full`, `POST /questions`, `PUT /questions`, `POST /questions/verify`) para los 6 tipos de pregunta es idéntico al de antes del refactor — mismo JSON de respuesta, mismos códigos HTTP.
-- [ ] `./mvnw test` corre completo y pasa, sin modificar ningún test existente — **verificado por el usuario.**
-- [ ] Verificación manual contra `AQ-SIMPLE-FRONT` de los 6 tipos en los 5 endpoints — **verificado por el usuario.**
+- [x] `PreguntaController.getQuestion`/`getQuestionFull`/`createQuestion`/`updateQuestion` despachan vía `Map<TipoAResponder, Function<...>>`; ningún `if/else` por tipo permanece en esos 4 métodos.
+- [x] `VerificarRespuestaController.verifyRequestForUser` despacha vía `Map<TipoAResponder, Function<RespuestaDePreguntaDTO, Boolean>>`.
+- [x] Ningún tipo no soportado cae silenciosamente a `PreguntaService` — los 4 métodos de `PreguntaController` y el de `VerificarRespuestaController` lanzan `BussinesException` para un tipo ausente del `Map`.
+- [x] `PreguntaController` y `VerificarRespuestaController` ya no inyectan `PreguntaService` en ningún punto.
+- [x] `TemarioController` ya no inyecta `PreguntaService`.
+- [x] `Service/PreguntaService` ya no tiene el método `obtenerPreguntaFull`.
+- [x] `Service/PreguntaService.obtenerPregunta`, `.createaQuestion`, `.updateQuestion`, `.verifyResponse`, `.createInverseQuestion`, `.delete`, `.getIssueItems`, `.getListOfPreguntaSimples` siguen existiendo sin cambios (siguen siendo baseline de tests).
+- [x] `Service/TemarioService` y `Service/ResponderService` no fueron tocados.
+- [x] El comportamiento observable de los 5 endpoints (`fetch`, `fetch-full`, `POST /questions`, `PUT /questions`, `POST /questions/verify`) para los 6 tipos de pregunta es idéntico al de antes del refactor — mismo JSON de respuesta, mismos códigos HTTP (cada rama vieja se movió tal cual a un método privado/lambda, sin tocar su lógica interna).
+- [ ] `./mvnw test` corre completo y pasa, sin modificar ningún test existente — **pendiente, lo corre el usuario.**
+- [ ] Verificación manual contra `AQ-SIMPLE-FRONT` de los 6 tipos en los 5 endpoints — **pendiente, lo corre el usuario.**
 
 ---
 

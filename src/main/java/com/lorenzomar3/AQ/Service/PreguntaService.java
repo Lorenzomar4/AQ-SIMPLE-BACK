@@ -87,17 +87,6 @@ public class PreguntaService {
     }
 
 
-    public Pregunta obtenerPreguntaFull(ObtenerPreguntaDTO getQuestionDTO) {
-        TipoAResponder tipo = getQuestionDTO.tipoAResponder();
-        Long id = getQuestionDTO.id();
-        logger.debug("obtenerPreguntaFull id={}, tipo={}", id, tipo);
-
-        return (Pregunta) mapDeRepositorios.get(tipo)
-                .findByIdWithTeoriaDeLaPregunta(id)
-                .orElseThrow(() -> new BussinesException("No se encuentra una pregunta con el tipo De id solicitadO"));
-    }
-
-
     @Transactional
     public CreateQuestionResponseDTO createaQuestion(PostPreguntaDTO preguntaDTO) {
         logger.info("Creando pregunta tipo={} en temario={}", preguntaDTO.tipo(), preguntaDTO.idTemarioPerteneciente());

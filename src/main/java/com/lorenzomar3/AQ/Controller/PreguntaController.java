@@ -1,7 +1,6 @@
 package com.lorenzomar3.AQ.Controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.lorenzomar3.AQ.Service.PreguntaService;
 import com.lorenzomar3.AQ.content.application.port.in.CrearDesplegableCompartidoUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.CrearDesplegableIndependienteUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.CrearOpcionMultipleUseCase;
@@ -38,7 +37,7 @@ import com.lorenzomar3.AQ.content.application.query.ObtenerDesplegableIndependie
 import com.lorenzomar3.AQ.content.application.command.CrearPreguntaInversaCommand;
 import com.lorenzomar3.AQ.content.application.command.CrearPreguntaInversaHandler;
 import com.lorenzomar3.AQ.dto.newDto.*;
-import com.lorenzomar3.AQ.model.AResponder.AResponder;
+import com.lorenzomar3.AQ.exception.BussinesException;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableCompartido.DesplegableCompartido;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableCompartido.OpcionDeDesplegableCompartido;
@@ -51,22 +50,23 @@ import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.SeleccionUnica;
 import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.VerdaderoOFalso;
 import com.lorenzomar3.AQ.model.TipoAResponder;
 import com.lorenzomar3.AQ.model.View;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 @RestController
 @CrossOrigin(origins = {"*"}, methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
 public class PreguntaController {
     private static final Logger logger = LoggerFactory.getLogger(PreguntaController.class);
-
-    @Autowired
-    PreguntaService preguntaService;
 
     @Autowired
     CrearPreguntaUseCase crearPreguntaUseCase;
@@ -146,32 +146,53 @@ public class PreguntaController {
     @Autowired
     CrearPreguntaInversaHandler crearPreguntaInversaHandler;
 
+    private final Map<TipoAResponder, Function<Long, Object>> mapDeObtencion = new HashMap<>();
+    private final Map<TipoAResponder, Function<Long, Object>> mapDeObtencionFull = new HashMap<>();
+    private final Map<TipoAResponder, Function<PostPreguntaDTO, CreateQuestionResponseDTO>> mapDeCreacion = new HashMap<>();
+    private final Map<TipoAResponder, Function<PostPreguntaDTO, Pregunta>> mapDeEdicion = new HashMap<>();
+
+    @PostConstruct
+    private void init() {
+        mapDeObtencion.put(TipoAResponder.PREGUNTA_SIMPLE, obtenerPreguntaUseCase::obtener);
+        mapDeObtencion.put(TipoAResponder.VERDADERO_FALSO, obtenerVerdaderoOFalsoUseCase::obtener);
+        mapDeObtencion.put(TipoAResponder.SELECCION_UNICA, id -> obtenerSeleccionUnicaQueryHandler.handle(new ObtenerSeleccionUnicaQuery(id)));
+        mapDeObtencion.put(TipoAResponder.OPCION_MULTIPLE, id -> obtenerOpcionMultipleQueryHandler.handle(new ObtenerOpcionMultipleQuery(id)));
+        mapDeObtencion.put(TipoAResponder.DESPLEGABLE_COMPARTIDO, id -> obtenerDesplegableCompartidoQueryHandler.handle(new ObtenerDesplegableCompartidoQuery(id)));
+        mapDeObtencion.put(TipoAResponder.DESPLEGABLE_INDEPENDIENTE, id -> obtenerDesplegableIndependienteQueryHandler.handle(new ObtenerDesplegableIndependienteQuery(id)));
+
+        mapDeObtencionFull.put(TipoAResponder.PREGUNTA_SIMPLE, obtenerPreguntaFullUseCase::obtenerFull);
+        mapDeObtencionFull.put(TipoAResponder.VERDADERO_FALSO, obtenerVerdaderoOFalsoFullUseCase::obtenerFull);
+        mapDeObtencionFull.put(TipoAResponder.SELECCION_UNICA, id -> obtenerSeleccionUnicaFullQueryHandler.handle(new ObtenerSeleccionUnicaFullQuery(id)));
+        mapDeObtencionFull.put(TipoAResponder.OPCION_MULTIPLE, id -> obtenerOpcionMultipleFullQueryHandler.handle(new ObtenerOpcionMultipleFullQuery(id)));
+        mapDeObtencionFull.put(TipoAResponder.DESPLEGABLE_COMPARTIDO, id -> obtenerDesplegableCompartidoFullQueryHandler.handle(new ObtenerDesplegableCompartidoFullQuery(id)));
+        mapDeObtencionFull.put(TipoAResponder.DESPLEGABLE_INDEPENDIENTE, id -> obtenerDesplegableIndependienteFullQueryHandler.handle(new ObtenerDesplegableIndependienteFullQuery(id)));
+
+        mapDeCreacion.put(TipoAResponder.PREGUNTA_SIMPLE, crearPreguntaUseCase::crear);
+        mapDeCreacion.put(TipoAResponder.VERDADERO_FALSO, crearVerdaderoOFalsoUseCase::crear);
+        mapDeCreacion.put(TipoAResponder.SELECCION_UNICA, crearSeleccionUnicaUseCase::crear);
+        mapDeCreacion.put(TipoAResponder.OPCION_MULTIPLE, crearOpcionMultipleUseCase::crear);
+        mapDeCreacion.put(TipoAResponder.DESPLEGABLE_COMPARTIDO, crearDesplegableCompartidoUseCase::crear);
+        mapDeCreacion.put(TipoAResponder.DESPLEGABLE_INDEPENDIENTE, crearDesplegableIndependienteUseCase::crear);
+
+        mapDeEdicion.put(TipoAResponder.PREGUNTA_SIMPLE, this::editarPreguntaSimple);
+        mapDeEdicion.put(TipoAResponder.VERDADERO_FALSO, this::editarVerdaderoOFalso);
+        mapDeEdicion.put(TipoAResponder.SELECCION_UNICA, this::editarSeleccionUnica);
+        mapDeEdicion.put(TipoAResponder.OPCION_MULTIPLE, this::editarOpcionMultiple);
+        mapDeEdicion.put(TipoAResponder.DESPLEGABLE_COMPARTIDO, this::editarDesplegableCompartido);
+        mapDeEdicion.put(TipoAResponder.DESPLEGABLE_INDEPENDIENTE, this::editarDesplegableIndependiente);
+    }
+
 
     @PostMapping("/questions/fetch")
     public ResponseEntity<Object> getQuestion(@RequestBody ObtenerPreguntaDTO getQuestionDTO) {
         logger.info("[POST /questions/fetch] id={}, tipo={}", getQuestionDTO.id(), getQuestionDTO.tipoAResponder());
 
-        Object respuesta;
-        if (getQuestionDTO.tipoAResponder() == TipoAResponder.PREGUNTA_SIMPLE) {
-            respuesta = obtenerPreguntaUseCase.obtener(getQuestionDTO.id());
-        } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.VERDADERO_FALSO) {
-            respuesta = obtenerVerdaderoOFalsoUseCase.obtener(getQuestionDTO.id());
-        } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.SELECCION_UNICA) {
-            respuesta = obtenerSeleccionUnicaQueryHandler.handle(new ObtenerSeleccionUnicaQuery(getQuestionDTO.id()));
-        } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.OPCION_MULTIPLE) {
-            respuesta = obtenerOpcionMultipleQueryHandler.handle(new ObtenerOpcionMultipleQuery(getQuestionDTO.id()));
-        } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.DESPLEGABLE_COMPARTIDO) {
-            respuesta = obtenerDesplegableCompartidoQueryHandler.handle(new ObtenerDesplegableCompartidoQuery(getQuestionDTO.id()));
-        } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.DESPLEGABLE_INDEPENDIENTE) {
-            respuesta = obtenerDesplegableIndependienteQueryHandler.handle(new ObtenerDesplegableIndependienteQuery(getQuestionDTO.id()));
-        } else {
-            Pregunta pregunta = preguntaService.obtenerPregunta(getQuestionDTO.id(), getQuestionDTO.tipoAResponder());
-            MappingJacksonValue vistaFiltrada = new MappingJacksonValue(pregunta);
-            vistaFiltrada.setSerializationView(View.JustToAnswer.class);
-            respuesta = vistaFiltrada;
+        Function<Long, Object> obtener = mapDeObtencion.get(getQuestionDTO.tipoAResponder());
+        if (obtener == null) {
+            throw new BussinesException("Error, el tipo de pregunta solicitado no está soportado");
         }
 
-        return new ResponseEntity<>(respuesta, HttpStatus.OK);
+        return new ResponseEntity<>(obtener.apply(getQuestionDTO.id()), HttpStatus.OK);
     }
 
     @PostMapping("/questions/fetch-full")
@@ -179,27 +200,12 @@ public class PreguntaController {
     public ResponseEntity<Object> getQuestionFull(@RequestBody ObtenerPreguntaDTO getQuestionDTO) {
         logger.info("[POST /questions/fetch-full] id={}, tipo={}", getQuestionDTO.id(), getQuestionDTO.tipoAResponder());
 
-        Object respuesta;
-        if (getQuestionDTO.tipoAResponder() == TipoAResponder.PREGUNTA_SIMPLE) {
-            respuesta = obtenerPreguntaFullUseCase.obtenerFull(getQuestionDTO.id());
-        } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.VERDADERO_FALSO) {
-            respuesta = obtenerVerdaderoOFalsoFullUseCase.obtenerFull(getQuestionDTO.id());
-        } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.SELECCION_UNICA) {
-            respuesta = obtenerSeleccionUnicaFullQueryHandler.handle(new ObtenerSeleccionUnicaFullQuery(getQuestionDTO.id()));
-        } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.OPCION_MULTIPLE) {
-            respuesta = obtenerOpcionMultipleFullQueryHandler.handle(new ObtenerOpcionMultipleFullQuery(getQuestionDTO.id()));
-        } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.DESPLEGABLE_COMPARTIDO) {
-            respuesta = obtenerDesplegableCompartidoFullQueryHandler.handle(new ObtenerDesplegableCompartidoFullQuery(getQuestionDTO.id()));
-        } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.DESPLEGABLE_INDEPENDIENTE) {
-            respuesta = obtenerDesplegableIndependienteFullQueryHandler.handle(new ObtenerDesplegableIndependienteFullQuery(getQuestionDTO.id()));
-        } else {
-            Pregunta pregunta = preguntaService.obtenerPreguntaFull(getQuestionDTO);
-            MappingJacksonValue vistaFiltrada = new MappingJacksonValue(pregunta);
-            vistaFiltrada.setSerializationView(View.Full.class);
-            respuesta = vistaFiltrada;
+        Function<Long, Object> obtenerFull = mapDeObtencionFull.get(getQuestionDTO.tipoAResponder());
+        if (obtenerFull == null) {
+            throw new BussinesException("Error, el tipo de pregunta solicitado no está soportado");
         }
 
-        return new ResponseEntity<>(respuesta, HttpStatus.OK);
+        return new ResponseEntity<>(obtenerFull.apply(getQuestionDTO.id()), HttpStatus.OK);
     }
 
 
@@ -207,28 +213,13 @@ public class PreguntaController {
     public ResponseEntity<CreateQuestionResponseDTO> createQuestion(@RequestBody PostPreguntaDTO getQuestionDTO) {
         logger.info("[POST /questions] tipo={}, temarioId={}", getQuestionDTO.tipo(), getQuestionDTO.idTemarioPerteneciente());
 
-        CreateQuestionResponseDTO createQuestionResponseDTO;
-        if (getQuestionDTO.tipo() == TipoAResponder.PREGUNTA_SIMPLE) {
-            createQuestionResponseDTO = crearPreguntaUseCase.crear(getQuestionDTO);
-        } else if (getQuestionDTO.tipo() == TipoAResponder.VERDADERO_FALSO) {
-            createQuestionResponseDTO = crearVerdaderoOFalsoUseCase.crear(getQuestionDTO);
-        } else if (getQuestionDTO.tipo() == TipoAResponder.SELECCION_UNICA) {
-            createQuestionResponseDTO = crearSeleccionUnicaUseCase.crear(getQuestionDTO);
-        } else if (getQuestionDTO.tipo() == TipoAResponder.OPCION_MULTIPLE) {
-            createQuestionResponseDTO = crearOpcionMultipleUseCase.crear(getQuestionDTO);
-        } else if (getQuestionDTO.tipo() == TipoAResponder.DESPLEGABLE_COMPARTIDO) {
-            createQuestionResponseDTO = crearDesplegableCompartidoUseCase.crear(getQuestionDTO);
-        } else if (getQuestionDTO.tipo() == TipoAResponder.DESPLEGABLE_INDEPENDIENTE) {
-            createQuestionResponseDTO = crearDesplegableIndependienteUseCase.crear(getQuestionDTO);
-        } else {
-            createQuestionResponseDTO = preguntaService.createaQuestion(getQuestionDTO);
+        Function<PostPreguntaDTO, CreateQuestionResponseDTO> crear = mapDeCreacion.get(getQuestionDTO.tipo());
+        if (crear == null) {
+            throw new BussinesException("Error, el tipo de pregunta solicitado no está soportado");
         }
 
-        return new ResponseEntity<>(createQuestionResponseDTO, HttpStatus.OK);
+        return new ResponseEntity<>(crear.apply(getQuestionDTO), HttpStatus.OK);
     }
-
-
-
 
 
     @DeleteMapping("/questions/{id}")
@@ -243,143 +234,12 @@ public class PreguntaController {
     public ResponseEntity<Pregunta> updateQuestion(@RequestBody PostPreguntaDTO getQuestionDTO) {
         logger.info("[PUT /questions] id={}, tipo={}", getQuestionDTO.id(), getQuestionDTO.tipo());
 
-        if (getQuestionDTO.tipo() == TipoAResponder.PREGUNTA_SIMPLE) {
-            com.lorenzomar3.AQ.content.domain.PreguntaSimple actualizada = editarPreguntaUseCase.editar(getQuestionDTO);
-
-            PreguntaSimple respuesta = new PreguntaSimple();
-            respuesta.setId(actualizada.getId());
-            respuesta.setTitulo(actualizada.getTitulo());
-            respuesta.setDescripcion(actualizada.getDescripcion());
-            respuesta.setIdDuenio(actualizada.getIdDuenio());
-            respuesta.setFechaDeCreacion(actualizada.getFechaDeCreacion());
-            respuesta.setTipo(actualizada.getTipo());
-            respuesta.setIntentosParaQueDejeDeSerCriticoDisponible(actualizada.getIntentosParaQueDejeDeSerCriticoDisponible());
-            respuesta.setImagenTitulo(actualizada.getImagenTitulo());
-            respuesta.setRespuestaEstablecida(actualizada.getRespuestaEstablecida());
-            respuesta.setRespuestaPrecisa(actualizada.getRespuestaPrecisa());
-
-            return new ResponseEntity<>(respuesta, HttpStatus.OK);
+        Function<PostPreguntaDTO, Pregunta> editar = mapDeEdicion.get(getQuestionDTO.tipo());
+        if (editar == null) {
+            throw new BussinesException("Error, el tipo de pregunta solicitado no está soportado");
         }
 
-        if (getQuestionDTO.tipo() == TipoAResponder.VERDADERO_FALSO) {
-            com.lorenzomar3.AQ.content.domain.VerdaderoOFalso actualizada = editarVerdaderoOFalsoUseCase.editar(getQuestionDTO);
-
-            VerdaderoOFalso respuesta = new VerdaderoOFalso();
-            respuesta.setId(actualizada.getId());
-            respuesta.setTitulo(actualizada.getTitulo());
-            respuesta.setDescripcion(actualizada.getDescripcion());
-            respuesta.setIdDuenio(actualizada.getIdDuenio());
-            respuesta.setFechaDeCreacion(actualizada.getFechaDeCreacion());
-            respuesta.setTipo(actualizada.getTipo());
-            respuesta.setIntentosParaQueDejeDeSerCriticoDisponible(actualizada.getIntentosParaQueDejeDeSerCriticoDisponible());
-            respuesta.setImagenTitulo(actualizada.getImagenTitulo());
-            respuesta.respuestaVerdadera = actualizada.getRespuestaVerdadera();
-
-            return new ResponseEntity<>(respuesta, HttpStatus.OK);
-        }
-
-        if (getQuestionDTO.tipo() == TipoAResponder.SELECCION_UNICA) {
-            com.lorenzomar3.AQ.content.domain.SeleccionUnica actualizada = editarSeleccionUnicaUseCase.editar(getQuestionDTO);
-
-            SeleccionUnica respuesta = new SeleccionUnica();
-            respuesta.setId(actualizada.getId());
-            respuesta.setTitulo(actualizada.getTitulo());
-            respuesta.setDescripcion(actualizada.getDescripcion());
-            respuesta.setIdDuenio(actualizada.getIdDuenio());
-            respuesta.setFechaDeCreacion(actualizada.getFechaDeCreacion());
-            respuesta.setTipo(actualizada.getTipo());
-            respuesta.setIntentosParaQueDejeDeSerCriticoDisponible(actualizada.getIntentosParaQueDejeDeSerCriticoDisponible());
-            respuesta.setImagenTitulo(actualizada.getImagenTitulo());
-            respuesta.setListaDeOpcionesConSuRespuestaReal(
-                    actualizada.getListaDeOpciones().stream().map(opcion -> {
-                        Opcion opcionVieja = new Opcion(opcion.getOpcion(), opcion.getLaRespuestaEs());
-                        opcionVieja.setId(opcion.getId());
-                        return opcionVieja;
-                    }).toList()
-            );
-
-            return new ResponseEntity<>(respuesta, HttpStatus.OK);
-        }
-
-        if (getQuestionDTO.tipo() == TipoAResponder.OPCION_MULTIPLE) {
-            com.lorenzomar3.AQ.content.domain.OpcionMultiple actualizada = editarOpcionMultipleUseCase.editar(getQuestionDTO);
-
-            OpcionMultiple respuesta = new OpcionMultiple();
-            respuesta.setId(actualizada.getId());
-            respuesta.setTitulo(actualizada.getTitulo());
-            respuesta.setDescripcion(actualizada.getDescripcion());
-            respuesta.setIdDuenio(actualizada.getIdDuenio());
-            respuesta.setFechaDeCreacion(actualizada.getFechaDeCreacion());
-            respuesta.setTipo(actualizada.getTipo());
-            respuesta.setIntentosParaQueDejeDeSerCriticoDisponible(actualizada.getIntentosParaQueDejeDeSerCriticoDisponible());
-            respuesta.setImagenTitulo(actualizada.getImagenTitulo());
-            respuesta.setListaDeOpcionesConSuRespuestaReal(
-                    actualizada.getListaDeOpciones().stream().map(opcion -> {
-                        Opcion opcionVieja = new Opcion(opcion.getOpcion(), opcion.getLaRespuestaEs());
-                        opcionVieja.setId(opcion.getId());
-                        return opcionVieja;
-                    }).toList()
-            );
-
-            return new ResponseEntity<>(respuesta, HttpStatus.OK);
-        }
-
-        if (getQuestionDTO.tipo() == TipoAResponder.DESPLEGABLE_COMPARTIDO) {
-            com.lorenzomar3.AQ.content.domain.DesplegableCompartido actualizada = editarDesplegableCompartidoUseCase.editar(getQuestionDTO);
-
-            DesplegableCompartido respuesta = new DesplegableCompartido();
-            respuesta.setId(actualizada.getId());
-            respuesta.setTitulo(actualizada.getTitulo());
-            respuesta.setDescripcion(actualizada.getDescripcion());
-            respuesta.setIdDuenio(actualizada.getIdDuenio());
-            respuesta.setFechaDeCreacion(actualizada.getFechaDeCreacion());
-            respuesta.setTipo(actualizada.getTipo());
-            respuesta.setIntentosParaQueDejeDeSerCriticoDisponible(actualizada.getIntentosParaQueDejeDeSerCriticoDisponible());
-            respuesta.setImagenTitulo(actualizada.getImagenTitulo());
-            respuesta.setListaDeOpcionDesplegableCompartido(
-                    actualizada.getListaDeOpciones().stream().map(opcion -> {
-                        OpcionDeDesplegableCompartido opcionVieja = new OpcionDeDesplegableCompartido(opcion.getPregunta(), opcion.getRespuesta());
-                        opcionVieja.setId(opcion.getId());
-                        return opcionVieja;
-                    }).toList()
-            );
-
-            return new ResponseEntity<>(respuesta, HttpStatus.OK);
-        }
-
-        if (getQuestionDTO.tipo() == TipoAResponder.DESPLEGABLE_INDEPENDIENTE) {
-            com.lorenzomar3.AQ.content.domain.DesplegableIndependiente actualizada = editarDesplegableIndependienteUseCase.editar(getQuestionDTO);
-
-            DesplegableIndependiente respuesta = new DesplegableIndependiente();
-            respuesta.setId(actualizada.getId());
-            respuesta.setTitulo(actualizada.getTitulo());
-            respuesta.setDescripcion(actualizada.getDescripcion());
-            respuesta.setIdDuenio(actualizada.getIdDuenio());
-            respuesta.setFechaDeCreacion(actualizada.getFechaDeCreacion());
-            respuesta.setTipo(actualizada.getTipo());
-            respuesta.setIntentosParaQueDejeDeSerCriticoDisponible(actualizada.getIntentosParaQueDejeDeSerCriticoDisponible());
-            respuesta.setImagenTitulo(actualizada.getImagenTitulo());
-            respuesta.setListaDeOpcionDesplegableIndependiente(
-                    actualizada.getListaDeOpciones().stream().map(subPregunta -> {
-                        SeleccionUnicaParaDesplegableIndependiente subPreguntaVieja = new SeleccionUnicaParaDesplegableIndependiente(
-                                subPregunta.getTitulo(),
-                                subPregunta.getListaDeOpciones().stream().map(opcion -> {
-                                    Opcion opcionVieja = new Opcion(opcion.getOpcion(), opcion.getLaRespuestaEs());
-                                    opcionVieja.setId(opcion.getId());
-                                    return opcionVieja;
-                                }).toList()
-                        );
-                        subPreguntaVieja.setId(subPregunta.getId());
-                        return subPreguntaVieja;
-                    }).toList()
-            );
-
-            return new ResponseEntity<>(respuesta, HttpStatus.OK);
-        }
-
-        Pregunta pregunta = preguntaService.updateQuestion(getQuestionDTO);
-        return new ResponseEntity<>(pregunta, HttpStatus.OK);
-
+        return new ResponseEntity<>(editar.apply(getQuestionDTO), HttpStatus.OK);
     }
 
     @PostMapping("/questions/inverse")
@@ -390,6 +250,140 @@ public class PreguntaController {
 
         return new ResponseEntity<>(HttpStatus.OK);
 
+    }
+
+    private Pregunta editarPreguntaSimple(PostPreguntaDTO getQuestionDTO) {
+        com.lorenzomar3.AQ.content.domain.PreguntaSimple actualizada = editarPreguntaUseCase.editar(getQuestionDTO);
+
+        PreguntaSimple respuesta = new PreguntaSimple();
+        respuesta.setId(actualizada.getId());
+        respuesta.setTitulo(actualizada.getTitulo());
+        respuesta.setDescripcion(actualizada.getDescripcion());
+        respuesta.setIdDuenio(actualizada.getIdDuenio());
+        respuesta.setFechaDeCreacion(actualizada.getFechaDeCreacion());
+        respuesta.setTipo(actualizada.getTipo());
+        respuesta.setIntentosParaQueDejeDeSerCriticoDisponible(actualizada.getIntentosParaQueDejeDeSerCriticoDisponible());
+        respuesta.setImagenTitulo(actualizada.getImagenTitulo());
+        respuesta.setRespuestaEstablecida(actualizada.getRespuestaEstablecida());
+        respuesta.setRespuestaPrecisa(actualizada.getRespuestaPrecisa());
+
+        return respuesta;
+    }
+
+    private Pregunta editarVerdaderoOFalso(PostPreguntaDTO getQuestionDTO) {
+        com.lorenzomar3.AQ.content.domain.VerdaderoOFalso actualizada = editarVerdaderoOFalsoUseCase.editar(getQuestionDTO);
+
+        VerdaderoOFalso respuesta = new VerdaderoOFalso();
+        respuesta.setId(actualizada.getId());
+        respuesta.setTitulo(actualizada.getTitulo());
+        respuesta.setDescripcion(actualizada.getDescripcion());
+        respuesta.setIdDuenio(actualizada.getIdDuenio());
+        respuesta.setFechaDeCreacion(actualizada.getFechaDeCreacion());
+        respuesta.setTipo(actualizada.getTipo());
+        respuesta.setIntentosParaQueDejeDeSerCriticoDisponible(actualizada.getIntentosParaQueDejeDeSerCriticoDisponible());
+        respuesta.setImagenTitulo(actualizada.getImagenTitulo());
+        respuesta.respuestaVerdadera = actualizada.getRespuestaVerdadera();
+
+        return respuesta;
+    }
+
+    private Pregunta editarSeleccionUnica(PostPreguntaDTO getQuestionDTO) {
+        com.lorenzomar3.AQ.content.domain.SeleccionUnica actualizada = editarSeleccionUnicaUseCase.editar(getQuestionDTO);
+
+        SeleccionUnica respuesta = new SeleccionUnica();
+        respuesta.setId(actualizada.getId());
+        respuesta.setTitulo(actualizada.getTitulo());
+        respuesta.setDescripcion(actualizada.getDescripcion());
+        respuesta.setIdDuenio(actualizada.getIdDuenio());
+        respuesta.setFechaDeCreacion(actualizada.getFechaDeCreacion());
+        respuesta.setTipo(actualizada.getTipo());
+        respuesta.setIntentosParaQueDejeDeSerCriticoDisponible(actualizada.getIntentosParaQueDejeDeSerCriticoDisponible());
+        respuesta.setImagenTitulo(actualizada.getImagenTitulo());
+        respuesta.setListaDeOpcionesConSuRespuestaReal(
+                actualizada.getListaDeOpciones().stream().map(opcion -> {
+                    Opcion opcionVieja = new Opcion(opcion.getOpcion(), opcion.getLaRespuestaEs());
+                    opcionVieja.setId(opcion.getId());
+                    return opcionVieja;
+                }).toList()
+        );
+
+        return respuesta;
+    }
+
+    private Pregunta editarOpcionMultiple(PostPreguntaDTO getQuestionDTO) {
+        com.lorenzomar3.AQ.content.domain.OpcionMultiple actualizada = editarOpcionMultipleUseCase.editar(getQuestionDTO);
+
+        OpcionMultiple respuesta = new OpcionMultiple();
+        respuesta.setId(actualizada.getId());
+        respuesta.setTitulo(actualizada.getTitulo());
+        respuesta.setDescripcion(actualizada.getDescripcion());
+        respuesta.setIdDuenio(actualizada.getIdDuenio());
+        respuesta.setFechaDeCreacion(actualizada.getFechaDeCreacion());
+        respuesta.setTipo(actualizada.getTipo());
+        respuesta.setIntentosParaQueDejeDeSerCriticoDisponible(actualizada.getIntentosParaQueDejeDeSerCriticoDisponible());
+        respuesta.setImagenTitulo(actualizada.getImagenTitulo());
+        respuesta.setListaDeOpcionesConSuRespuestaReal(
+                actualizada.getListaDeOpciones().stream().map(opcion -> {
+                    Opcion opcionVieja = new Opcion(opcion.getOpcion(), opcion.getLaRespuestaEs());
+                    opcionVieja.setId(opcion.getId());
+                    return opcionVieja;
+                }).toList()
+        );
+
+        return respuesta;
+    }
+
+    private Pregunta editarDesplegableCompartido(PostPreguntaDTO getQuestionDTO) {
+        com.lorenzomar3.AQ.content.domain.DesplegableCompartido actualizada = editarDesplegableCompartidoUseCase.editar(getQuestionDTO);
+
+        DesplegableCompartido respuesta = new DesplegableCompartido();
+        respuesta.setId(actualizada.getId());
+        respuesta.setTitulo(actualizada.getTitulo());
+        respuesta.setDescripcion(actualizada.getDescripcion());
+        respuesta.setIdDuenio(actualizada.getIdDuenio());
+        respuesta.setFechaDeCreacion(actualizada.getFechaDeCreacion());
+        respuesta.setTipo(actualizada.getTipo());
+        respuesta.setIntentosParaQueDejeDeSerCriticoDisponible(actualizada.getIntentosParaQueDejeDeSerCriticoDisponible());
+        respuesta.setImagenTitulo(actualizada.getImagenTitulo());
+        respuesta.setListaDeOpcionDesplegableCompartido(
+                actualizada.getListaDeOpciones().stream().map(opcion -> {
+                    OpcionDeDesplegableCompartido opcionVieja = new OpcionDeDesplegableCompartido(opcion.getPregunta(), opcion.getRespuesta());
+                    opcionVieja.setId(opcion.getId());
+                    return opcionVieja;
+                }).toList()
+        );
+
+        return respuesta;
+    }
+
+    private Pregunta editarDesplegableIndependiente(PostPreguntaDTO getQuestionDTO) {
+        com.lorenzomar3.AQ.content.domain.DesplegableIndependiente actualizada = editarDesplegableIndependienteUseCase.editar(getQuestionDTO);
+
+        DesplegableIndependiente respuesta = new DesplegableIndependiente();
+        respuesta.setId(actualizada.getId());
+        respuesta.setTitulo(actualizada.getTitulo());
+        respuesta.setDescripcion(actualizada.getDescripcion());
+        respuesta.setIdDuenio(actualizada.getIdDuenio());
+        respuesta.setFechaDeCreacion(actualizada.getFechaDeCreacion());
+        respuesta.setTipo(actualizada.getTipo());
+        respuesta.setIntentosParaQueDejeDeSerCriticoDisponible(actualizada.getIntentosParaQueDejeDeSerCriticoDisponible());
+        respuesta.setImagenTitulo(actualizada.getImagenTitulo());
+        respuesta.setListaDeOpcionDesplegableIndependiente(
+                actualizada.getListaDeOpciones().stream().map(subPregunta -> {
+                    SeleccionUnicaParaDesplegableIndependiente subPreguntaVieja = new SeleccionUnicaParaDesplegableIndependiente(
+                            subPregunta.getTitulo(),
+                            subPregunta.getListaDeOpciones().stream().map(opcion -> {
+                                Opcion opcionVieja = new Opcion(opcion.getOpcion(), opcion.getLaRespuestaEs());
+                                opcionVieja.setId(opcion.getId());
+                                return opcionVieja;
+                            }).toList()
+                    );
+                    subPreguntaVieja.setId(subPregunta.getId());
+                    return subPreguntaVieja;
+                }).toList()
+        );
+
+        return respuesta;
     }
 
 }
