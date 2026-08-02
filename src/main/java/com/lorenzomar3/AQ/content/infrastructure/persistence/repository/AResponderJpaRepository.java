@@ -1,15 +1,15 @@
-package com.lorenzomar3.AQ.Repository;
+package com.lorenzomar3.AQ.content.infrastructure.persistence.repository;
 
-import com.lorenzomar3.AQ.model.AResponder.AResponder;
+import com.lorenzomar3.AQ.content.infrastructure.persistence.entity.AResponderEntity;
+import com.lorenzomar3.AQ.projections.AResponderIdTipoProjection;
 import com.lorenzomar3.AQ.projections.QuestionnaireItem;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public interface AResponderRepository extends JpaRepository<AResponder, Long> {
+public interface AResponderJpaRepository extends BaseContentRepositorio<AResponderEntity> {
 
     //Analizar.
     @Query(value = """
@@ -91,16 +91,16 @@ public interface AResponderRepository extends JpaRepository<AResponder, Long> {
                                                                                       SELECT *
                                                                                       FROM TEMAS_CON_CRITICOS
                                                                                       ORDER BY ID ASC
-            
-            
+
+
                                                                                       )
                                                                  SELECT id, titulo as name , fecha_de_creacion as creationDate , tipo as type , isCritic , CASE
                                                                                             WHEN UT.tipo != 'TEMA' AND UT.tipo != 'SUBTEMA' THEN 0
                                                                                             ELSE (select count(*) from aresponder  ar2 where id_del_duenio = UT.id and ar2.tipo not in ('TEMA','SUBTEMA') )
                                                                                             END              AS numberOfQuestions
                                                                  FROM UNION_TABLAS UT;
-            
-            
+
+
             """, nativeQuery = true)
     List<QuestionnaireItem> getIssueItems(@Param("id") Long id); //En un futuro analizar la subconsulta y buscar alternativas mas rapidas
 
@@ -130,9 +130,18 @@ public interface AResponderRepository extends JpaRepository<AResponder, Long> {
             """, nativeQuery = true)
     ArrayList<Long> getCriticsIdsForQuestion(@Param("id") Long id);
 
-
-
-
-
+    @Query(value = """
+            WITH RECURSIVE TODO_EL_CONTENIDO_DEL_TEMA AS (
+                SELECT ID, id_del_duenio, tipo, 1 as nivel
+                FROM aresponder WHERE id = :id
+                UNION ALL
+                SELECT ar.ID, ar.id_del_duenio, ar.tipo, nivel + 1
+                FROM aresponder ar
+                INNER JOIN TODO_EL_CONTENIDO_DEL_TEMA sp ON sp.id = ar.id_del_duenio
+            )
+            SELECT id, tipo as type
+            FROM TODO_EL_CONTENIDO_DEL_TEMA
+            WHERE nivel > 1
+            """, nativeQuery = true)
+    List<AResponderIdTipoProjection> findDescendantIds(@Param("id") Long id);
 }
-
