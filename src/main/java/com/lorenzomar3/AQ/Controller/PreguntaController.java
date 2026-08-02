@@ -19,6 +19,24 @@ import com.lorenzomar3.AQ.content.application.port.in.ObtenerPreguntaFullUseCase
 import com.lorenzomar3.AQ.content.application.port.in.ObtenerPreguntaUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.ObtenerVerdaderoOFalsoFullUseCase;
 import com.lorenzomar3.AQ.content.application.port.in.ObtenerVerdaderoOFalsoUseCase;
+import com.lorenzomar3.AQ.content.application.query.ObtenerSeleccionUnicaFullQuery;
+import com.lorenzomar3.AQ.content.application.query.ObtenerSeleccionUnicaFullQueryHandler;
+import com.lorenzomar3.AQ.content.application.query.ObtenerSeleccionUnicaQuery;
+import com.lorenzomar3.AQ.content.application.query.ObtenerSeleccionUnicaQueryHandler;
+import com.lorenzomar3.AQ.content.application.query.ObtenerOpcionMultipleFullQuery;
+import com.lorenzomar3.AQ.content.application.query.ObtenerOpcionMultipleFullQueryHandler;
+import com.lorenzomar3.AQ.content.application.query.ObtenerOpcionMultipleQuery;
+import com.lorenzomar3.AQ.content.application.query.ObtenerOpcionMultipleQueryHandler;
+import com.lorenzomar3.AQ.content.application.query.ObtenerDesplegableCompartidoFullQuery;
+import com.lorenzomar3.AQ.content.application.query.ObtenerDesplegableCompartidoFullQueryHandler;
+import com.lorenzomar3.AQ.content.application.query.ObtenerDesplegableCompartidoQuery;
+import com.lorenzomar3.AQ.content.application.query.ObtenerDesplegableCompartidoQueryHandler;
+import com.lorenzomar3.AQ.content.application.query.ObtenerDesplegableIndependienteFullQuery;
+import com.lorenzomar3.AQ.content.application.query.ObtenerDesplegableIndependienteFullQueryHandler;
+import com.lorenzomar3.AQ.content.application.query.ObtenerDesplegableIndependienteQuery;
+import com.lorenzomar3.AQ.content.application.query.ObtenerDesplegableIndependienteQueryHandler;
+import com.lorenzomar3.AQ.content.application.command.CrearPreguntaInversaCommand;
+import com.lorenzomar3.AQ.content.application.command.CrearPreguntaInversaHandler;
 import com.lorenzomar3.AQ.dto.newDto.*;
 import com.lorenzomar3.AQ.model.AResponder.AResponder;
 import com.lorenzomar3.AQ.model.AResponder.Pregunta;
@@ -101,6 +119,33 @@ public class PreguntaController {
     @Autowired
     ObtenerVerdaderoOFalsoFullUseCase obtenerVerdaderoOFalsoFullUseCase;
 
+    @Autowired
+    ObtenerSeleccionUnicaQueryHandler obtenerSeleccionUnicaQueryHandler;
+
+    @Autowired
+    ObtenerSeleccionUnicaFullQueryHandler obtenerSeleccionUnicaFullQueryHandler;
+
+    @Autowired
+    ObtenerOpcionMultipleQueryHandler obtenerOpcionMultipleQueryHandler;
+
+    @Autowired
+    ObtenerOpcionMultipleFullQueryHandler obtenerOpcionMultipleFullQueryHandler;
+
+    @Autowired
+    ObtenerDesplegableCompartidoQueryHandler obtenerDesplegableCompartidoQueryHandler;
+
+    @Autowired
+    ObtenerDesplegableCompartidoFullQueryHandler obtenerDesplegableCompartidoFullQueryHandler;
+
+    @Autowired
+    ObtenerDesplegableIndependienteQueryHandler obtenerDesplegableIndependienteQueryHandler;
+
+    @Autowired
+    ObtenerDesplegableIndependienteFullQueryHandler obtenerDesplegableIndependienteFullQueryHandler;
+
+    @Autowired
+    CrearPreguntaInversaHandler crearPreguntaInversaHandler;
+
 
     @PostMapping("/questions/fetch")
     public ResponseEntity<Object> getQuestion(@RequestBody ObtenerPreguntaDTO getQuestionDTO) {
@@ -111,6 +156,14 @@ public class PreguntaController {
             respuesta = obtenerPreguntaUseCase.obtener(getQuestionDTO.id());
         } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.VERDADERO_FALSO) {
             respuesta = obtenerVerdaderoOFalsoUseCase.obtener(getQuestionDTO.id());
+        } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.SELECCION_UNICA) {
+            respuesta = obtenerSeleccionUnicaQueryHandler.handle(new ObtenerSeleccionUnicaQuery(getQuestionDTO.id()));
+        } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.OPCION_MULTIPLE) {
+            respuesta = obtenerOpcionMultipleQueryHandler.handle(new ObtenerOpcionMultipleQuery(getQuestionDTO.id()));
+        } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.DESPLEGABLE_COMPARTIDO) {
+            respuesta = obtenerDesplegableCompartidoQueryHandler.handle(new ObtenerDesplegableCompartidoQuery(getQuestionDTO.id()));
+        } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.DESPLEGABLE_INDEPENDIENTE) {
+            respuesta = obtenerDesplegableIndependienteQueryHandler.handle(new ObtenerDesplegableIndependienteQuery(getQuestionDTO.id()));
         } else {
             Pregunta pregunta = preguntaService.obtenerPregunta(getQuestionDTO.id(), getQuestionDTO.tipoAResponder());
             MappingJacksonValue vistaFiltrada = new MappingJacksonValue(pregunta);
@@ -131,6 +184,14 @@ public class PreguntaController {
             respuesta = obtenerPreguntaFullUseCase.obtenerFull(getQuestionDTO.id());
         } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.VERDADERO_FALSO) {
             respuesta = obtenerVerdaderoOFalsoFullUseCase.obtenerFull(getQuestionDTO.id());
+        } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.SELECCION_UNICA) {
+            respuesta = obtenerSeleccionUnicaFullQueryHandler.handle(new ObtenerSeleccionUnicaFullQuery(getQuestionDTO.id()));
+        } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.OPCION_MULTIPLE) {
+            respuesta = obtenerOpcionMultipleFullQueryHandler.handle(new ObtenerOpcionMultipleFullQuery(getQuestionDTO.id()));
+        } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.DESPLEGABLE_COMPARTIDO) {
+            respuesta = obtenerDesplegableCompartidoFullQueryHandler.handle(new ObtenerDesplegableCompartidoFullQuery(getQuestionDTO.id()));
+        } else if (getQuestionDTO.tipoAResponder() == TipoAResponder.DESPLEGABLE_INDEPENDIENTE) {
+            respuesta = obtenerDesplegableIndependienteFullQueryHandler.handle(new ObtenerDesplegableIndependienteFullQuery(getQuestionDTO.id()));
         } else {
             Pregunta pregunta = preguntaService.obtenerPreguntaFull(getQuestionDTO);
             MappingJacksonValue vistaFiltrada = new MappingJacksonValue(pregunta);
@@ -324,9 +385,8 @@ public class PreguntaController {
     @PostMapping("/questions/inverse")
     public ResponseEntity<Void> createInverseQuestion(@RequestBody InverseQuestionCreateDTO inverseQuestionCreateDTO) {
         logger.info("[POST /questions/inverse] preguntaId={}, tipo={}", inverseQuestionCreateDTO.idQuestion(), inverseQuestionCreateDTO.tipo());
-        preguntaService.createInverseQuestion(inverseQuestionCreateDTO);
-
-
+        crearPreguntaInversaHandler.ejecutar(
+                new CrearPreguntaInversaCommand(inverseQuestionCreateDTO.idQuestion(), inverseQuestionCreateDTO.tipo()));
 
         return new ResponseEntity<>(HttpStatus.OK);
 

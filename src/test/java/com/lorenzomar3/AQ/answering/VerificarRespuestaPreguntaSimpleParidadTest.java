@@ -3,7 +3,8 @@ package com.lorenzomar3.AQ.answering;
 import com.lorenzomar3.AQ.Repository.PreguntaRepository.PreguntaSimpleRepository;
 import com.lorenzomar3.AQ.Repository.TemarioRepository;
 import com.lorenzomar3.AQ.Service.PreguntaService;
-import com.lorenzomar3.AQ.answering.application.port.in.VerificarRespuestaPreguntaSimpleUseCase;
+import com.lorenzomar3.AQ.answering.application.command.VerificarRespuestaPreguntaSimpleCommand;
+import com.lorenzomar3.AQ.answering.application.command.VerificarRespuestaPreguntaSimpleHandler;
 import com.lorenzomar3.AQ.content.application.port.in.CrearPreguntaUseCase;
 import com.lorenzomar3.AQ.dto.newDto.PostPreguntaDTO;
 import com.lorenzomar3.AQ.dto.newDto.RespuestaDePreguntaDTO;
@@ -41,7 +42,7 @@ class VerificarRespuestaPreguntaSimpleParidadTest {
     private CrearPreguntaUseCase crearPreguntaUseCase;
 
     @Autowired
-    private VerificarRespuestaPreguntaSimpleUseCase verificarRespuestaPreguntaSimpleUseCase;
+    private VerificarRespuestaPreguntaSimpleHandler verificarRespuestaPreguntaSimpleHandler;
 
     private Long temarioId;
     private final List<Long> preguntasCreadas = new ArrayList<>();
@@ -85,7 +86,8 @@ class VerificarRespuestaPreguntaSimpleParidadTest {
         RespuestaDePreguntaDTO respuestaNuevo = new RespuestaDePreguntaDTO(idNuevo, TipoAResponder.PREGUNTA_SIMPLE, null, true, null, null, null);
 
         Boolean resultadoViejo = preguntaServiceViejo.verifyResponse(respuestaViejo);
-        Boolean resultadoNuevo = verificarRespuestaPreguntaSimpleUseCase.verificar(respuestaNuevo);
+        Boolean resultadoNuevo = verificarRespuestaPreguntaSimpleHandler.ejecutar(
+                new VerificarRespuestaPreguntaSimpleCommand(respuestaNuevo.idPregunta(), respuestaNuevo.respuestaBooleana()));
 
         assertEquals(resultadoViejo, resultadoNuevo);
 
@@ -103,7 +105,8 @@ class VerificarRespuestaPreguntaSimpleParidadTest {
         RespuestaDePreguntaDTO respuestaNuevo = new RespuestaDePreguntaDTO(idNuevo, TipoAResponder.PREGUNTA_SIMPLE, null, false, null, null, null);
 
         Boolean resultadoViejo = preguntaServiceViejo.verifyResponse(respuestaViejo);
-        Boolean resultadoNuevo = verificarRespuestaPreguntaSimpleUseCase.verificar(respuestaNuevo);
+        Boolean resultadoNuevo = verificarRespuestaPreguntaSimpleHandler.ejecutar(
+                new VerificarRespuestaPreguntaSimpleCommand(respuestaNuevo.idPregunta(), respuestaNuevo.respuestaBooleana()));
 
         assertEquals(resultadoViejo, resultadoNuevo);
 
@@ -116,6 +119,7 @@ class VerificarRespuestaPreguntaSimpleParidadTest {
     void verificarConIdInexistenteLanzaBussinesException() {
         RespuestaDePreguntaDTO respuesta = new RespuestaDePreguntaDTO(ID_INEXISTENTE, TipoAResponder.PREGUNTA_SIMPLE, null, true, null, null, null);
 
-        assertThrows(BussinesException.class, () -> verificarRespuestaPreguntaSimpleUseCase.verificar(respuesta));
+        assertThrows(BussinesException.class, () -> verificarRespuestaPreguntaSimpleHandler.ejecutar(
+                new VerificarRespuestaPreguntaSimpleCommand(respuesta.idPregunta(), respuesta.respuestaBooleana())));
     }
 }

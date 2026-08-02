@@ -3,7 +3,8 @@ package com.lorenzomar3.AQ.answering;
 import com.lorenzomar3.AQ.Repository.PreguntaRepository.PreguntaRepository;
 import com.lorenzomar3.AQ.Repository.TemarioRepository;
 import com.lorenzomar3.AQ.Service.PreguntaService;
-import com.lorenzomar3.AQ.answering.application.port.in.VerificarRespuestaVerdaderoOFalsoUseCase;
+import com.lorenzomar3.AQ.answering.application.command.VerificarRespuestaVerdaderoOFalsoCommand;
+import com.lorenzomar3.AQ.answering.application.command.VerificarRespuestaVerdaderoOFalsoHandler;
 import com.lorenzomar3.AQ.content.application.port.in.CrearVerdaderoOFalsoUseCase;
 import com.lorenzomar3.AQ.dto.newDto.PostPreguntaDTO;
 import com.lorenzomar3.AQ.dto.newDto.RespuestaDePreguntaDTO;
@@ -41,7 +42,7 @@ class VerificarRespuestaVerdaderoOFalsoParidadTest {
     private CrearVerdaderoOFalsoUseCase crearVerdaderoOFalsoUseCase;
 
     @Autowired
-    private VerificarRespuestaVerdaderoOFalsoUseCase verificarRespuestaVerdaderoOFalsoUseCase;
+    private VerificarRespuestaVerdaderoOFalsoHandler verificarRespuestaVerdaderoOFalsoHandler;
 
     private Long temarioId;
     private final List<Long> preguntasCreadas = new ArrayList<>();
@@ -98,7 +99,8 @@ class VerificarRespuestaVerdaderoOFalsoParidadTest {
             RespuestaDePreguntaDTO respuestaNuevo = new RespuestaDePreguntaDTO(idNuevo, TipoAResponder.VERDADERO_FALSO, null, respuestaDelUsuario, null, null, null);
 
             Boolean resultadoViejo = preguntaServiceViejo.verifyResponse(respuestaViejo);
-            Boolean resultadoNuevo = verificarRespuestaVerdaderoOFalsoUseCase.verificar(respuestaNuevo);
+            Boolean resultadoNuevo = verificarRespuestaVerdaderoOFalsoHandler.ejecutar(
+                    new VerificarRespuestaVerdaderoOFalsoCommand(respuestaNuevo.idPregunta(), respuestaNuevo.respuestaBooleana()));
 
             assertEquals(resultadoViejo, resultadoNuevo);
 
@@ -112,6 +114,7 @@ class VerificarRespuestaVerdaderoOFalsoParidadTest {
     void verificarConIdInexistenteLanzaBussinesException() {
         RespuestaDePreguntaDTO respuesta = new RespuestaDePreguntaDTO(ID_INEXISTENTE, TipoAResponder.VERDADERO_FALSO, null, true, null, null, null);
 
-        assertThrows(BussinesException.class, () -> verificarRespuestaVerdaderoOFalsoUseCase.verificar(respuesta));
+        assertThrows(BussinesException.class, () -> verificarRespuestaVerdaderoOFalsoHandler.ejecutar(
+                new VerificarRespuestaVerdaderoOFalsoCommand(respuesta.idPregunta(), respuesta.respuestaBooleana())));
     }
 }

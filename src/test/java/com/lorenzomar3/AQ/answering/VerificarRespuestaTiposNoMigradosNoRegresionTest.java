@@ -28,6 +28,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,12 +39,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Verifica, a través del controller real (MockMvc), que los 4 tipos de pregunta no migrados
- * por este spec (SELECCION_UNICA, OPCION_MULTIPLE, DESPLEGABLE_COMPARTIDO, DESPLEGABLE_INDEPENDIENTE)
- * siguen respondiendo lo mismo que antes en POST /questions/verify: el dispatch por tipo en
- * VerificarRespuestaController cae para ellos al mismo camino viejo (PreguntaService.verifyResponse),
- * sin cambios. Cada test compara ese camino viejo invocado directamente (fixture A) contra el mismo
- * camino atravesando el controller nuevo vía MockMvc (fixture B).
+ * Verifica, a través del controller real (MockMvc), que SELECCION_UNICA, OPCION_MULTIPLE,
+ * DESPLEGABLE_COMPARTIDO y DESPLEGABLE_INDEPENDIENTE devuelven en POST /questions/verify el
+ * mismo resultado que el camino legacy (PreguntaService.verifyResponse) tras migrarlos a los
+ * Command/Handler de answering/ (VerificarRespuestaSeleccionUnicaHandler y análogos). Cada test
+ * compara el camino viejo invocado directamente (fixture A) contra el nuevo camino atravesando
+ * el controller vía MockMvc (fixture B), sobre datos equivalentes.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -74,6 +76,9 @@ class VerificarRespuestaTiposNoMigradosNoRegresionTest {
 
     @Autowired
     private CrearDesplegableIndependienteUseCase crearDesplegableIndependienteUseCase;
+
+    @Autowired
+    private PlatformTransactionManager transactionManager;
 
     private Long temarioId;
     private final List<Long> preguntasCreadas = new ArrayList<>();
@@ -205,8 +210,8 @@ class VerificarRespuestaTiposNoMigradosNoRegresionTest {
         Long idNuevo = obtenerUltimoHijo();
         preguntasCreadas.add(idNuevo);
 
-        DesplegableIndependiente entidadVieja = (DesplegableIndependiente) preguntaRepositoryViejo.findById(idViejo).orElseThrow();
-        DesplegableIndependiente entidadNueva = (DesplegableIndependiente) preguntaRepositoryViejo.findById(idNuevo).orElseThrow();
+        DesplegableIndependiente entidadVieja = obtenerDesplegableIndependienteConOpcionesInicializadas(idViejo);
+        DesplegableIndependiente entidadNueva = obtenerDesplegableIndependienteConOpcionesInicializadas(idNuevo);
 
         RespuestaDePreguntaDTO respuestaViejo = new RespuestaDePreguntaDTO(idViejo, TipoAResponder.DESPLEGABLE_INDEPENDIENTE, null, null,
                 null, null, entidadVieja.getListaDeOpcionDesplegableIndependiente());
@@ -214,5 +219,22 @@ class VerificarRespuestaTiposNoMigradosNoRegresionTest {
                 null, null, entidadNueva.getListaDeOpcionDesplegableIndependiente());
 
         verificarPorAmbosCaminosDevuelveElMismoResultado(idViejo, respuestaViejo, idNuevo, respuestaNuevo);
+    }
+
+    /**
+     * A diferencia de los demas tipos, SeleccionUnicaParaDesplegableIndependiente tiene su propia
+     * coleccion lazy anidada (listaDeOpcionesDisponible). preguntaRepositoryViejo.findById por si
+     * solo cierra su transaccion apenas retorna, así que recorrerla despues (fuera de esta funcion)
+     * dispara LazyInitializationException. Se fuerza la inicializacion acá, dentro de una
+     * transaccion corta y dedicada solo a este fetch -sin tocar la transaccionalidad de los
+     * altas/bajas del resto del test, que ya funcionan bien tal como estaban.
+     */
+    private DesplegableIndependiente obtenerDesplegableIndependienteConOpcionesInicializadas(Long id) {
+        TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+        return transactionTemplate.execute(status -> {
+            DesplegableIndependiente entidad = (DesplegableIndependiente) preguntaRepositoryViejo.findById(id).orElseThrow();
+            entidad.getListaDeOpcionDesplegableIndependiente().forEach(sub -> sub.getListaDeOpcionesDisponible().size());
+            return entidad;
+        });
     }
 }

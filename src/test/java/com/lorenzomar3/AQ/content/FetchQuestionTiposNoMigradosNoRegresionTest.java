@@ -32,17 +32,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Este test verifica, a través del controller real (MockMvc), que los 4 tipos de pregunta
- * no migrados por este spec (SELECCION_UNICA, OPCION_MULTIPLE, DESPLEGABLE_COMPARTIDO,
- * DESPLEGABLE_INDEPENDIENTE) siguen respondiendo el mismo contenido que antes, ya que el
- * nuevo dispatch por tipo en PreguntaController cae para ellos al mismo camino viejo
- * (preguntaService), sin cambios.
+ * Este test verifica, a través del controller real (MockMvc), que SELECCION_UNICA,
+ * OPCION_MULTIPLE, DESPLEGABLE_COMPARTIDO y DESPLEGABLE_INDEPENDIENTE devuelven en
+ * POST /questions/fetch y /questions/fetch-full el mismo contenido esperado que antes de
+ * migrarlos a los QueryHandler de content/ (ObtenerSeleccionUnicaQueryHandler y análogos).
  *
  * Las comparaciones se hacen con content().json(...) en modo no-estricto (lenient): no
  * exige orden en las listas (las consultas JPA no tienen ORDER BY) y permite campos extra
- * en la respuesta real -en particular, los campos que revelan la respuesta correcta, cuyo
- * eventual leak en la vista fetch es un bug preexistente fuera de alcance de este spec y
- * que este test no corrige ni verifica.
+ * en la respuesta real. Los nuevos DTO de fetch (SeleccionUnicaFetchDTO y análogos) ya no
+ * incluyen los campos que revelan la respuesta correcta -el leak que tenía el camino legacy
+ * en la vista fetch no se reprodujo a propósito, sin que este test lo exija ni lo verifique.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
