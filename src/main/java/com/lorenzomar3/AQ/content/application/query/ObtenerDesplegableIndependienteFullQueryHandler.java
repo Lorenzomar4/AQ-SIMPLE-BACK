@@ -4,10 +4,10 @@ import com.lorenzomar3.AQ.content.application.port.out.DesplegableIndependienteR
 import com.lorenzomar3.AQ.content.domain.DesplegableIndependiente;
 import com.lorenzomar3.AQ.content.domain.Opcion;
 import com.lorenzomar3.AQ.content.domain.SeleccionUnicaParaDesplegableIndependiente;
-import com.lorenzomar3.AQ.dto.newDto.DesplegableIndependienteFullDTO;
-import com.lorenzomar3.AQ.dto.newDto.OpcionFullDTO;
-import com.lorenzomar3.AQ.dto.newDto.SeleccionUnicaParaDesplegableIndependienteFullDTO;
-import com.lorenzomar3.AQ.exception.BussinesException;
+import com.lorenzomar3.AQ.content.infrastructure.controller.dto.DesplegableIndependienteFullDTO;
+import com.lorenzomar3.AQ.content.infrastructure.controller.dto.OpcionFullDTO;
+import com.lorenzomar3.AQ.content.infrastructure.controller.dto.SeleccionUnicaParaDesplegableIndependienteFullDTO;
+import com.lorenzomar3.AQ.shared.exception.BussinesException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

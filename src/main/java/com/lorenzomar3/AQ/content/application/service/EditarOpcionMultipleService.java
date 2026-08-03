@@ -3,8 +3,8 @@ package com.lorenzomar3.AQ.content.application.service;
 import com.lorenzomar3.AQ.content.application.port.in.EditarOpcionMultipleUseCase;
 import com.lorenzomar3.AQ.content.application.port.out.OpcionMultipleRepositoryPort;
 import com.lorenzomar3.AQ.content.domain.OpcionMultiple;
-import com.lorenzomar3.AQ.dto.newDto.PostPreguntaDTO;
-import com.lorenzomar3.AQ.exception.BussinesException;
+import com.lorenzomar3.AQ.content.infrastructure.controller.dto.PostPreguntaDTO;
+import com.lorenzomar3.AQ.shared.exception.BussinesException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

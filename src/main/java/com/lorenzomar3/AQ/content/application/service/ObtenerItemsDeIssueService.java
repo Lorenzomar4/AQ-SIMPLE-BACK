@@ -4,9 +4,9 @@ import com.lorenzomar3.AQ.content.application.port.in.ObtenerItemsDeIssueUseCase
 import com.lorenzomar3.AQ.content.application.port.out.AResponderItemDetail;
 import com.lorenzomar3.AQ.content.application.port.out.TemarioRepositoryPort;
 import com.lorenzomar3.AQ.content.domain.Temario;
-import com.lorenzomar3.AQ.dto.newDto.IssueItemDTO;
-import com.lorenzomar3.AQ.dto.newDto.IssueWhitItemsDTO;
-import com.lorenzomar3.AQ.exception.BussinesException;
+import com.lorenzomar3.AQ.content.infrastructure.controller.dto.IssueItemDTO;
+import com.lorenzomar3.AQ.content.infrastructure.controller.dto.IssueWhitItemsDTO;
+import com.lorenzomar3.AQ.shared.exception.BussinesException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

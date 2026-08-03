@@ -7,7 +7,7 @@ import com.lorenzomar3.AQ.content.infrastructure.persistence.mapper.TemarioMappe
 import com.lorenzomar3.AQ.content.infrastructure.persistence.repository.PreguntaSimpleJpaRepository;
 import com.lorenzomar3.AQ.content.infrastructure.persistence.repository.TemarioJpaRepository;
 import com.lorenzomar3.AQ.content.infrastructure.persistence.repository.VerdaderoOFalsoJpaRepository;
-import com.lorenzomar3.AQ.model.TipoAResponder;
+import com.lorenzomar3.AQ.content.api.TipoAResponder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;

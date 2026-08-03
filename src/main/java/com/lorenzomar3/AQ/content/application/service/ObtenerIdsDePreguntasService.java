@@ -3,8 +3,8 @@ package com.lorenzomar3.AQ.content.application.service;
 import com.lorenzomar3.AQ.content.application.port.in.ObtenerIdsDePreguntasUseCase;
 import com.lorenzomar3.AQ.content.application.port.out.AResponderChildRef;
 import com.lorenzomar3.AQ.content.application.port.out.TemarioRepositoryPort;
-import com.lorenzomar3.AQ.exception.BussinesException;
-import com.lorenzomar3.AQ.model.TipoAResponder;
+import com.lorenzomar3.AQ.shared.exception.BussinesException;
+import com.lorenzomar3.AQ.content.api.TipoAResponder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

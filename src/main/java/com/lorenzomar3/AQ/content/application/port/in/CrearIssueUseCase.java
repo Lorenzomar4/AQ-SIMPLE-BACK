@@ -1,7 +1,7 @@
 package com.lorenzomar3.AQ.content.application.port.in;
 
-import com.lorenzomar3.AQ.dto.newDto.AResponderItemListDTO;
-import com.lorenzomar3.AQ.dto.newDto.TemarioBasicDTO;
+import com.lorenzomar3.AQ.content.infrastructure.controller.dto.AResponderItemListDTO;
+import com.lorenzomar3.AQ.content.infrastructure.controller.dto.TemarioBasicDTO;
 
 public interface CrearIssueUseCase {
 

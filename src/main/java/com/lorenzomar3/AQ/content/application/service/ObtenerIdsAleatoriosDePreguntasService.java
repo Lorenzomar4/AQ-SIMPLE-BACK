@@ -8,9 +8,9 @@ import com.lorenzomar3.AQ.content.application.port.out.OpcionMultipleRepositoryP
 import com.lorenzomar3.AQ.content.application.port.out.PreguntaSimpleRepositoryPort;
 import com.lorenzomar3.AQ.content.application.port.out.SeleccionUnicaRepositoryPort;
 import com.lorenzomar3.AQ.content.application.port.out.VerdaderoOFalsoRepositoryPort;
-import com.lorenzomar3.AQ.dto.newDto.ObtenerPreguntaDTO;
-import com.lorenzomar3.AQ.exception.BussinesException;
-import com.lorenzomar3.AQ.model.TipoAResponder;
+import com.lorenzomar3.AQ.content.infrastructure.controller.dto.ObtenerPreguntaDTO;
+import com.lorenzomar3.AQ.shared.exception.BussinesException;
+import com.lorenzomar3.AQ.content.api.TipoAResponder;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

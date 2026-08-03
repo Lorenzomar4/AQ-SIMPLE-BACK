@@ -1,8 +1,8 @@
 package com.lorenzomar3.AQ.content.infrastructure.persistence.repository;
 
 import com.lorenzomar3.AQ.content.infrastructure.persistence.entity.AResponderEntity;
-import com.lorenzomar3.AQ.projections.AResponderIdTipoProjection;
-import com.lorenzomar3.AQ.projections.QuestionnaireItem;
+import com.lorenzomar3.AQ.content.infrastructure.controller.projection.AResponderIdTipoProjection;
+import com.lorenzomar3.AQ.content.infrastructure.controller.projection.QuestionnaireItem;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 

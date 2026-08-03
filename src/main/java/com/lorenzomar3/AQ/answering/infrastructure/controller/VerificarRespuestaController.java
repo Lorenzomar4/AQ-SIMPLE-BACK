@@ -15,9 +15,9 @@ import com.lorenzomar3.AQ.answering.application.command.VerificarRespuestaDesple
 import com.lorenzomar3.AQ.answering.application.command.SubPreguntaRespuestaDTO;
 import com.lorenzomar3.AQ.answering.application.command.VerificarRespuestaDesplegableIndependienteCommand;
 import com.lorenzomar3.AQ.answering.application.command.VerificarRespuestaDesplegableIndependienteHandler;
-import com.lorenzomar3.AQ.dto.newDto.RespuestaDePreguntaDTO;
-import com.lorenzomar3.AQ.exception.BussinesException;
-import com.lorenzomar3.AQ.model.TipoAResponder;
+import com.lorenzomar3.AQ.answering.infrastructure.controller.dto.RespuestaDePreguntaDTO;
+import com.lorenzomar3.AQ.shared.exception.BussinesException;
+import com.lorenzomar3.AQ.content.api.TipoAResponder;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
