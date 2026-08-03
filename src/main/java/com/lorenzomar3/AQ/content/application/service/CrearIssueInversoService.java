@@ -6,10 +6,10 @@ import com.lorenzomar3.AQ.content.application.port.out.PreguntaSimpleRepositoryP
 import com.lorenzomar3.AQ.content.application.port.out.TemarioRepositoryPort;
 import com.lorenzomar3.AQ.content.domain.PreguntaSimple;
 import com.lorenzomar3.AQ.content.domain.Temario;
-import com.lorenzomar3.AQ.dto.newDto.AResponderItemListDTO;
-import com.lorenzomar3.AQ.dto.newDto.InverseIssueCreateDTO;
-import com.lorenzomar3.AQ.exception.BussinesException;
-import com.lorenzomar3.AQ.model.TipoAResponder;
+import com.lorenzomar3.AQ.content.infrastructure.controller.dto.AResponderItemListDTO;
+import com.lorenzomar3.AQ.content.infrastructure.controller.dto.InverseIssueCreateDTO;
+import com.lorenzomar3.AQ.shared.exception.BussinesException;
+import com.lorenzomar3.AQ.content.api.TipoAResponder;
 import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

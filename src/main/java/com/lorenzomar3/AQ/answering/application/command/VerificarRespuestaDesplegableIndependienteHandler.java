@@ -7,7 +7,7 @@ import com.lorenzomar3.AQ.answering.domain.SubPreguntaParaResponder;
 import com.lorenzomar3.AQ.content.api.ActualizarCriticoDeDesplegableIndependienteCommand;
 import com.lorenzomar3.AQ.content.api.DesplegableIndependienteParaResponderView;
 import com.lorenzomar3.AQ.content.api.ObtenerDesplegableIndependienteParaResponderQuery;
-import com.lorenzomar3.AQ.exception.BussinesException;
+import com.lorenzomar3.AQ.shared.exception.BussinesException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

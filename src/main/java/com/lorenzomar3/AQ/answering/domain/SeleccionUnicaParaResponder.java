@@ -1,6 +1,6 @@
 package com.lorenzomar3.AQ.answering.domain;
 
-import com.lorenzomar3.AQ.exception.BussinesException;
+import com.lorenzomar3.AQ.shared.exception.BussinesException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -5,10 +5,10 @@ import com.lorenzomar3.AQ.content.application.port.out.OpcionMultipleRepositoryP
 import com.lorenzomar3.AQ.content.application.port.out.TemarioRepositoryPort;
 import com.lorenzomar3.AQ.content.domain.OpcionMultiple;
 import com.lorenzomar3.AQ.content.domain.Temario;
-import com.lorenzomar3.AQ.dto.newDto.CreateQuestionResponseDTO;
-import com.lorenzomar3.AQ.dto.newDto.PostPreguntaDTO;
-import com.lorenzomar3.AQ.exception.BussinesException;
-import com.lorenzomar3.AQ.model.TipoAResponder;
+import com.lorenzomar3.AQ.content.infrastructure.controller.dto.CreateQuestionResponseDTO;
+import com.lorenzomar3.AQ.content.infrastructure.controller.dto.PostPreguntaDTO;
+import com.lorenzomar3.AQ.shared.exception.BussinesException;
+import com.lorenzomar3.AQ.content.api.TipoAResponder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -3,7 +3,7 @@ package com.lorenzomar3.AQ.content.infrastructure.persistence.adapter;
 import com.lorenzomar3.AQ.content.application.port.out.AResponderTipoLookupPort;
 import com.lorenzomar3.AQ.content.infrastructure.persistence.entity.AResponderEntity;
 import com.lorenzomar3.AQ.content.infrastructure.persistence.repository.AResponderJpaRepository;
-import com.lorenzomar3.AQ.model.TipoAResponder;
+import com.lorenzomar3.AQ.content.api.TipoAResponder;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

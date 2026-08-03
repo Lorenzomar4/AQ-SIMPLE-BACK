@@ -1,6 +1,6 @@
 package com.lorenzomar3.AQ.content.domain;
 
-import com.lorenzomar3.AQ.model.TipoAResponder;
+import com.lorenzomar3.AQ.content.api.TipoAResponder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -6,7 +6,7 @@ import com.lorenzomar3.AQ.answering.domain.SeleccionUnicaParaResponder;
 import com.lorenzomar3.AQ.content.api.ActualizarCriticoDeSeleccionUnicaCommand;
 import com.lorenzomar3.AQ.content.api.ObtenerSeleccionUnicaParaResponderQuery;
 import com.lorenzomar3.AQ.content.api.SeleccionUnicaParaResponderView;
-import com.lorenzomar3.AQ.exception.BussinesException;
+import com.lorenzomar3.AQ.shared.exception.BussinesException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

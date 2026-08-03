@@ -13,7 +13,7 @@ import com.lorenzomar3.AQ.content.infrastructure.persistence.repository.Pregunta
 import com.lorenzomar3.AQ.content.infrastructure.persistence.repository.SeleccionUnicaJpaRepository;
 import com.lorenzomar3.AQ.content.infrastructure.persistence.repository.TemarioJpaRepository;
 import com.lorenzomar3.AQ.content.infrastructure.persistence.repository.VerdaderoOFalsoJpaRepository;
-import com.lorenzomar3.AQ.model.TipoAResponder;
+import com.lorenzomar3.AQ.content.api.TipoAResponder;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 

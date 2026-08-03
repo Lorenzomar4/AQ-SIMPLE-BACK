@@ -6,7 +6,7 @@ import com.lorenzomar3.AQ.answering.domain.OpcionParaResponder;
 import com.lorenzomar3.AQ.content.api.ActualizarCriticoDeOpcionMultipleCommand;
 import com.lorenzomar3.AQ.content.api.ObtenerOpcionMultipleParaResponderQuery;
 import com.lorenzomar3.AQ.content.api.OpcionMultipleParaResponderView;
-import com.lorenzomar3.AQ.exception.BussinesException;
+import com.lorenzomar3.AQ.shared.exception.BussinesException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

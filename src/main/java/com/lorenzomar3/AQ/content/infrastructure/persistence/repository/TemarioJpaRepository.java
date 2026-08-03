@@ -1,7 +1,7 @@
 package com.lorenzomar3.AQ.content.infrastructure.persistence.repository;
 
 import com.lorenzomar3.AQ.content.infrastructure.persistence.entity.TemarioEntity;
-import com.lorenzomar3.AQ.model.TipoAResponder;
+import com.lorenzomar3.AQ.content.api.TipoAResponder;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;

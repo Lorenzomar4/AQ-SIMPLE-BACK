@@ -3,8 +3,8 @@ package com.lorenzomar3.AQ.content.application.service;
 import com.lorenzomar3.AQ.content.application.port.in.ObtenerPreguntaFullUseCase;
 import com.lorenzomar3.AQ.content.application.port.out.PreguntaSimpleRepositoryPort;
 import com.lorenzomar3.AQ.content.domain.PreguntaSimple;
-import com.lorenzomar3.AQ.dto.newDto.PreguntaSimpleFullDTO;
-import com.lorenzomar3.AQ.exception.BussinesException;
+import com.lorenzomar3.AQ.content.infrastructure.controller.dto.PreguntaSimpleFullDTO;
+import com.lorenzomar3.AQ.shared.exception.BussinesException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

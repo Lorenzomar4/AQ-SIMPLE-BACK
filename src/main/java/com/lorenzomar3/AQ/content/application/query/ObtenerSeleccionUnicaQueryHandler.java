@@ -3,9 +3,9 @@ package com.lorenzomar3.AQ.content.application.query;
 import com.lorenzomar3.AQ.content.application.port.out.SeleccionUnicaRepositoryPort;
 import com.lorenzomar3.AQ.content.domain.Opcion;
 import com.lorenzomar3.AQ.content.domain.SeleccionUnica;
-import com.lorenzomar3.AQ.dto.newDto.OpcionFetchDTO;
-import com.lorenzomar3.AQ.dto.newDto.SeleccionUnicaFetchDTO;
-import com.lorenzomar3.AQ.exception.BussinesException;
+import com.lorenzomar3.AQ.content.infrastructure.controller.dto.OpcionFetchDTO;
+import com.lorenzomar3.AQ.content.infrastructure.controller.dto.SeleccionUnicaFetchDTO;
+import com.lorenzomar3.AQ.shared.exception.BussinesException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

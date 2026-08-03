@@ -3,9 +3,9 @@ package com.lorenzomar3.AQ.content.application.query;
 import com.lorenzomar3.AQ.content.application.port.out.DesplegableCompartidoRepositoryPort;
 import com.lorenzomar3.AQ.content.domain.DesplegableCompartido;
 import com.lorenzomar3.AQ.content.domain.OpcionDeDesplegableCompartido;
-import com.lorenzomar3.AQ.dto.newDto.DesplegableCompartidoFetchDTO;
-import com.lorenzomar3.AQ.dto.newDto.OpcionDeDesplegableCompartidoFetchDTO;
-import com.lorenzomar3.AQ.exception.BussinesException;
+import com.lorenzomar3.AQ.content.infrastructure.controller.dto.DesplegableCompartidoFetchDTO;
+import com.lorenzomar3.AQ.content.infrastructure.controller.dto.OpcionDeDesplegableCompartidoFetchDTO;
+import com.lorenzomar3.AQ.shared.exception.BussinesException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

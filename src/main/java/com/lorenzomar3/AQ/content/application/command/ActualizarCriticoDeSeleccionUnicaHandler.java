@@ -3,7 +3,7 @@ package com.lorenzomar3.AQ.content.application.command;
 import com.lorenzomar3.AQ.content.api.ActualizarCriticoDeSeleccionUnicaCommand;
 import com.lorenzomar3.AQ.content.application.port.out.SeleccionUnicaRepositoryPort;
 import com.lorenzomar3.AQ.content.domain.SeleccionUnica;
-import com.lorenzomar3.AQ.exception.BussinesException;
+import com.lorenzomar3.AQ.shared.exception.BussinesException;
 import org.springframework.stereotype.Service;
 
 @Service

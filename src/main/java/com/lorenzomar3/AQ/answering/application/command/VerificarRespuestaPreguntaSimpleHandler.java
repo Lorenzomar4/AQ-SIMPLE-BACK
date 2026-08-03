@@ -5,7 +5,7 @@ import com.lorenzomar3.AQ.answering.domain.PreguntaSimpleParaResponder;
 import com.lorenzomar3.AQ.content.api.ActualizarCriticoDePreguntaSimpleCommand;
 import com.lorenzomar3.AQ.content.api.ObtenerPreguntaSimpleParaResponderQuery;
 import com.lorenzomar3.AQ.content.api.PreguntaSimpleParaResponderView;
-import com.lorenzomar3.AQ.exception.BussinesException;
+import com.lorenzomar3.AQ.shared.exception.BussinesException;
 import org.springframework.stereotype.Service;
 
 @Service

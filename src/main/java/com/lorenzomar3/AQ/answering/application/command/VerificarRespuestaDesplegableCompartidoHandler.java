@@ -6,7 +6,7 @@ import com.lorenzomar3.AQ.answering.domain.OpcionDeDesplegableCompartidoParaResp
 import com.lorenzomar3.AQ.content.api.ActualizarCriticoDeDesplegableCompartidoCommand;
 import com.lorenzomar3.AQ.content.api.DesplegableCompartidoParaResponderView;
 import com.lorenzomar3.AQ.content.api.ObtenerDesplegableCompartidoParaResponderQuery;
-import com.lorenzomar3.AQ.exception.BussinesException;
+import com.lorenzomar3.AQ.shared.exception.BussinesException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

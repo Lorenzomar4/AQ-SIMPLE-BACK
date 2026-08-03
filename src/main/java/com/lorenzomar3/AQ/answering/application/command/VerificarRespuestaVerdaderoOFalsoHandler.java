@@ -5,7 +5,7 @@ import com.lorenzomar3.AQ.answering.domain.VerdaderoOFalsoParaResponder;
 import com.lorenzomar3.AQ.content.api.ActualizarCriticoDeVerdaderoOFalsoCommand;
 import com.lorenzomar3.AQ.content.api.ObtenerVerdaderoOFalsoParaResponderQuery;
 import com.lorenzomar3.AQ.content.api.VerdaderoOFalsoParaResponderView;
-import com.lorenzomar3.AQ.exception.BussinesException;
+import com.lorenzomar3.AQ.shared.exception.BussinesException;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,6 +1,6 @@
 package com.lorenzomar3.AQ.content.infrastructure.persistence.entity;
 
-import com.lorenzomar3.AQ.model.TipoAResponder;
+import com.lorenzomar3.AQ.content.api.TipoAResponder;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
