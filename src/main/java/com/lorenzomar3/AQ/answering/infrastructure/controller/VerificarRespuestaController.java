@@ -123,7 +123,7 @@ public class VerificarRespuestaController {
 
     private Boolean verificarDesplegableIndependiente(RespuestaDePreguntaDTO respuestaDelUsuario) {
         List<SubPreguntaRespuestaDTO> subPreguntasDelUsuario = respuestaDelUsuario.listaDeSeleccionesUnicasParaDesplegableIndependiente().stream()
-                .map(subPregunta -> new SubPreguntaRespuestaDTO(subPregunta.getId(), subPregunta.getListaDeOpcionesDisponible().stream()
+                .map(subPregunta -> new SubPreguntaRespuestaDTO(subPregunta.getId(), subPregunta.getListaDeOpciones().stream()
                         .map(opcion -> new OpcionRespuestaDTO(opcion.getId(), opcion.getLaRespuestaEs()))
                         .toList()))
                 .toList();

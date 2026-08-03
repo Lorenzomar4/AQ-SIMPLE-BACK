@@ -3,13 +3,10 @@ package com.lorenzomar3.AQ.content.application.service;
 import com.lorenzomar3.AQ.content.application.port.in.EditarDesplegableCompartidoUseCase;
 import com.lorenzomar3.AQ.content.application.port.out.DesplegableCompartidoRepositoryPort;
 import com.lorenzomar3.AQ.content.domain.DesplegableCompartido;
-import com.lorenzomar3.AQ.content.domain.OpcionDeDesplegableCompartido;
 import com.lorenzomar3.AQ.dto.newDto.PostPreguntaDTO;
 import com.lorenzomar3.AQ.exception.BussinesException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class EditarDesplegableCompartidoService implements EditarDesplegableCompartidoUseCase {
@@ -28,17 +25,8 @@ public class EditarDesplegableCompartidoService implements EditarDesplegableComp
 
         desplegableCompartido.setTitulo(postPreguntaDTO.titulo());
         desplegableCompartido.setDescripcion(postPreguntaDTO.descripcion());
-        desplegableCompartido.setListaDeOpciones(convertirOpciones(postPreguntaDTO));
+        desplegableCompartido.setListaDeOpciones(postPreguntaDTO.listaDeOpcionDesplegableCompartido());
 
         return desplegableCompartidoRepositoryPort.save(desplegableCompartido);
-    }
-
-    private List<OpcionDeDesplegableCompartido> convertirOpciones(PostPreguntaDTO postPreguntaDTO) {
-        return postPreguntaDTO.listaDeOpcionDesplegableCompartido().stream().map(opcionVieja -> {
-            OpcionDeDesplegableCompartido opcion = new OpcionDeDesplegableCompartido();
-            opcion.setPregunta(opcionVieja.getPregunta());
-            opcion.setRespuesta(opcionVieja.getRespuestaCorrecta());
-            return opcion;
-        }).toList();
     }
 }

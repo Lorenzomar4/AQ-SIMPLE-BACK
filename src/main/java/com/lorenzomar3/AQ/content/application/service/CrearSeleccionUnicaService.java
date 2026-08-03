@@ -3,7 +3,6 @@ package com.lorenzomar3.AQ.content.application.service;
 import com.lorenzomar3.AQ.content.application.port.in.CrearSeleccionUnicaUseCase;
 import com.lorenzomar3.AQ.content.application.port.out.SeleccionUnicaRepositoryPort;
 import com.lorenzomar3.AQ.content.application.port.out.TemarioRepositoryPort;
-import com.lorenzomar3.AQ.content.domain.Opcion;
 import com.lorenzomar3.AQ.content.domain.SeleccionUnica;
 import com.lorenzomar3.AQ.content.domain.Temario;
 import com.lorenzomar3.AQ.dto.newDto.CreateQuestionResponseDTO;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class CrearSeleccionUnicaService implements CrearSeleccionUnicaUseCase {
@@ -36,7 +34,7 @@ public class CrearSeleccionUnicaService implements CrearSeleccionUnicaUseCase {
         SeleccionUnica seleccionUnica = new SeleccionUnica();
         seleccionUnica.setTitulo(postPreguntaDTO.titulo());
         seleccionUnica.setDescripcion(postPreguntaDTO.descripcion());
-        seleccionUnica.setListaDeOpciones(convertirOpciones(postPreguntaDTO));
+        seleccionUnica.setListaDeOpciones(postPreguntaDTO.listaDeOpcionesConSuRespuestaReal());
         seleccionUnica.setTipo(TipoAResponder.SELECCION_UNICA);
         seleccionUnica.setIdDuenio(temario.getId());
         seleccionUnica.setFechaDeCreacion(LocalDateTime.now());
@@ -45,14 +43,5 @@ public class CrearSeleccionUnicaService implements CrearSeleccionUnicaUseCase {
         seleccionUnicaRepositoryPort.save(seleccionUnica);
 
         return new CreateQuestionResponseDTO(temario.getId(), temario.getTipo());
-    }
-
-    private List<Opcion> convertirOpciones(PostPreguntaDTO postPreguntaDTO) {
-        return postPreguntaDTO.listaDeOpcionesConSuRespuestaReal().stream().map(opcionVieja -> {
-            Opcion opcion = new Opcion();
-            opcion.setOpcion(opcionVieja.getOpcion());
-            opcion.setLaRespuestaEs(opcionVieja.getRespuestaCorrecta());
-            return opcion;
-        }).toList();
     }
 }
