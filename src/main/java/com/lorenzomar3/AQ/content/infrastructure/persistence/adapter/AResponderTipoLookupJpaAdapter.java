@@ -1,7 +1,8 @@
 package com.lorenzomar3.AQ.content.infrastructure.persistence.adapter;
 
 import com.lorenzomar3.AQ.content.application.port.out.AResponderTipoLookupPort;
-import com.lorenzomar3.AQ.model.AResponder.AResponder;
+import com.lorenzomar3.AQ.content.infrastructure.persistence.entity.AResponderEntity;
+import com.lorenzomar3.AQ.content.infrastructure.persistence.repository.AResponderJpaRepository;
 import com.lorenzomar3.AQ.model.TipoAResponder;
 import org.springframework.stereotype.Component;
 
@@ -10,14 +11,14 @@ import java.util.Optional;
 @Component
 public class AResponderTipoLookupJpaAdapter implements AResponderTipoLookupPort {
 
-    private final com.lorenzomar3.AQ.Repository.AResponderRepository aResponderRepositoryViejo;
+    private final AResponderJpaRepository aResponderJpaRepository;
 
-    public AResponderTipoLookupJpaAdapter(com.lorenzomar3.AQ.Repository.AResponderRepository aResponderRepositoryViejo) {
-        this.aResponderRepositoryViejo = aResponderRepositoryViejo;
+    public AResponderTipoLookupJpaAdapter(AResponderJpaRepository aResponderJpaRepository) {
+        this.aResponderJpaRepository = aResponderJpaRepository;
     }
 
     @Override
     public Optional<TipoAResponder> findTipoById(Long id) {
-        return aResponderRepositoryViejo.findById(id).map(AResponder::getTipo);
+        return aResponderJpaRepository.findById(id).map(AResponderEntity::getTipo);
     }
 }
