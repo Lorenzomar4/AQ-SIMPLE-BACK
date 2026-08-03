@@ -1,9 +1,9 @@
 package com.lorenzomar3.AQ.dto.newDto;
 
-import com.lorenzomar3.AQ.model.AResponder.TeoriaDeLaPregunta;
-import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegabeIndependiente.SeleccionUnicaParaDesplegableIndependiente;
-import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.DesplegableCompartido.OpcionDeDesplegableCompartido;
-import com.lorenzomar3.AQ.model.AResponder.TiposDePreguntas.Opcion;
+import com.lorenzomar3.AQ.content.domain.Opcion;
+import com.lorenzomar3.AQ.content.domain.OpcionDeDesplegableCompartido;
+import com.lorenzomar3.AQ.content.domain.SeleccionUnicaParaDesplegableIndependiente;
+import com.lorenzomar3.AQ.content.domain.TeoriaDeLaPregunta;
 import com.lorenzomar3.AQ.model.TipoAResponder;
 import java.util.ArrayList;
 import java.util.List;

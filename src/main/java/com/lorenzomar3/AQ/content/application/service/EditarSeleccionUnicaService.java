@@ -2,14 +2,11 @@ package com.lorenzomar3.AQ.content.application.service;
 
 import com.lorenzomar3.AQ.content.application.port.in.EditarSeleccionUnicaUseCase;
 import com.lorenzomar3.AQ.content.application.port.out.SeleccionUnicaRepositoryPort;
-import com.lorenzomar3.AQ.content.domain.Opcion;
 import com.lorenzomar3.AQ.content.domain.SeleccionUnica;
 import com.lorenzomar3.AQ.dto.newDto.PostPreguntaDTO;
 import com.lorenzomar3.AQ.exception.BussinesException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class EditarSeleccionUnicaService implements EditarSeleccionUnicaUseCase {
@@ -28,17 +25,8 @@ public class EditarSeleccionUnicaService implements EditarSeleccionUnicaUseCase 
 
         seleccionUnica.setTitulo(postPreguntaDTO.titulo());
         seleccionUnica.setDescripcion(postPreguntaDTO.descripcion());
-        seleccionUnica.setListaDeOpciones(convertirOpciones(postPreguntaDTO));
+        seleccionUnica.setListaDeOpciones(postPreguntaDTO.listaDeOpcionesConSuRespuestaReal());
 
         return seleccionUnicaRepositoryPort.save(seleccionUnica);
-    }
-
-    private List<Opcion> convertirOpciones(PostPreguntaDTO postPreguntaDTO) {
-        return postPreguntaDTO.listaDeOpcionesConSuRespuestaReal().stream().map(opcionVieja -> {
-            Opcion opcion = new Opcion();
-            opcion.setOpcion(opcionVieja.getOpcion());
-            opcion.setLaRespuestaEs(opcionVieja.getRespuestaCorrecta());
-            return opcion;
-        }).toList();
     }
 }
