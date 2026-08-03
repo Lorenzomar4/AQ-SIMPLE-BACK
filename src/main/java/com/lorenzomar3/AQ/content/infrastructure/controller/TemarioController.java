@@ -15,7 +15,6 @@ import jdk.jfr.Description;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +66,6 @@ public class TemarioController {
     }
 
 
-    @Transactional
     @GetMapping("/issues/{id}/items")
     public ResponseEntity<IssueWhitItemsDTO> getTopicContent(@PathVariable Long id) {
         logger.info("[GET /issues/{}/items]", id);
@@ -120,7 +118,6 @@ public class TemarioController {
 
     @GetMapping("/issues/{id}/question-ids")
     @Description("Descripcion pendiente")
-    @Transactional
     public ResponseEntity<List<Long>> obtenerIdsPreguntas(@PathVariable Long id) {
         logger.info("[GET /issues/{}/question-ids]", id);
 
