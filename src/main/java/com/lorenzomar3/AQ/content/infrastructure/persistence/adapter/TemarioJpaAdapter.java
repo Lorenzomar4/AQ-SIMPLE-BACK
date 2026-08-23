@@ -72,10 +72,13 @@ public class TemarioJpaAdapter implements TemarioRepositoryPort {
 
     @Override
     public List<Temario> findAllCuestionarios() {
-        return temarioJpaRepository.findByTipo(TipoAResponder.CUESTIONARIO)
+
+        List<Temario> cuestionarioARetornar = temarioJpaRepository.findByTipo(TipoAResponder.CUESTIONARIO)
                 .stream()
                 .map(temarioMapper::toDomain)
                 .toList();
+
+        return cuestionarioARetornar;
     }
 
     @Override

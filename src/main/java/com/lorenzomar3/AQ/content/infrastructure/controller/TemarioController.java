@@ -66,11 +66,13 @@ public class TemarioController {
     }
 
 
-    @GetMapping("/issues/{id}/items")
-    public ResponseEntity<IssueWhitItemsDTO> getTopicContent(@PathVariable Long id) {
-        logger.info("[GET /issues/{}/items]", id);
+    @GetMapping("/questionnairesv2")
+    public ResponseEntity<List<TemarioBasicDTO>> todosLosCuestionarios2() {
 
-        return new ResponseEntity<>(obtenerItemsDeIssueUseCase.obtenerItems(id), HttpStatus.OK);
+
+
+        return new ResponseEntity<>(null, HttpStatus.OK);
+
     }
 
 
@@ -83,6 +85,20 @@ public class TemarioController {
 
         return new ResponseEntity<>(temarioCuestionarioGuardado, HttpStatus.CREATED);
     }
+
+
+
+
+
+    @GetMapping("/issues/{id}/items")
+    public ResponseEntity<IssueWhitItemsDTO> getTopicContent(@PathVariable Long id) {
+        logger.info("[GET /issues/{}/items]", id);
+
+        return new ResponseEntity<>(obtenerItemsDeIssueUseCase.obtenerItems(id), HttpStatus.OK);
+    }
+
+
+
 
 
     @DeleteMapping("/issues/{id}")
